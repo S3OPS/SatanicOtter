@@ -308,7 +308,7 @@
             }
         });
 
-        function generateAffiliateLink() {
+        async function generateAffiliateLink() {
             // Get input values
             const affiliateTag = document.getElementById('affiliateTag').value.trim();
             const productUrl = document.getElementById('productUrl').value.trim();
@@ -360,9 +360,27 @@
             // Create affiliate link
             const affiliateLink = createAffiliateLink(url, affiliateTag);
 
-            // Show result
+            // Show full affiliate link immediately
             document.getElementById('affiliateLink').textContent = affiliateLink;
+            
+            // Show loading state for short link
+            const shortLinkElement = document.getElementById('shortLink');
+            shortLinkElement.textContent = 'Shortening URL...';
+            shortLinkElement.style.opacity = '0.5';
+            
             document.getElementById('resultBox').classList.add('show');
+
+            // Shorten the URL
+            try {
+                const shortUrl = await shortenUrl(affiliateLink);
+                shortLinkElement.textContent = shortUrl;
+                shortLinkElement.style.opacity = '1';
+            } catch (error) {
+                // Fallback to full link if shortening fails
+                console.error('URL shortening failed:', error);
+                shortLinkElement.textContent = affiliateLink;
+                shortLinkElement.style.opacity = '1';
+            }
         }
 
         function createAffiliateLink(url, tag) {
@@ -380,6 +398,23 @@
             return url.toString();
         }
 
+        async function shortenUrl(longUrl) {
+            // Use TinyURL API to shorten the URL
+            const apiUrl = `https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`;
+            
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error('Failed to shorten URL');
+                }
+                const shortUrl = await response.text();
+                return shortUrl.trim();
+            } catch (error) {
+                // If TinyURL fails, throw error to trigger fallback
+                throw error;
+            }
+        }
+
         function showError(message) {
             document.getElementById('errorMessage').textContent = message;
             document.getElementById('errorBox').classList.add('show');
@@ -393,7 +428,19 @@
 
         function copyToClipboard() {
             const linkText = document.getElementById('affiliateLink').textContent;
-            const btn = document.querySelector('.copy-btn');
+            copyLinkToClipboard(linkText, event.target);
+        }
+
+        function copyShortLink() {
+            const linkText = document.getElementById('shortLink').textContent;
+            copyLinkToClipboard(linkText, event.target);
+        }
+
+        function copyLinkToClipboard(linkText, btn) {
+            // Skip if still loading
+            if (linkText === 'Shortening URL...') {
+                return;
+            }
             
             // Use modern clipboard API
             if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -405,7 +452,7 @@
                     
                     setTimeout(function() {
                         btn.textContent = originalText;
-                        btn.style.background = '#4CAF50';
+                        btn.style.background = btn.classList.contains('copy-btn') ? '#4CAF50' : '#757575';
                     }, 2000);
                 }).catch(function(err) {
                     fallbackCopyToClipboard(linkText, btn);
@@ -428,22 +475,24 @@
                 document.execCommand('copy');
                 // Change button text temporarily
                 const originalText = btn.textContent;
+                const originalBg = btn.style.background;
                 btn.textContent = '✓ Copied!';
                 btn.style.background = '#2e7d32';
                 
                 setTimeout(function() {
                     btn.textContent = originalText;
-                    btn.style.background = '#4CAF50';
+                    btn.style.background = originalBg || '#4CAF50';
                 }, 2000);
             } catch (err) {
                 // Show error in button
                 const originalText = btn.textContent;
+                const originalBg = btn.style.background;
                 btn.textContent = '✗ Failed - Copy Manually';
                 btn.style.background = '#d32f2f';
                 
                 setTimeout(function() {
                     btn.textContent = originalText;
-                    btn.style.background = '#4CAF50';
+                    btn.style.background = originalBg || '#4CAF50';
                 }, 3000);
             }
             
