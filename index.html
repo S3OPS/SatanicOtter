@@ -442,6 +442,9 @@
                 return;
             }
             
+            // Store original background color
+            const originalBg = window.getComputedStyle(btn).backgroundColor;
+            
             // Use modern clipboard API
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(linkText).then(function() {
@@ -452,7 +455,7 @@
                     
                     setTimeout(function() {
                         btn.textContent = originalText;
-                        btn.style.background = btn.classList.contains('copy-btn') ? '#4CAF50' : '#757575';
+                        btn.style.background = originalBg;
                     }, 2000);
                 }).catch(function(err) {
                     fallbackCopyToClipboard(linkText, btn);
@@ -464,6 +467,9 @@
 
         function fallbackCopyToClipboard(text, btn) {
             // Fallback for older browsers
+            // Store original background color
+            const originalBg = window.getComputedStyle(btn).backgroundColor;
+            
             const textArea = document.createElement('textarea');
             textArea.value = text;
             textArea.style.position = 'fixed';
@@ -475,24 +481,22 @@
                 document.execCommand('copy');
                 // Change button text temporarily
                 const originalText = btn.textContent;
-                const originalBg = btn.style.background;
                 btn.textContent = '✓ Copied!';
                 btn.style.background = '#2e7d32';
                 
                 setTimeout(function() {
                     btn.textContent = originalText;
-                    btn.style.background = originalBg || '#4CAF50';
+                    btn.style.background = originalBg;
                 }, 2000);
             } catch (err) {
                 // Show error in button
                 const originalText = btn.textContent;
-                const originalBg = btn.style.background;
                 btn.textContent = '✗ Failed - Copy Manually';
                 btn.style.background = '#d32f2f';
                 
                 setTimeout(function() {
                     btn.textContent = originalText;
-                    btn.style.background = originalBg || '#4CAF50';
+                    btn.style.background = originalBg;
                 }, 3000);
             }
             
