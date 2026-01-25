@@ -30,7 +30,22 @@ The setup wizard will guide you through:
 - Running initial test
 - Getting you ready to generate $1,000/day
 
+### 🎯 Profile Setup (NEW!)
+
+Automatically configure your TikTok and Instagram profiles for maximum efficiency:
+
+```bash
+# Setup your social media profiles
+npm run setup-profiles
+
+# Or use the interactive wizard
+npm run setup-profiles:wizard
+```
+
+This will generate optimized bios, link-in-bio structure, and branding recommendations.
+
 **See [QUICK_START.md](./QUICK_START.md) for detailed quick start guide.**
+**See [PROFILE_SETUP_GUIDE.md](./PROFILE_SETUP_GUIDE.md) for profile setup instructions.**
 
 ---
 
@@ -77,6 +92,7 @@ A simple, client-side web application for creating Amazon affiliate links instan
 
 ### Getting Started
 - **[Setup Guide](./SETUP_GUIDE.md)** - Complete installation and configuration (30 min setup)
+- **[Profile Setup Guide](./PROFILE_SETUP_GUIDE.md)** - Optimize your TikTok & Instagram profiles (NEW!)
 - **[TikTok & Instagram Guide](./TIKTOK_INSTAGRAM_GUIDE.md)** - Full monetization strategy and tactics
 
 ### Automation Tools
@@ -84,6 +100,10 @@ A simple, client-side web application for creating Amazon affiliate links instan
 # Install dependencies
 npm install
 pip install -r requirements.txt
+
+# Setup your profiles (NEW!)
+npm run setup-profiles        # Generate optimized profile configs
+npm run setup-profiles:wizard # Interactive profile setup
 
 # Run product research (find $100+ commission products)
 npm run product-research

@@ -6,6 +6,8 @@
   "scripts": {
     "setup": "node setup.js",
     "status": "node status.js",
+    "setup-profiles": "node automation/profileSetup.js",
+    "setup-profiles:wizard": "node automation/profileSetup.js --wizard",
     "generate-content": "node automation/contentGenerator.js",
     "schedule-posts": "node automation/scheduler.js",
     "automate": "node automation/index.js",

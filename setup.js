@@ -328,22 +328,27 @@ async function displayNextSteps() {
 
   log('📚 NEXT STEPS:\n', 'bright');
 
-  log('1. Generate Product Recommendations:', 'cyan');
+  log('1. Setup Your Social Media Profiles:', 'cyan');
+  log('   npm run setup-profiles          # Generate optimized profile configs');
+  log('   npm run setup-profiles:wizard   # Interactive profile setup\n');
+
+  log('2. Generate Product Recommendations:', 'cyan');
   log('   npm run product-research\n');
 
-  log('2. Generate AI Content (requires OpenAI API key):', 'cyan');
+  log('3. Generate AI Content (requires OpenAI API key):', 'cyan');
   log('   npm run generate-content\n');
 
-  log('3. Track Your Analytics:', 'cyan');
+  log('4. Track Your Analytics:', 'cyan');
   log('   npm run analytics:add\n');
 
-  log('4. Schedule Posts:', 'cyan');
+  log('5. Schedule Posts:', 'cyan');
   log('   npm run schedule-posts\n');
 
-  log('5. Run Full Automation:', 'cyan');
+  log('6. Run Full Automation:', 'cyan');
   log('   npm run automate\n');
 
   log('📖 DOCUMENTATION:\n', 'bright');
+  log('   • PROFILE_SETUP_GUIDE.md - Optimize TikTok & Instagram profiles', 'cyan');
   log('   • SETUP_GUIDE.md - Complete setup and operations guide', 'cyan');
   log('   • TIKTOK_INSTAGRAM_GUIDE.md - Full monetization strategy', 'cyan');
   log('   • EXAMPLE_WORKFLOW.md - Real-world example workflow', 'cyan');
@@ -351,7 +356,7 @@ async function displayNextSteps() {
 
   log('🎯 GOAL: $1,000/day through high-ticket Amazon affiliate marketing\n', 'bright');
 
-  log('💡 TIP: Start with product research, then generate content!', 'yellow');
+  log('💡 TIP: Start with profile setup, then product research and content generation!', 'yellow');
   console.log('');
 }
 
