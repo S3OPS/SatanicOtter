@@ -72,7 +72,8 @@ const modules = [
   'automation/scheduler.js',
   'automation/productResearch.js',
   'automation/analyticsTracker.js',
-  'automation/profileSetup.js'
+  'automation/profileSetup.js',
+  'automation/profileAutomation.js'
 ];
 
 modules.forEach(module => {
@@ -88,7 +89,8 @@ const docs = [
   'SETUP_GUIDE.md',
   'TIKTOK_INSTAGRAM_GUIDE.md',
   'EXAMPLE_WORKFLOW.md',
-  'PROFILE_SETUP_GUIDE.md'
+  'PROFILE_SETUP_GUIDE.md',
+  'PROFILE_AUTOMATION_GUIDE.md'
 ];
 
 docs.forEach(doc => {
@@ -206,6 +208,38 @@ test('profile setup has bio generation function', () => {
   assert(instagramBio, 'Instagram bio not generated');
   assert(typeof tiktokBio === 'string', 'TikTok bio is not a string');
   assert(typeof instagramBio === 'string', 'Instagram bio is not a string');
+});
+
+// Test 12: Profile automation module
+test('package.json contains automate-profiles scripts', () => {
+  const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+  assert(packageJson.scripts['automate-profiles'], 'automate-profiles script not found');
+  assert(packageJson.scripts['automate-profiles:dry-run'], 'automate-profiles:dry-run script not found');
+  assert(packageJson.scripts['automate-profiles:live'], 'automate-profiles:live script not found');
+});
+
+test('profile automation module can be loaded', () => {
+  try {
+    const profileAutomation = require('../automation/profileAutomation.js');
+    assert(profileAutomation.runAutomatedSetup, 'runAutomatedSetup function not exported');
+    assert(profileAutomation.checkAutomationSetup, 'checkAutomationSetup function not exported');
+    assert(profileAutomation.AUTOMATION_CONFIG, 'AUTOMATION_CONFIG not exported');
+  } catch (error) {
+    throw new Error(`Failed to load profile automation module: ${error.message}`);
+  }
+});
+
+test('profile automation checks configuration', () => {
+  const { checkAutomationSetup } = require('../automation/profileAutomation.js');
+  const result = checkAutomationSetup();
+  
+  assert(result.isReady !== undefined, 'checkAutomationSetup should return isReady status');
+  assert(Array.isArray(result.issues), 'checkAutomationSetup should return issues array');
+});
+
+test('GitHub Actions workflow exists', () => {
+  assert(fs.existsSync('.github/workflows/profile-automation.yml'), 
+    'GitHub Actions workflow file not found');
 });
 
 // Summary

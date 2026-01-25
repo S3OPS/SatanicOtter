@@ -1,0 +1,76 @@
+name: Automated Profile Setup
+
+on:
+  # Run manually from Actions tab
+  workflow_dispatch:
+    inputs:
+      niche:
+        description: 'Profile niche (highTicket, tech, home, fitness)'
+        required: false
+        default: 'highTicket'
+        type: choice
+        options:
+          - highTicket
+          - tech
+          - home
+          - fitness
+      dry_run:
+        description: 'Dry run mode (no actual changes)'
+        required: false
+        default: true
+        type: boolean
+  
+  # Optionally run on schedule (commented out by default)
+  # schedule:
+  #   - cron: '0 0 * * 0'  # Every Sunday at midnight UTC
+
+jobs:
+  setup-profiles:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: |
+          npm ci
+          npm install puppeteer axios --no-save
+      
+      - name: Run automated profile setup
+        env:
+          # TikTok credentials (add as GitHub Secrets)
+          TIKTOK_USERNAME: ${{ secrets.TIKTOK_USERNAME }}
+          TIKTOK_PASSWORD: ${{ secrets.TIKTOK_PASSWORD }}
+          TIKTOK_SESSION_ID: ${{ secrets.TIKTOK_SESSION_ID }}
+          
+          # Instagram credentials (add as GitHub Secrets)
+          INSTAGRAM_USERNAME: ${{ secrets.INSTAGRAM_USERNAME }}
+          INSTAGRAM_PASSWORD: ${{ secrets.INSTAGRAM_PASSWORD }}
+          
+          # Instagram Graph API (for Business accounts)
+          INSTAGRAM_GRAPH_API_TOKEN: ${{ secrets.INSTAGRAM_GRAPH_API_TOKEN }}
+          INSTAGRAM_ACCOUNT_ID: ${{ secrets.INSTAGRAM_ACCOUNT_ID }}
+          
+          # Automation configuration
+          PROFILE_NICHE: ${{ github.event.inputs.niche || 'highTicket' }}
+          PROFILE_DRY_RUN: ${{ github.event.inputs.dry_run }}
+          PROFILE_AUTOMATION_ENABLED: true
+        run: |
+          npm run automate-profiles
+      
+      - name: Upload automation logs
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: profile-automation-logs
+          path: |
+            logs/
+            profile-configs/
+          retention-days: 30
