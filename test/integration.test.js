@@ -71,7 +71,8 @@ const modules = [
   'automation/contentGenerator.js',
   'automation/scheduler.js',
   'automation/productResearch.js',
-  'automation/analyticsTracker.js'
+  'automation/analyticsTracker.js',
+  'automation/profileSetup.js'
 ];
 
 modules.forEach(module => {
@@ -86,7 +87,8 @@ const docs = [
   'QUICK_START.md',
   'SETUP_GUIDE.md',
   'TIKTOK_INSTAGRAM_GUIDE.md',
-  'EXAMPLE_WORKFLOW.md'
+  'EXAMPLE_WORKFLOW.md',
+  'PROFILE_SETUP_GUIDE.md'
 ];
 
 docs.forEach(doc => {
@@ -161,6 +163,49 @@ test('product-research script executes', () => {
   } catch (error) {
     throw new Error(`product-research failed: ${error.message}`);
   }
+});
+
+// Test 11: Profile setup module
+test('package.json contains setup-profiles script', () => {
+  const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+  assert(packageJson.scripts['setup-profiles'], 'setup-profiles script not found');
+  assert(packageJson.scripts['setup-profiles'].includes('profileSetup.js'), 'setup-profiles script incorrect');
+});
+
+test('package.json contains setup-profiles:wizard script', () => {
+  const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+  assert(packageJson.scripts['setup-profiles:wizard'], 'setup-profiles:wizard script not found');
+});
+
+test('profile setup module can be loaded', () => {
+  try {
+    const profileSetup = require('../automation/profileSetup.js');
+    assert(profileSetup.setupProfiles, 'setupProfiles function not exported');
+    assert(profileSetup.BIO_TEMPLATES, 'BIO_TEMPLATES not exported');
+    assert(profileSetup.LINK_IN_BIO_CONFIG, 'LINK_IN_BIO_CONFIG not exported');
+    assert(profileSetup.BRANDING_GUIDE, 'BRANDING_GUIDE not exported');
+  } catch (error) {
+    throw new Error(`Failed to load profile setup module: ${error.message}`);
+  }
+});
+
+test('profile setup has bio templates for all platforms', () => {
+  const { BIO_TEMPLATES } = require('../automation/profileSetup.js');
+  assert(BIO_TEMPLATES.tiktok, 'TikTok templates missing');
+  assert(BIO_TEMPLATES.instagram, 'Instagram templates missing');
+  assert(BIO_TEMPLATES.tiktok.highTicket, 'TikTok high-ticket templates missing');
+  assert(BIO_TEMPLATES.instagram.highTicket, 'Instagram high-ticket templates missing');
+});
+
+test('profile setup has bio generation function', () => {
+  const { generateBio } = require('../automation/profileSetup.js');
+  const tiktokBio = generateBio('tiktok', 'tech');
+  const instagramBio = generateBio('instagram', 'tech');
+  
+  assert(tiktokBio, 'TikTok bio not generated');
+  assert(instagramBio, 'Instagram bio not generated');
+  assert(typeof tiktokBio === 'string', 'TikTok bio is not a string');
+  assert(typeof instagramBio === 'string', 'Instagram bio is not a string');
 });
 
 // Summary
