@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon Affiliate Link Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1em;
+        }
+
+        .info-box {
+            background: #e8f4fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+        }
+
+        .info-box p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .info-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .result-box {
+            display: none;
+            background: #f9f9f9;
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .result-box.show {
+            display: block;
+        }
+
+        .result-label {
+            color: #4CAF50;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+
+        .result-link {
+            background: white;
+            padding: 12px 15px;
+            border-radius: 6px;
+            word-wrap: break-word;
+            color: #2196F3;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            border: 1px solid #ddd;
+            margin-bottom: 12px;
+        }
+
+        .copy-btn {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: #45a049;
+        }
+
+        .error-box {
+            display: none;
+            background: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #c62828;
+        }
+
+        .error-box.show {
+            display: block;
+        }
+
+        .examples {
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 25px;
+        }
+
+        .examples h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .examples ul {
+            list-style-position: inside;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .examples li {
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .examples code {
+            background: #e0e0e0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔗 Amazon Affiliate Link Generator</h1>
+        <p class="subtitle">Create Amazon affiliate links instantly with your associate tag</p>
+
+        <div class="info-box">
+            <p><strong>How it works:</strong></p>
+            <p>1. Enter your Amazon Associate Tag (e.g., yourname-20)</p>
+            <p>2. Paste any Amazon product URL</p>
+            <p>3. Click "Generate Affiliate Link" to get your commission-enabled link</p>
+        </div>
+
+        <div class="form-group">
+            <label for="affiliateTag">Your Amazon Associate Tag *</label>
+            <input 
+                type="text" 
+                id="affiliateTag" 
+                placeholder="e.g., yourname-20"
+                aria-label="Amazon Associate Tag"
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="productUrl">Amazon Product URL *</label>
+            <input 
+                type="text" 
+                id="productUrl" 
+                placeholder="e.g., https://www.amazon.com/dp/B08N5WRWNW"
+                aria-label="Amazon Product URL"
+            >
+        </div>
+
+        <div class="button-group">
+            <button class="btn-primary" onclick="generateAffiliateLink()">Generate Affiliate Link</button>
+            <button class="btn-secondary" onclick="clearForm()">Clear</button>
+        </div>
+
+        <div id="errorBox" class="error-box">
+            <strong>Error:</strong> <span id="errorMessage"></span>
+        </div>
+
+        <div id="resultBox" class="result-box">
+            <div class="result-label">✓ Your Affiliate Link:</div>
+            <div id="affiliateLink" class="result-link"></div>
+            <button class="copy-btn" onclick="copyToClipboard()">📋 Copy to Clipboard</button>
+        </div>
+
+        <div class="examples">
+            <h3>📚 Supported Amazon Domains:</h3>
+            <ul>
+                <li><code>amazon.com</code> - United States</li>
+                <li><code>amazon.co.uk</code> - United Kingdom</li>
+                <li><code>amazon.de</code> - Germany</li>
+                <li><code>amazon.fr</code> - France</li>
+                <li><code>amazon.ca</code> - Canada</li>
+                <li><code>amazon.co.jp</code> - Japan</li>
+                <li><code>amazon.it</code> - Italy</li>
+                <li><code>amazon.es</code> - Spain</li>
+                <li><code>amazon.in</code> - India</li>
+                <li><code>amazon.com.au</code> - Australia</li>
+                <li>And more...</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Load saved affiliate tag from localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTag = localStorage.getItem('amazonAffiliateTag');
+            if (savedTag) {
+                document.getElementById('affiliateTag').value = savedTag;
+            }
+        });
+
+        function generateAffiliateLink() {
+            // Get input values
+            const affiliateTag = document.getElementById('affiliateTag').value.trim();
+            const productUrl = document.getElementById('productUrl').value.trim();
+
+            // Hide previous results and errors
+            document.getElementById('errorBox').classList.remove('show');
+            document.getElementById('resultBox').classList.remove('show');
+
+            // Validate inputs
+            if (!affiliateTag) {
+                showError('Please enter your Amazon Associate Tag');
+                return;
+            }
+
+            if (!productUrl) {
+                showError('Please enter an Amazon product URL');
+                return;
+            }
+
+            // Validate URL format
+            let url;
+            try {
+                url = new URL(productUrl);
+            } catch (e) {
+                showError('Invalid URL format. Please enter a valid Amazon URL');
+                return;
+            }
+
+            // Check if it's an Amazon domain
+            const amazonDomains = [
+                'amazon.com', 'amazon.co.uk', 'amazon.de', 'amazon.fr', 
+                'amazon.ca', 'amazon.co.jp', 'amazon.it', 'amazon.es',
+                'amazon.in', 'amazon.com.au', 'amazon.com.br', 'amazon.com.mx',
+                'amazon.nl', 'amazon.se', 'amazon.sg', 'amazon.ae', 'amazon.sa'
+            ];
+
+            const isAmazon = amazonDomains.some(domain => 
+                url.hostname === domain || url.hostname === 'www.' + domain
+            );
+
+            if (!isAmazon) {
+                showError('Please enter a valid Amazon product URL');
+                return;
+            }
+
+            // Save affiliate tag to localStorage for future use
+            localStorage.setItem('amazonAffiliateTag', affiliateTag);
+
+            // Create affiliate link
+            const affiliateLink = createAffiliateLink(url, affiliateTag);
+
+            // Show result
+            document.getElementById('affiliateLink').textContent = affiliateLink;
+            document.getElementById('resultBox').classList.add('show');
+        }
+
+        function createAffiliateLink(url, tag) {
+            // Remove existing tag parameter if present
+            url.searchParams.delete('tag');
+            url.searchParams.delete('linkCode');
+            url.searchParams.delete('linkId');
+            
+            // Add affiliate tag
+            url.searchParams.set('tag', tag);
+            
+            // Add optional parameters for better tracking
+            url.searchParams.set('linkCode', 'll1');
+            
+            return url.toString();
+        }
+
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('errorBox').classList.add('show');
+        }
+
+        function clearForm() {
+            document.getElementById('productUrl').value = '';
+            document.getElementById('errorBox').classList.remove('show');
+            document.getElementById('resultBox').classList.remove('show');
+        }
+
+        function copyToClipboard() {
+            const linkText = document.getElementById('affiliateLink').textContent;
+            const btn = document.querySelector('.copy-btn');
+            
+            // Use modern clipboard API
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(linkText).then(function() {
+                    // Change button text temporarily
+                    const originalText = btn.textContent;
+                    btn.textContent = '✓ Copied!';
+                    btn.style.background = '#2e7d32';
+                    
+                    setTimeout(function() {
+                        btn.textContent = originalText;
+                        btn.style.background = '#4CAF50';
+                    }, 2000);
+                }).catch(function(err) {
+                    fallbackCopyToClipboard(linkText, btn);
+                });
+            } else {
+                fallbackCopyToClipboard(linkText, btn);
+            }
+        }
+
+        function fallbackCopyToClipboard(text, btn) {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                // Change button text temporarily
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Copied!';
+                btn.style.background = '#2e7d32';
+                
+                setTimeout(function() {
+                    btn.textContent = originalText;
+                    btn.style.background = '#4CAF50';
+                }, 2000);
+            } catch (err) {
+                // Show error in button
+                const originalText = btn.textContent;
+                btn.textContent = '✗ Failed - Copy Manually';
+                btn.style.background = '#d32f2f';
+                
+                setTimeout(function() {
+                    btn.textContent = originalText;
+                    btn.style.background = '#4CAF50';
+                }, 3000);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        // Allow Enter key to generate link
+        document.getElementById('productUrl').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                generateAffiliateLink();
+            }
+        });
+
+        document.getElementById('affiliateTag').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                generateAffiliateLink();
+            }
+        });
+    </script>
+</body>
+</html>
