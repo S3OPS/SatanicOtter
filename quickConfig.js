@@ -86,7 +86,13 @@ async function quickConfig() {
     if (tiktokAuthChoice === '2') {
       const tiktokPassword = await question('TikTok Password: ');
       if (tiktokPassword.trim()) {
-        envContent = envContent.replace(/# TIKTOK_PASSWORD=.*/, `TIKTOK_PASSWORD=${tiktokPassword.trim()}`);
+        // Handle both commented and uncommented TIKTOK_PASSWORD lines
+        if (envContent.includes('TIKTOK_PASSWORD=')) {
+          envContent = envContent.replace(/^(\s*#\s*)?TIKTOK_PASSWORD=.*/m, `TIKTOK_PASSWORD=${tiktokPassword.trim()}`);
+        } else {
+          // Add it after TIKTOK_SESSION_ID if it doesn't exist
+          envContent = envContent.replace(/(TIKTOK_SESSION_ID=.*)/, `$1\nTIKTOK_PASSWORD=${tiktokPassword.trim()}`);
+        }
       }
     } else {
       log('\n📌 How to get your TikTok Session ID:', 'yellow');
