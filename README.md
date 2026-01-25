@@ -33,6 +33,8 @@ npm run full-auto
 
 **See [ONE_COMMAND_SETUP.md](./ONE_COMMAND_SETUP.md) for detailed guide.**
 
+**Having trouble with TikTok credentials?** See [TIKTOK_CREDENTIALS_GUIDE.md](./TIKTOK_CREDENTIALS_GUIDE.md)
+
 ---
 
 ### Manual Setup (Alternative)

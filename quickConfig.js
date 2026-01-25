@@ -69,14 +69,44 @@ async function quickConfig() {
     log('TIKTOK CREDENTIALS', 'bright');
     log('='.repeat(70) + '\n', 'bright');
     
+    log('💡 TIP: For TikTok, you can use EITHER session ID OR password', 'cyan');
+    log('   Session ID is MORE RELIABLE and recommended!\n', 'cyan');
+    
     const tiktokUsername = await question('TikTok Username: ');
     if (tiktokUsername.trim()) {
       envContent = envContent.replace(/TIKTOK_USERNAME=.*/, `TIKTOK_USERNAME=${tiktokUsername.trim()}`);
     }
     
-    const tiktokPassword = await question('TikTok Password (or press Enter to skip): ');
-    if (tiktokPassword.trim()) {
-      envContent = envContent.replace(/TIKTOK_PASSWORD=.*/, `TIKTOK_PASSWORD=${tiktokPassword.trim()}`);
+    log('\nChoose authentication method for TikTok:', 'bright');
+    log('1. Session ID (RECOMMENDED - more reliable, no 2FA issues)');
+    log('2. Password (may have 2FA/captcha issues)\n');
+    
+    const tiktokAuthChoice = await question('Select method (1 or 2) [1]: ');
+    
+    if (tiktokAuthChoice === '2') {
+      const tiktokPassword = await question('TikTok Password: ');
+      if (tiktokPassword.trim()) {
+        // Handle both commented and uncommented TIKTOK_PASSWORD lines
+        if (envContent.includes('TIKTOK_PASSWORD=')) {
+          envContent = envContent.replace(/^(\s*#\s*)?TIKTOK_PASSWORD=.*/m, `TIKTOK_PASSWORD=${tiktokPassword.trim()}`);
+        } else {
+          // Add it after TIKTOK_SESSION_ID if it doesn't exist
+          envContent = envContent.replace(/(TIKTOK_SESSION_ID=.*)/, `$1\nTIKTOK_PASSWORD=${tiktokPassword.trim()}`);
+        }
+      }
+    } else {
+      log('\n📌 How to get your TikTok Session ID:', 'yellow');
+      log('1. Open TikTok in browser and login', 'yellow');
+      log('2. Press F12 to open Developer Tools', 'yellow');
+      log('3. Go to Application → Cookies → https://www.tiktok.com', 'yellow');
+      log('4. Find "sessionid" cookie and copy its value\n', 'yellow');
+      
+      const tiktokSessionId = await question('TikTok Session ID (or press Enter to set later): ');
+      if (tiktokSessionId.trim()) {
+        envContent = envContent.replace(/TIKTOK_SESSION_ID=.*/, `TIKTOK_SESSION_ID=${tiktokSessionId.trim()}`);
+      } else {
+        log('\n⚠️  You can add TIKTOK_SESSION_ID to .env file later', 'yellow');
+      }
     }
     
     log('\n' + '='.repeat(70), 'bright');

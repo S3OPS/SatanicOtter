@@ -88,7 +88,7 @@ async function validateConfiguration() {
   
   const profileAutomation = {
     'TIKTOK_USERNAME': 'TikTok username',
-    'TIKTOK_PASSWORD': 'TikTok password (or TIKTOK_SESSION_ID)',
+    'TIKTOK_SESSION_ID': 'TikTok session ID (recommended) OR TIKTOK_PASSWORD',
     'INSTAGRAM_USERNAME': 'Instagram username',
     'INSTAGRAM_PASSWORD': 'Instagram password'
   };
@@ -116,13 +116,43 @@ async function validateConfiguration() {
   // Check profile automation
   console.log('');
   log('Profile Automation Configuration:', 'bright');
-  for (const [key, description] of Object.entries(profileAutomation)) {
-    if (process.env[key] && !process.env[key].includes('your_')) {
-      logSuccess(`${key}: ${description}`);
-    } else {
-      logWarning(`${key}: ${description} - Not configured`);
-      hasWarnings = true;
-    }
+  
+  // Special handling for TikTok credentials
+  if (process.env.TIKTOK_USERNAME && !process.env.TIKTOK_USERNAME.includes('your_')) {
+    logSuccess('TIKTOK_USERNAME: TikTok username');
+  } else {
+    logWarning('TIKTOK_USERNAME: TikTok username - Not configured');
+    hasWarnings = true;
+  }
+  
+  // Check if user has either password OR session ID
+  const hasTikTokPassword = process.env.TIKTOK_PASSWORD && !process.env.TIKTOK_PASSWORD.includes('your_');
+  const hasTikTokSession = process.env.TIKTOK_SESSION_ID && !process.env.TIKTOK_SESSION_ID.includes('your_');
+  
+  if (hasTikTokSession) {
+    logSuccess('TIKTOK_SESSION_ID: TikTok session ID (recommended method)');
+  } else if (hasTikTokPassword) {
+    logSuccess('TIKTOK_PASSWORD: TikTok password');
+    logInfo('  💡 TIP: TIKTOK_SESSION_ID is more reliable than password');
+  } else {
+    logWarning('TIKTOK credentials: EITHER TIKTOK_SESSION_ID (recommended) OR TIKTOK_PASSWORD required');
+    logInfo('  📌 To get session ID: Login to TikTok → F12 → Application → Cookies → Copy "sessionid"');
+    hasWarnings = true;
+  }
+  
+  // Check Instagram credentials
+  if (process.env.INSTAGRAM_USERNAME && !process.env.INSTAGRAM_USERNAME.includes('your_')) {
+    logSuccess('INSTAGRAM_USERNAME: Instagram username');
+  } else {
+    logWarning('INSTAGRAM_USERNAME: Instagram username - Not configured');
+    hasWarnings = true;
+  }
+  
+  if (process.env.INSTAGRAM_PASSWORD && !process.env.INSTAGRAM_PASSWORD.includes('your_')) {
+    logSuccess('INSTAGRAM_PASSWORD: Instagram password');
+  } else {
+    logWarning('INSTAGRAM_PASSWORD: Instagram password - Not configured');
+    hasWarnings = true;
   }
   
   // Check optional
