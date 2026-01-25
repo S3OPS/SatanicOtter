@@ -94,7 +94,7 @@ function isPackageInstalled(packageName) {
  * Check if an environment variable is properly configured
  * (not a placeholder value)
  */
-const PLACEHOLDER_PATTERN = /your_|your-|<.*>|example|todo|changeme|replace_me|\[\]|^$/i;
+const PLACEHOLDER_PATTERN = /your_|your-|<.*>|example|todo|changeme|replace_me|\[.*\]/i;
 
 function isConfigured(value) {
   // Check for null, undefined, empty string, or whitespace-only
@@ -153,7 +153,7 @@ async function validateConfiguration() {
     logSuccess('PROFILE_AUTOMATION_ENABLED: Must be "true" for full automation');
   } else {
     logError('PROFILE_AUTOMATION_ENABLED: Must be set to "true" for full automation');
-    logInfo('  Current value: ' + (process.env.PROFILE_AUTOMATION_ENABLED || '(not set)'));
+    logInfo(`  Current value: ${process.env.PROFILE_AUTOMATION_ENABLED || '(not set)'}`);
     logInfo('  Set PROFILE_AUTOMATION_ENABLED=true in .env file');
     hasErrors = true;
   }
