@@ -4,6 +4,8 @@
   "description": "AI-powered TikTok and Instagram Reels content automation",
   "main": "automation/index.js",
   "scripts": {
+    "setup": "node setup.js",
+    "status": "node status.js",
     "generate-content": "node automation/contentGenerator.js",
     "schedule-posts": "node automation/scheduler.js",
     "automate": "node automation/index.js",
@@ -11,7 +13,7 @@
     "analytics": "node automation/analyticsTracker.js",
     "analytics:add": "node automation/analyticsTracker.js add",
     "analytics:summary": "node automation/analyticsTracker.js summary",
-    "test": "echo \"No tests configured yet\" && exit 0"
+    "test": "node test/integration.test.js"
   },
   "keywords": [
     "tiktok",

@@ -11,6 +11,29 @@ A comprehensive toolkit for Amazon affiliate marketing through TikTok Shop and I
 
 ---
 
+## ⚡ Quick Start (5 Minutes)
+
+Get started with one command:
+
+```bash
+# Clone the repository
+git clone https://github.com/S3OPS/SatanicOtter.git
+cd SatanicOtter
+
+# Run automated setup
+npm run setup
+```
+
+The setup wizard will guide you through:
+- Installing dependencies
+- Configuring API keys
+- Running initial test
+- Getting you ready to generate $1,000/day
+
+**See [QUICK_START.md](./QUICK_START.md) for detailed quick start guide.**
+
+---
+
 ## 🎯 Revenue Goal: $1,000/Day
 
 **Strategy:**

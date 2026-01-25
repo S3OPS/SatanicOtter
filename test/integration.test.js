@@ -1,0 +1,178 @@
+#!/usr/bin/env node
+
+/**
+ * Integration Test for SatanicOtter Setup
+ * Tests that the setup process creates all necessary files and configurations
+ */
+
+const fs = require('fs');
+const path = require('path');
+const { execSync } = require('child_process');
+
+let testsPassed = 0;
+let testsFailed = 0;
+
+function test(name, fn) {
+  try {
+    fn();
+    console.log(`✅ ${name}`);
+    testsPassed++;
+  } catch (error) {
+    console.error(`❌ ${name}`);
+    console.error(`   Error: ${error.message}`);
+    testsFailed++;
+  }
+}
+
+function assert(condition, message) {
+  if (!condition) {
+    throw new Error(message);
+  }
+}
+
+console.log('🧪 Running SatanicOtter Integration Tests\n');
+
+// Change to project root
+process.chdir(path.join(__dirname, '..'));
+
+// Test 1: Package.json has correct scripts
+test('package.json contains setup script', () => {
+  const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+  assert(packageJson.scripts.setup, 'setup script not found');
+  assert(packageJson.scripts.setup === 'node setup.js', 'setup script incorrect');
+});
+
+test('package.json contains status script', () => {
+  const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+  assert(packageJson.scripts.status, 'status script not found');
+  assert(packageJson.scripts.status === 'node status.js', 'status script incorrect');
+});
+
+// Test 2: Required files exist
+test('setup.js exists', () => {
+  assert(fs.existsSync('setup.js'), 'setup.js not found');
+});
+
+test('status.js exists', () => {
+  assert(fs.existsSync('status.js'), 'status.js not found');
+});
+
+test('QUICK_START.md exists', () => {
+  assert(fs.existsSync('QUICK_START.md'), 'QUICK_START.md not found');
+});
+
+test('.env.example exists', () => {
+  assert(fs.existsSync('.env.example'), 'env.example not found');
+});
+
+// Test 3: Automation modules exist
+const modules = [
+  'automation/index.js',
+  'automation/contentGenerator.js',
+  'automation/scheduler.js',
+  'automation/productResearch.js',
+  'automation/analyticsTracker.js'
+];
+
+modules.forEach(module => {
+  test(`${module} exists`, () => {
+    assert(fs.existsSync(module), `${module} not found`);
+  });
+});
+
+// Test 4: Documentation exists
+const docs = [
+  'README.md',
+  'QUICK_START.md',
+  'SETUP_GUIDE.md',
+  'TIKTOK_INSTAGRAM_GUIDE.md',
+  'EXAMPLE_WORKFLOW.md'
+];
+
+docs.forEach(doc => {
+  test(`${doc} exists`, () => {
+    assert(fs.existsSync(doc), `${doc} not found`);
+  });
+});
+
+// Test 5: Scripts are executable (syntax check)
+test('setup.js has valid syntax', () => {
+  try {
+    execSync('node -c setup.js', { stdio: 'pipe' });
+  } catch (error) {
+    throw new Error('setup.js has syntax errors');
+  }
+});
+
+test('status.js has valid syntax', () => {
+  try {
+    execSync('node -c status.js', { stdio: 'pipe' });
+  } catch (error) {
+    throw new Error('status.js has syntax errors');
+  }
+});
+
+// Test 6: Automation scripts have valid syntax
+modules.forEach(module => {
+  test(`${module} has valid syntax`, () => {
+    try {
+      execSync(`node -c ${module}`, { stdio: 'pipe' });
+    } catch (error) {
+      throw new Error(`${module} has syntax errors`);
+    }
+  });
+});
+
+// Test 7: README contains quick start reference
+test('README.md references QUICK_START.md', () => {
+  const readme = fs.readFileSync('README.md', 'utf8');
+  assert(readme.includes('QUICK_START.md'), 'README does not reference QUICK_START.md');
+});
+
+test('README.md contains npm run setup command', () => {
+  const readme = fs.readFileSync('README.md', 'utf8');
+  assert(readme.includes('npm run setup'), 'README does not mention npm run setup');
+});
+
+// Test 8: QUICK_START.md has proper content
+test('QUICK_START.md contains setup instructions', () => {
+  const quickStart = fs.readFileSync('QUICK_START.md', 'utf8');
+  assert(quickStart.includes('npm run setup'), 'QUICK_START does not contain setup command');
+  assert(quickStart.includes('npm run product-research'), 'QUICK_START does not contain product-research command');
+});
+
+// Test 9: status script can run
+test('status script executes without errors', () => {
+  try {
+    execSync('node status.js', { stdio: 'pipe' });
+  } catch (error) {
+    // Status script exits with 1 when not fully configured, that's expected
+    if (error.status !== 1) {
+      throw error;
+    }
+  }
+});
+
+// Test 10: product-research works without configuration
+test('product-research script executes', () => {
+  try {
+    const output = execSync('npm run product-research', { stdio: 'pipe', encoding: 'utf8' });
+    assert(output.includes('HIGH-TICKET PRODUCT RESEARCH'), 'product-research output missing');
+  } catch (error) {
+    throw new Error(`product-research failed: ${error.message}`);
+  }
+});
+
+// Summary
+console.log('\n' + '='.repeat(70));
+console.log(`Tests Passed: ${testsPassed}`);
+console.log(`Tests Failed: ${testsFailed}`);
+console.log('='.repeat(70));
+
+if (testsFailed === 0) {
+  console.log('✅ All tests passed!\n');
+  process.exit(0);
+} else {
+  console.log('❌ Some tests failed\n');
+  process.exit(1);
+}
