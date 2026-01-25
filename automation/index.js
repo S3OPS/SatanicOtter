@@ -12,7 +12,7 @@ try {
   // dotenv not available, continue without it
 }
 
-const { batchGenerateContent } = require('./contentGenerator');
+const { batchGenerateContent, isQuotaError, handleOpenAIError } = require('./contentGenerator');
 const { start: startScheduler } = require('./scheduler');
 
 const AUTOMATION_CONFIG = {
@@ -67,10 +67,17 @@ async function runAutomation() {
     
   } catch (error) {
     console.error('\n❌ Automation error:', error.message);
-    console.error('\nTroubleshooting:');
-    console.error('1. Ensure .env file is configured with API keys');
-    console.error('2. Check that all dependencies are installed (npm install)');
-    console.error('3. Verify API keys are valid');
+    
+    // Check for OpenAI quota error
+    if (isQuotaError(error)) {
+      handleOpenAIError(error, 'running automation');
+    } else {
+      console.error('\nTroubleshooting:');
+      console.error('1. Ensure .env file is configured with API keys');
+      console.error('2. Check that all dependencies are installed (npm install)');
+      console.error('3. Verify API keys are valid');
+    }
+    
     process.exit(1);
   }
 }

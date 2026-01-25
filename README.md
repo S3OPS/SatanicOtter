@@ -104,6 +104,27 @@ npm run analytics:summary
 
 ---
 
+## ❓ Common Issues & Solutions
+
+### OpenAI API Quota Error
+If you encounter: `Error: You exceeded your current quota...`
+
+**Quick Fix:**
+1. Visit [OpenAI Billing](https://platform.openai.com/account/billing)
+2. Add payment method or purchase credits
+3. Check your [usage dashboard](https://platform.openai.com/account/usage)
+
+**Prevention:**
+- Monitor your API usage regularly
+- Use GPT-4o-mini (cheaper) instead of GPT-4
+- Set usage limits in OpenAI dashboard
+- Consider batch content generation during off-peak hours
+
+### Other Issues
+See [QUICK_START.md](./QUICK_START.md) for more troubleshooting tips.
+
+---
+
 ## 💡 How the System Works
 
 ### Revenue Model
