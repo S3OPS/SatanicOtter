@@ -21,14 +21,24 @@ const openai = new OpenAI({
 });
 
 /**
+ * Helper function to check if an error is an OpenAI quota error
+ */
+function isQuotaError(error) {
+  return error.code === 'insufficient_quota' || (error.error && error.error.code === 'insufficient_quota');
+}
+
+/**
  * Helper function to handle OpenAI API errors with user-friendly messages
  */
 function handleOpenAIError(error, context = '') {
-  if (error.code === 'insufficient_quota' || (error.error && error.error.code === 'insufficient_quota')) {
+  if (isQuotaError(error)) {
     console.error('\n❌ OpenAI API Quota Exceeded');
     console.error('─'.repeat(60));
-    console.error('Your OpenAI API key has exceeded its quota limit.\n');
-    console.error('💡 How to fix:');
+    console.error('Your OpenAI API key has exceeded its quota limit.');
+    if (context) {
+      console.error(`Context: ${context}`);
+    }
+    console.error('\n💡 How to fix:');
     console.error('1. Check your billing: https://platform.openai.com/account/billing');
     console.error('2. Add payment method or upgrade your plan');
     console.error('3. Review usage: https://platform.openai.com/account/usage');
@@ -273,7 +283,7 @@ async function batchGenerateContent(options = {}) {
       console.error(`Error generating content for ${category}:`, error.message);
       
       // Check for OpenAI quota error - if we hit this, stop trying other categories
-      if (error.code === 'insufficient_quota' || (error.error && error.error.code === 'insufficient_quota')) {
+      if (isQuotaError(error)) {
         console.error('\n⚠️  Stopping content generation due to API quota limit');
         break; // Exit the loop, no point trying other categories
       }
@@ -306,7 +316,7 @@ if (require.main === module) {
       console.error('\n❌ Error:', error.message);
       
       // Provide specific guidance for quota errors
-      if (error.code === 'insufficient_quota' || (error.error && error.error.code === 'insufficient_quota')) {
+      if (isQuotaError(error)) {
         console.error('\n💡 Next Steps:');
         console.error('• Visit https://platform.openai.com/account/billing to add credits');
         console.error('• Check your usage at https://platform.openai.com/account/usage');
@@ -322,5 +332,7 @@ module.exports = {
   generateContentIdeas,
   generateScript,
   generateCaption,
-  batchGenerateContent
+  batchGenerateContent,
+  isQuotaError,
+  handleOpenAIError
 };
