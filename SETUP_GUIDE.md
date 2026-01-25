@@ -399,9 +399,9 @@ npm run analytics:summary 7
    - On Windows: Search for "Environment Variables" and verify Node.js and Python are in PATH
    - On Mac/Linux: Check `~/.bashrc`, `~/.zshrc`, or `~/.bash_profile`
 
-4. **Use Full Paths:** If PATH isn't configured, use full paths:
-   - Windows: `C:\Program Files\nodejs\npm.exe install`
-   - Mac: `/usr/local/bin/npm install`
+4. **Use Full Paths:** If PATH isn't configured, use full paths (examples, actual paths may vary):
+   - Windows: `C:\Program Files\nodejs\npm.exe install` (or check `C:\Program Files (x86)\nodejs\`)
+   - Mac: `/usr/local/bin/npm install` (or `/opt/homebrew/bin/npm` for Apple Silicon)
 
 5. **Try Alternative Commands:**
    - Use `python3` instead of `python`
@@ -418,7 +418,14 @@ npm run analytics:summary 7
 
 2. **Want Fresh Clone:** If you need a fresh copy:
    ```bash
-   # Remove existing directory (WARNING: deletes everything)
+   # Option 1: Rename existing directory (safer)
+   mv SatanicOtter SatanicOtter.backup
+   
+   # Then clone again
+   git clone https://github.com/S3OPS/SatanicOtter.git
+   cd SatanicOtter
+   
+   # Option 2: Remove existing directory (WARNING: permanently deletes everything)
    rm -rf SatanicOtter
    
    # Then clone again
