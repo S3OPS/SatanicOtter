@@ -35,20 +35,80 @@ This guide will walk you through setting up the complete automation system to re
 
 ## Initial Setup
 
+### Step 0: Verify Prerequisites
+
+**IMPORTANT:** Before proceeding, verify that you have installed all required software:
+
+```bash
+# Check Node.js version (should be 16+)
+node --version
+
+# Check npm is available
+npm --version
+
+# Check Python version (should be 3.8+)
+python --version
+# or on some systems:
+python3 --version
+
+# Check pip is available
+pip --version
+# or on some systems:
+pip3 --version
+
+# Check Git is installed
+git --version
+```
+
+**If any command returns "command not found":**
+- **Node.js/npm not found:** Install from [nodejs.org](https://nodejs.org/)
+- **Python/pip not found:** Install from [python.org](https://www.python.org/)
+- **Git not found:** Install from [git-scm.com](https://git-scm.com/)
+
+After installing, **restart your terminal** before continuing.
+
+---
+
 ### Step 1: Clone the Repository
+
+**Run each command separately** (press Enter after each line):
+
 ```bash
 git clone https://github.com/S3OPS/SatanicOtter.git
+```
+
+Then navigate into the directory:
+
+```bash
 cd SatanicOtter
 ```
 
+**Note:** If you see "fatal: destination path 'SatanicOtter' already exists", the repository is already cloned. Just run `cd SatanicOtter` to enter the directory.
+
+---
+
 ### Step 2: Install Dependencies
+
+**Run each command separately** (press Enter after each line):
+
 ```bash
 # Install Node.js dependencies
 npm install
+```
 
+Then install Python dependencies:
+
+```bash
 # Install Python dependencies
 pip install -r requirements.txt
 ```
+
+**Note:** On some systems, you may need to use `pip3` instead of `pip`:
+```bash
+pip3 install -r requirements.txt
+```
+
+---
 
 ### Step 3: Configure Environment
 ```bash
@@ -323,6 +383,48 @@ npm run analytics:summary 7
 ---
 
 ## Troubleshooting
+
+### "command not found" Errors
+
+**Problem:** You see errors like `npm: command not found` or `pip: command not found`
+
+**Solutions:**
+1. **Verify Installation:** Make sure you've installed the required software:
+   - Node.js from [nodejs.org](https://nodejs.org/)
+   - Python from [python.org](https://www.python.org/)
+   
+2. **Restart Terminal:** After installing software, close and reopen your terminal
+
+3. **Check PATH:** The software may be installed but not in your system PATH
+   - On Windows: Search for "Environment Variables" and verify Node.js and Python are in PATH
+   - On Mac/Linux: Check `~/.bashrc`, `~/.zshrc`, or `~/.bash_profile`
+
+4. **Use Full Paths:** If PATH isn't configured, use full paths:
+   - Windows: `C:\Program Files\nodejs\npm.exe install`
+   - Mac: `/usr/local/bin/npm install`
+
+5. **Try Alternative Commands:**
+   - Use `python3` instead of `python`
+   - Use `pip3` instead of `pip`
+
+### "destination path already exists" Error
+
+**Problem:** `fatal: destination path 'SatanicOtter' already exists and is not an empty directory`
+
+**Solutions:**
+1. **Directory Already Exists:** The repository is already cloned
+   - Just run: `cd SatanicOtter`
+   - Skip the `git clone` command
+
+2. **Want Fresh Clone:** If you need a fresh copy:
+   ```bash
+   # Remove existing directory (WARNING: deletes everything)
+   rm -rf SatanicOtter
+   
+   # Then clone again
+   git clone https://github.com/S3OPS/SatanicOtter.git
+   cd SatanicOtter
+   ```
 
 ### "Not Getting Views"
 **Solutions:**
