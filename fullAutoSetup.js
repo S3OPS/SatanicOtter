@@ -13,16 +13,26 @@
  * Usage: npm run full-auto
  */
 
+const { execSync } = require('child_process');
+const fs = require('fs');
+const path = require('path');
+
+// Auto-create .env from .env.example if it doesn't exist
+const envPath = path.join(__dirname, '.env');
+const envExamplePath = path.join(__dirname, '.env.example');
+
+if (!fs.existsSync(envPath) && fs.existsSync(envExamplePath)) {
+  console.log('📝 Creating .env file from .env.example...');
+  fs.copyFileSync(envExamplePath, envPath);
+  console.log('✅ .env file created! You can now edit it with your credentials.\n');
+}
+
 // Load dotenv only if available
 try {
   require('dotenv').config();
 } catch (e) {
   // dotenv not available, continue without it
 }
-
-const { execSync } = require('child_process');
-const fs = require('fs');
-const path = require('path');
 
 // Colors for console output
 const colors = {
