@@ -274,11 +274,11 @@
         <div id="resultBox" class="result-box">
             <div class="result-label">✓ Your Shortened Affiliate Link:</div>
             <div id="shortLink" class="result-link"></div>
-            <button class="copy-btn" onclick="copyShortLink()">📋 Copy Short Link</button>
+            <button class="copy-btn" onclick="copyShortLink(event)">📋 Copy Short Link</button>
             
             <div class="result-label" style="margin-top: 20px;">Original Affiliate Link:</div>
             <div id="affiliateLink" class="result-link" style="font-size: 0.75em; opacity: 0.7;"></div>
-            <button class="copy-btn" style="background: #757575; font-size: 0.9em;" onclick="copyToClipboard()">📋 Copy Full Link</button>
+            <button class="copy-btn" style="background: #757575; font-size: 0.9em;" onclick="copyToClipboard(event)">📋 Copy Full Link</button>
         </div>
 
         <div class="examples">
@@ -308,7 +308,7 @@
             }
         });
 
-        function generateAffiliateLink() {
+        async function generateAffiliateLink() {
             // Get input values
             const affiliateTag = document.getElementById('affiliateTag').value.trim();
             const productUrl = document.getElementById('productUrl').value.trim();
@@ -360,9 +360,27 @@
             // Create affiliate link
             const affiliateLink = createAffiliateLink(url, affiliateTag);
 
-            // Show result
+            // Show full affiliate link immediately
             document.getElementById('affiliateLink').textContent = affiliateLink;
+            
+            // Show loading state for short link
+            const shortLinkElement = document.getElementById('shortLink');
+            shortLinkElement.textContent = 'Shortening URL...';
+            shortLinkElement.style.opacity = '0.5';
+            
             document.getElementById('resultBox').classList.add('show');
+
+            // Shorten the URL
+            try {
+                const shortUrl = await shortenUrl(affiliateLink);
+                shortLinkElement.textContent = shortUrl;
+                shortLinkElement.style.opacity = '1';
+            } catch (error) {
+                // Fallback to full link if shortening fails
+                console.error('URL shortening failed:', error);
+                shortLinkElement.textContent = affiliateLink;
+                shortLinkElement.style.opacity = '1';
+            }
         }
 
         function createAffiliateLink(url, tag) {
@@ -380,6 +398,18 @@
             return url.toString();
         }
 
+        async function shortenUrl(longUrl) {
+            // Use TinyURL API to shorten the URL
+            const apiUrl = `https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`;
+            
+            const response = await fetch(apiUrl);
+            if (!response.ok) {
+                throw new Error('Failed to shorten URL');
+            }
+            const shortUrl = await response.text();
+            return shortUrl.trim();
+        }
+
         function showError(message) {
             document.getElementById('errorMessage').textContent = message;
             document.getElementById('errorBox').classList.add('show');
@@ -391,9 +421,24 @@
             document.getElementById('resultBox').classList.remove('show');
         }
 
-        function copyToClipboard() {
+        function copyToClipboard(event) {
             const linkText = document.getElementById('affiliateLink').textContent;
-            const btn = document.querySelector('.copy-btn');
+            copyLinkToClipboard(linkText, event.currentTarget);
+        }
+
+        function copyShortLink(event) {
+            const linkText = document.getElementById('shortLink').textContent;
+            copyLinkToClipboard(linkText, event.currentTarget);
+        }
+
+        function copyLinkToClipboard(linkText, btn) {
+            // Skip if still loading
+            if (linkText === 'Shortening URL...') {
+                return;
+            }
+            
+            // Store original background color
+            const originalBg = window.getComputedStyle(btn).backgroundColor;
             
             // Use modern clipboard API
             if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -405,7 +450,7 @@
                     
                     setTimeout(function() {
                         btn.textContent = originalText;
-                        btn.style.background = '#4CAF50';
+                        btn.style.background = originalBg;
                     }, 2000);
                 }).catch(function(err) {
                     fallbackCopyToClipboard(linkText, btn);
@@ -417,6 +462,9 @@
 
         function fallbackCopyToClipboard(text, btn) {
             // Fallback for older browsers
+            // Store original background color
+            const originalBg = window.getComputedStyle(btn).backgroundColor;
+            
             const textArea = document.createElement('textarea');
             textArea.value = text;
             textArea.style.position = 'fixed';
@@ -433,7 +481,7 @@
                 
                 setTimeout(function() {
                     btn.textContent = originalText;
-                    btn.style.background = '#4CAF50';
+                    btn.style.background = originalBg;
                 }, 2000);
             } catch (err) {
                 // Show error in button
@@ -443,7 +491,7 @@
                 
                 setTimeout(function() {
                     btn.textContent = originalText;
-                    btn.style.background = '#4CAF50';
+                    btn.style.background = originalBg;
                 }, 3000);
             }
             
