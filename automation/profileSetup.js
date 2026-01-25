@@ -168,7 +168,6 @@ async function createProfileConfig(options = {}) {
   const {
     platforms = ['tiktok', 'instagram'],
     niche = 'highTicket',
-    affiliateTag = process.env.AMAZON_AFFILIATE_TAG,
     linkInBioUrl = null,
     customBio = null
   } = options;
@@ -379,17 +378,12 @@ async function runSetupWizard() {
   console.log('\nThis wizard will help you set up your TikTok and Instagram profiles');
   console.log('for maximum efficiency with the affiliate marketing automation system.\n');
   
-  // Get user's niche preference
-  console.log('What is your primary niche?');
-  console.log('1. High-Ticket (All categories - $1000+ commission)');
-  console.log('2. Tech & Electronics');
-  console.log('3. Home & Lifestyle');
-  console.log('4. Fitness & Wellness');
-  console.log('5. Professional Equipment\n');
+  // Note: For a fully interactive experience, you could use readline to prompt for niche
+  // For now, this wizard uses the default high-ticket niche
+  // Future enhancement: Add readline prompts for niche selection
   
-  // For now, default to high-ticket (can be enhanced with readline for interactivity)
   const niche = 'highTicket';
-  console.log('Using niche: High-Ticket (default)\n');
+  console.log('Generating optimized profile configuration for high-ticket niche...\n');
   
   // Run setup
   await setupProfiles({ niche });

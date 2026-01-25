@@ -2,7 +2,7 @@
 
 ## Automated Profile Configuration for Maximum Affiliate Efficiency
 
-This guide helps you set up your TikTok and Instagram profiles using your login credentials to match the efficiency of the automated affiliate marketing system.
+This guide helps you optimize your TikTok and Instagram profiles using automated configuration generation for high-ticket affiliate marketing. The tool generates optimized bio text, branding guidelines, and setup instructions based on your environment configuration.
 
 ---
 
