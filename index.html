@@ -274,11 +274,11 @@
         <div id="resultBox" class="result-box">
             <div class="result-label">✓ Your Shortened Affiliate Link:</div>
             <div id="shortLink" class="result-link"></div>
-            <button class="copy-btn" onclick="copyShortLink()">📋 Copy Short Link</button>
+            <button class="copy-btn" onclick="copyShortLink(event)">📋 Copy Short Link</button>
             
             <div class="result-label" style="margin-top: 20px;">Original Affiliate Link:</div>
             <div id="affiliateLink" class="result-link" style="font-size: 0.75em; opacity: 0.7;"></div>
-            <button class="copy-btn" style="background: #757575; font-size: 0.9em;" onclick="copyToClipboard()">📋 Copy Full Link</button>
+            <button class="copy-btn" style="background: #757575; font-size: 0.9em;" onclick="copyToClipboard(event)">📋 Copy Full Link</button>
         </div>
 
         <div class="examples">
@@ -402,17 +402,12 @@
             // Use TinyURL API to shorten the URL
             const apiUrl = `https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`;
             
-            try {
-                const response = await fetch(apiUrl);
-                if (!response.ok) {
-                    throw new Error('Failed to shorten URL');
-                }
-                const shortUrl = await response.text();
-                return shortUrl.trim();
-            } catch (error) {
-                // If TinyURL fails, throw error to trigger fallback
-                throw error;
+            const response = await fetch(apiUrl);
+            if (!response.ok) {
+                throw new Error('Failed to shorten URL');
             }
+            const shortUrl = await response.text();
+            return shortUrl.trim();
         }
 
         function showError(message) {
@@ -426,14 +421,14 @@
             document.getElementById('resultBox').classList.remove('show');
         }
 
-        function copyToClipboard() {
+        function copyToClipboard(event) {
             const linkText = document.getElementById('affiliateLink').textContent;
-            copyLinkToClipboard(linkText, event.target);
+            copyLinkToClipboard(linkText, event.currentTarget);
         }
 
-        function copyShortLink() {
+        function copyShortLink(event) {
             const linkText = document.getElementById('shortLink').textContent;
-            copyLinkToClipboard(linkText, event.target);
+            copyLinkToClipboard(linkText, event.currentTarget);
         }
 
         function copyLinkToClipboard(linkText, btn) {
