@@ -90,7 +90,7 @@ Format as JSON array with fields: hook, script, valueJustification, cta, hashtag
 
   try {
     const completion = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: process.env.OPENAI_MODEL || "gpt-4o-mini",
       messages: [
         { 
           role: "system", 
@@ -141,7 +141,7 @@ Make it conversational, exciting, and focused on the transformation/benefit.`;
 
   try {
     const completion = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: process.env.OPENAI_MODEL || "gpt-4o-mini",
       messages: [
         { 
           role: "system", 
@@ -178,7 +178,7 @@ Requirements:
 
   try {
     const completion = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: process.env.OPENAI_MODEL || "gpt-4o-mini",
       messages: [
         { role: "system", content: "You are a social media caption expert focused on driving engagement and clicks." },
         { role: "user", content: prompt }
