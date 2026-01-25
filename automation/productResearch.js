@@ -5,9 +5,16 @@
  * for the $1,000/day revenue goal.
  */
 
-require('dotenv').config();
 const fs = require('fs').promises;
 const path = require('path');
+
+// Load dotenv only if available
+try {
+  require('dotenv').config();
+} catch (e) {
+  // dotenv not available, continue without it
+}
+
 
 // Commission rates by Amazon category
 const AMAZON_COMMISSION_RATES = {
@@ -41,12 +48,6 @@ const AMAZON_COMMISSION_RATES = {
   'Outdoors': 5.5,
   'PC': 2.5,
   'Pet Products': 5,
-  'Sports': 6,
-  'Tools': 6,
-  'Toys': 3,
-  'Video Games': 1,
-  'Watches': 5,
-  'Wireless': 2.5
 };
 
 /**

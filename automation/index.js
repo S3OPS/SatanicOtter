@@ -5,7 +5,13 @@
  * It coordinates content generation and posting scheduling.
  */
 
-require('dotenv').config();
+// Load dotenv only if available
+try {
+  require('dotenv').config();
+} catch (e) {
+  // dotenv not available, continue without it
+}
+
 const { batchGenerateContent } = require('./contentGenerator');
 const { start: startScheduler } = require('./scheduler');
 
@@ -20,7 +26,7 @@ const AUTOMATION_CONFIG = {
  */
 async function runAutomation() {
   console.log('🎬 SatanicOtter Social Media Automation System');
-  console.log('=' .repeat(60));
+  console.log('='.repeat(60));
   console.log('\n');
   
   try {

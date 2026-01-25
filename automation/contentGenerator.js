@@ -5,7 +5,13 @@
  * using AI (OpenAI GPT-4) based on trending products and templates.
  */
 
-require('dotenv').config();
+// Load dotenv only if available
+try {
+  require('dotenv').config();
+} catch (e) {
+  // dotenv not available, continue without it
+}
+
 const OpenAI = require('openai');
 const fs = require('fs').promises;
 const path = require('path');

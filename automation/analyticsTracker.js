@@ -289,27 +289,29 @@ async function interactiveEntry() {
     readline.question(prompt, resolve);
   });
   
-  console.log('\n📊 Daily Metrics Entry\n');
-  console.log('Enter today\'s metrics (press Enter to skip optional fields):\n');
-  
-  const metrics = {};
-  
-  metrics.videosPosted = parseInt(await question('Videos Posted: ')) || 0;
-  metrics.totalViews = parseInt(await question('Total Views: ')) || 0;
-  metrics.profileVisits = parseInt(await question('Profile Visits: ')) || 0;
-  metrics.linkClicks = parseInt(await question('Link Clicks: ')) || 0;
-  metrics.amazonClicks = parseInt(await question('Amazon Clicks: ')) || 0;
-  metrics.sales = parseInt(await question('Sales: ')) || 0;
-  metrics.revenue = parseFloat(await question('Revenue ($): ')) || 0;
-  metrics.notes = await question('Notes (optional): ') || '';
-  
-  readline.close();
-  
-  const entry = await addDailyEntry(metrics);
-  displayMetricsReport(entry);
-  generateRecommendations(entry);
-  
-  return entry;
+  try {
+    console.log('\n📊 Daily Metrics Entry\n');
+    console.log('Enter today\'s metrics (press Enter to skip optional fields):\n');
+    
+    const metrics = {};
+    
+    metrics.videosPosted = parseInt(await question('Videos Posted: ')) || 0;
+    metrics.totalViews = parseInt(await question('Total Views: ')) || 0;
+    metrics.profileVisits = parseInt(await question('Profile Visits: ')) || 0;
+    metrics.linkClicks = parseInt(await question('Link Clicks: ')) || 0;
+    metrics.amazonClicks = parseInt(await question('Amazon Clicks: ')) || 0;
+    metrics.sales = parseInt(await question('Sales: ')) || 0;
+    metrics.revenue = parseFloat(await question('Revenue ($): ')) || 0;
+    metrics.notes = await question('Notes (optional): ') || '';
+    
+    const entry = await addDailyEntry(metrics);
+    displayMetricsReport(entry);
+    generateRecommendations(entry);
+    
+    return entry;
+  } finally {
+    readline.close();
+  }
 }
 
 // CLI execution

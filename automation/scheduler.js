@@ -5,7 +5,13 @@
  * to TikTok and Instagram at optimal times.
  */
 
-require('dotenv').config();
+// Load dotenv only if available
+try {
+  require('dotenv').config();
+} catch (e) {
+  // dotenv not available, continue without it
+}
+
 const cron = require('node-cron');
 const fs = require('fs').promises;
 const path = require('path');
@@ -83,13 +89,20 @@ function getNextContent() {
 
 /**
  * Post to TikTok (placeholder - requires TikTok API setup)
+ * 
+ * NOTE: TikTok does not provide a public API for posting videos.
+ * Automated posting typically requires:
+ * - Unofficial TikTok API libraries (may violate ToS)
+ * - Browser automation (Puppeteer/Playwright)
+ * - Manual upload via TikTok app
+ * 
+ * This is a placeholder showing the intended flow.
+ * For production, consider:
+ * 1. Manual posting with generated content
+ * 2. Using TikTok's Creator Marketplace (if eligible)
+ * 3. Browser automation (use with caution)
  */
 async function postToTikTok(content) {
-  // This is a placeholder for actual TikTok API integration
-  // Actual implementation would require:
-  // - TikTok API credentials
-  // - Video file ready for upload
-  // - TikTok's posting API endpoints
   
   console.log('📱 Posting to TikTok:', {
     hook: content.hook || 'Generated content',
