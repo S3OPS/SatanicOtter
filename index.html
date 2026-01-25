@@ -272,9 +272,13 @@
         </div>
 
         <div id="resultBox" class="result-box">
-            <div class="result-label">✓ Your Affiliate Link:</div>
-            <div id="affiliateLink" class="result-link"></div>
-            <button class="copy-btn" onclick="copyToClipboard()">📋 Copy to Clipboard</button>
+            <div class="result-label">✓ Your Shortened Affiliate Link:</div>
+            <div id="shortLink" class="result-link"></div>
+            <button class="copy-btn" onclick="copyShortLink()">📋 Copy Short Link</button>
+            
+            <div class="result-label" style="margin-top: 20px;">Original Affiliate Link:</div>
+            <div id="affiliateLink" class="result-link" style="font-size: 0.75em; opacity: 0.7;"></div>
+            <button class="copy-btn" style="background: #757575; font-size: 0.9em;" onclick="copyToClipboard()">📋 Copy Full Link</button>
         </div>
 
         <div class="examples">
