@@ -253,11 +253,31 @@ Your affiliate marketing automation system is now configured!
 npm install puppeteer
 ```
 
-### "Profile automation failed"
-**Solution:** Check your credentials in `.env`:
-- Verify username/password are correct
-- Try using `TIKTOK_SESSION_ID` instead of password
-- Ensure `PROFILE_AUTOMATION_ENABLED=true`
+### "Profile automation failed" or "TikTok credentials wrong"
+**Problem:** You're getting an error about TikTok password or credentials being wrong
+
+**Solution - Use TIKTOK_SESSION_ID (Recommended):**
+
+TikTok authentication works best with a session ID rather than password. Here's how to get it:
+
+1. **Open TikTok in your browser** and login to your account
+2. **Press F12** to open Developer Tools
+3. **Go to Application tab** (Chrome) or Storage tab (Firefox)
+4. **Click on Cookies** → `https://www.tiktok.com`
+5. **Find the "sessionid" cookie** and copy its entire value
+6. **Add to your .env file:**
+   ```env
+   TIKTOK_SESSION_ID=paste_your_session_id_here
+   ```
+7. **Comment out or remove** TIKTOK_PASSWORD if you have it set
+
+**Why SESSION_ID instead of PASSWORD?**
+- ✅ More reliable and doesn't trigger bot detection
+- ✅ No 2FA or captcha issues
+- ✅ Works even with 2FA enabled on your account
+- ✅ Doesn't risk account lockout
+
+**After updating:** Run `npm run full-auto` again
 
 ### "OpenAI API quota exceeded"
 **Solution:** 

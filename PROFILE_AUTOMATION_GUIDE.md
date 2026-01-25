@@ -36,10 +36,29 @@ Add these secrets:
 **Required for TikTok:**
 ```
 TIKTOK_USERNAME=your_tiktok_username
-TIKTOK_PASSWORD=your_tiktok_password
-# OR use session ID instead of password:
+
+# Choose ONE of the following (SESSION_ID is recommended):
+# Option 1 (RECOMMENDED): Use Session ID
 TIKTOK_SESSION_ID=your_session_id_from_browser_cookies
+
+# Option 2 (Alternative): Use Password (requires handling 2FA/captcha)
+# TIKTOK_PASSWORD=your_tiktok_password
 ```
+
+**How to get TIKTOK_SESSION_ID (Recommended Method):**
+1. Open TikTok in your browser and login
+2. Press F12 to open Developer Tools
+3. Go to "Application" tab (Chrome) or "Storage" tab (Firefox)
+4. Click on "Cookies" → "https://www.tiktok.com"
+5. Find the cookie named "sessionid"
+6. Copy its value - this is your TIKTOK_SESSION_ID
+7. Paste it into your GitHub Secrets or .env file
+
+**Why SESSION_ID is better than PASSWORD:**
+- ✅ More reliable and stable
+- ✅ No need to handle 2FA or captcha
+- ✅ No risk of account lockout from failed login attempts
+- ✅ Works even if you have 2FA enabled on your account
 
 **Required for Instagram:**
 ```
@@ -164,9 +183,14 @@ Update your `.env` file:
 # Enable automation
 PROFILE_AUTOMATION_ENABLED=true
 
-# TikTok credentials
+# TikTok credentials - Use EITHER session ID (recommended) OR password
 TIKTOK_USERNAME=your_tiktok_username
-TIKTOK_PASSWORD=your_tiktok_password
+
+# RECOMMENDED: Use session ID (more reliable, no 2FA issues)
+TIKTOK_SESSION_ID=your_session_id_from_cookies
+
+# ALTERNATIVE: Use password (may require 2FA/captcha handling)
+# TIKTOK_PASSWORD=your_tiktok_password
 
 # Instagram credentials
 INSTAGRAM_USERNAME=your_instagram_username
@@ -176,6 +200,13 @@ INSTAGRAM_PASSWORD=your_instagram_password
 PROFILE_NICHE=highTicket
 PROFILE_DRY_RUN=true
 ```
+
+**Important: How to get your TikTok Session ID:**
+1. Login to TikTok in your web browser
+2. Press F12 to open Developer Tools
+3. Go to Application tab → Cookies → https://www.tiktok.com
+4. Find the "sessionid" cookie and copy its value
+5. Paste it as TIKTOK_SESSION_ID in your .env file
 
 ### Step 3: Run Automated Setup
 
@@ -330,12 +361,34 @@ npm install playwright
 ```
 
 ### "Session expired" (TikTok)
-Get new session ID:
-1. Open TikTok in browser
-2. Login to your account
-3. Open DevTools (F12) → Application → Cookies
-4. Copy `sessionid` cookie value
-5. Update `TIKTOK_SESSION_ID` in secrets/env
+**Cause:** Your TIKTOK_SESSION_ID has expired or is invalid
+
+**Solution - Get a fresh session ID:**
+1. Open TikTok in browser and login to your account
+2. Press F12 to open DevTools
+3. Go to Application tab (Chrome) or Storage tab (Firefox)
+4. Click Cookies → https://www.tiktok.com
+5. Find the cookie named "sessionid"
+6. Copy the entire value (usually a long string)
+7. Update TIKTOK_SESSION_ID in your .env file or GitHub Secrets
+8. Run the automation again
+
+**Note:** Session IDs typically expire after 30-90 days. You'll need to refresh them periodically.
+
+### "Invalid credentials" or "Wrong password" (TikTok)
+**Cause:** You're trying to use TIKTOK_PASSWORD but it's not working properly
+
+**Solution - Use SESSION_ID instead:**
+The password-based login is less reliable because:
+- TikTok has bot detection and captcha
+- 2FA will block automated login
+- May trigger account security alerts
+
+**RECOMMENDED: Switch to TIKTOK_SESSION_ID:**
+1. Remove or comment out TIKTOK_PASSWORD in your .env
+2. Follow the steps above to get your session ID
+3. Add TIKTOK_SESSION_ID to your .env file
+4. This method is much more reliable and doesn't trigger security checks
 
 ### "Invalid credentials" (Instagram)
 - Check username/password are correct

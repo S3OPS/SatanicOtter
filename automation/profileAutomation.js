@@ -48,8 +48,12 @@ function checkAutomationSetup() {
   if (!AUTOMATION_CONFIG.tiktok.username) {
     issues.push('TIKTOK_USERNAME not configured');
   }
+  
+  // Check if user has EITHER password OR session ID (not both required)
   if (!AUTOMATION_CONFIG.tiktok.password && !AUTOMATION_CONFIG.tiktok.sessionId) {
-    issues.push('Either TIKTOK_PASSWORD or TIKTOK_SESSION_ID required');
+    issues.push('TikTok authentication: You must set EITHER TIKTOK_SESSION_ID (recommended) OR TIKTOK_PASSWORD');
+    issues.push('  → To get TIKTOK_SESSION_ID: Login to TikTok in browser → Press F12 → Application tab → Cookies → Find "sessionid" → Copy its value');
+    issues.push('  → TIKTOK_SESSION_ID is more reliable and doesn\'t require handling 2FA or captcha');
   }
   
   // Check Instagram credentials
