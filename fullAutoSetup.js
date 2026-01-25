@@ -94,7 +94,7 @@ function isPackageInstalled(packageName) {
  * Check if an environment variable is properly configured
  * (not a placeholder value)
  */
-const PLACEHOLDER_PATTERN = /your_|your-|<.*>|example|todo|changeme|replace_me|\[.*\]/i;
+const PLACEHOLDER_PATTERN = /your_|your-|<.*>|example|todo|changeme|replace_me|^\[.*\]$/i;
 
 function isConfigured(value) {
   // Check for null, undefined, empty string, or whitespace-only
