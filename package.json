@@ -13,7 +13,7 @@
     "analytics": "node automation/analyticsTracker.js",
     "analytics:add": "node automation/analyticsTracker.js add",
     "analytics:summary": "node automation/analyticsTracker.js summary",
-    "test": "echo \"No tests configured yet\" && exit 0"
+    "test": "node test/integration.test.js"
   },
   "keywords": [
     "tiktok",
