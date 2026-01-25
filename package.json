@@ -6,6 +6,8 @@
   "scripts": {
     "setup": "node setup.js",
     "status": "node status.js",
+    "quick-config": "node quickConfig.js",
+    "full-auto": "node fullAutoSetup.js",
     "setup-profiles": "node automation/profileSetup.js",
     "setup-profiles:wizard": "node automation/profileSetup.js --wizard",
     "automate-profiles": "node automation/profileAutomation.js",

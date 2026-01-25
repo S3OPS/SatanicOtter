@@ -82,6 +82,15 @@ modules.forEach(module => {
   });
 });
 
+// Test core scripts
+test('fullAutoSetup.js exists', () => {
+  assert(fs.existsSync('fullAutoSetup.js'), 'fullAutoSetup.js not found');
+});
+
+test('quickConfig.js exists', () => {
+  assert(fs.existsSync('quickConfig.js'), 'quickConfig.js not found');
+});
+
 // Test 4: Documentation exists
 const docs = [
   'README.md',
@@ -90,7 +99,8 @@ const docs = [
   'TIKTOK_INSTAGRAM_GUIDE.md',
   'EXAMPLE_WORKFLOW.md',
   'PROFILE_SETUP_GUIDE.md',
-  'PROFILE_AUTOMATION_GUIDE.md'
+  'PROFILE_AUTOMATION_GUIDE.md',
+  'ONE_COMMAND_SETUP.md'
 ];
 
 docs.forEach(doc => {
@@ -240,6 +250,29 @@ test('profile automation checks configuration', () => {
 test('GitHub Actions workflow exists', () => {
   assert(fs.existsSync('.github/workflows/profile-automation.yml'), 
     'GitHub Actions workflow file not found');
+});
+
+// Test 13: One-command setup
+test('package.json contains full-auto script', () => {
+  const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+  assert(packageJson.scripts['full-auto'], 'full-auto script not found');
+  assert(packageJson.scripts['quick-config'], 'quick-config script not found');
+});
+
+test('fullAutoSetup.js has valid syntax', () => {
+  try {
+    execSync('node -c fullAutoSetup.js', { stdio: 'pipe' });
+  } catch (error) {
+    throw new Error('fullAutoSetup.js has syntax errors');
+  }
+});
+
+test('quickConfig.js has valid syntax', () => {
+  try {
+    execSync('node -c quickConfig.js', { stdio: 'pipe' });
+  } catch (error) {
+    throw new Error('quickConfig.js has syntax errors');
+  }
 });
 
 // Summary
