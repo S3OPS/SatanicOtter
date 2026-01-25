@@ -71,7 +71,9 @@ const modules = [
   'automation/contentGenerator.js',
   'automation/scheduler.js',
   'automation/productResearch.js',
-  'automation/analyticsTracker.js'
+  'automation/analyticsTracker.js',
+  'automation/profileSetup.js',
+  'automation/profileAutomation.js'
 ];
 
 modules.forEach(module => {
@@ -80,13 +82,25 @@ modules.forEach(module => {
   });
 });
 
+// Test core scripts
+test('fullAutoSetup.js exists', () => {
+  assert(fs.existsSync('fullAutoSetup.js'), 'fullAutoSetup.js not found');
+});
+
+test('quickConfig.js exists', () => {
+  assert(fs.existsSync('quickConfig.js'), 'quickConfig.js not found');
+});
+
 // Test 4: Documentation exists
 const docs = [
   'README.md',
   'QUICK_START.md',
   'SETUP_GUIDE.md',
   'TIKTOK_INSTAGRAM_GUIDE.md',
-  'EXAMPLE_WORKFLOW.md'
+  'EXAMPLE_WORKFLOW.md',
+  'PROFILE_SETUP_GUIDE.md',
+  'PROFILE_AUTOMATION_GUIDE.md',
+  'ONE_COMMAND_SETUP.md'
 ];
 
 docs.forEach(doc => {
@@ -160,6 +174,104 @@ test('product-research script executes', () => {
     assert(output.includes('HIGH-TICKET PRODUCT RESEARCH'), 'product-research output missing');
   } catch (error) {
     throw new Error(`product-research failed: ${error.message}`);
+  }
+});
+
+// Test 11: Profile setup module
+test('package.json contains setup-profiles script', () => {
+  const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+  assert(packageJson.scripts['setup-profiles'], 'setup-profiles script not found');
+  assert(packageJson.scripts['setup-profiles'].includes('profileSetup.js'), 'setup-profiles script incorrect');
+});
+
+test('package.json contains setup-profiles:wizard script', () => {
+  const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+  assert(packageJson.scripts['setup-profiles:wizard'], 'setup-profiles:wizard script not found');
+});
+
+test('profile setup module can be loaded', () => {
+  try {
+    const profileSetup = require('../automation/profileSetup.js');
+    assert(profileSetup.setupProfiles, 'setupProfiles function not exported');
+    assert(profileSetup.BIO_TEMPLATES, 'BIO_TEMPLATES not exported');
+    assert(profileSetup.LINK_IN_BIO_CONFIG, 'LINK_IN_BIO_CONFIG not exported');
+    assert(profileSetup.BRANDING_GUIDE, 'BRANDING_GUIDE not exported');
+  } catch (error) {
+    throw new Error(`Failed to load profile setup module: ${error.message}`);
+  }
+});
+
+test('profile setup has bio templates for all platforms', () => {
+  const { BIO_TEMPLATES } = require('../automation/profileSetup.js');
+  assert(BIO_TEMPLATES.tiktok, 'TikTok templates missing');
+  assert(BIO_TEMPLATES.instagram, 'Instagram templates missing');
+  assert(BIO_TEMPLATES.tiktok.highTicket, 'TikTok high-ticket templates missing');
+  assert(BIO_TEMPLATES.instagram.highTicket, 'Instagram high-ticket templates missing');
+});
+
+test('profile setup has bio generation function', () => {
+  const { generateBio } = require('../automation/profileSetup.js');
+  const tiktokBio = generateBio('tiktok', 'tech');
+  const instagramBio = generateBio('instagram', 'tech');
+  
+  assert(tiktokBio, 'TikTok bio not generated');
+  assert(instagramBio, 'Instagram bio not generated');
+  assert(typeof tiktokBio === 'string', 'TikTok bio is not a string');
+  assert(typeof instagramBio === 'string', 'Instagram bio is not a string');
+});
+
+// Test 12: Profile automation module
+test('package.json contains automate-profiles scripts', () => {
+  const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+  assert(packageJson.scripts['automate-profiles'], 'automate-profiles script not found');
+  assert(packageJson.scripts['automate-profiles:dry-run'], 'automate-profiles:dry-run script not found');
+  assert(packageJson.scripts['automate-profiles:live'], 'automate-profiles:live script not found');
+});
+
+test('profile automation module can be loaded', () => {
+  try {
+    const profileAutomation = require('../automation/profileAutomation.js');
+    assert(profileAutomation.runAutomatedSetup, 'runAutomatedSetup function not exported');
+    assert(profileAutomation.checkAutomationSetup, 'checkAutomationSetup function not exported');
+    assert(profileAutomation.AUTOMATION_CONFIG, 'AUTOMATION_CONFIG not exported');
+  } catch (error) {
+    throw new Error(`Failed to load profile automation module: ${error.message}`);
+  }
+});
+
+test('profile automation checks configuration', () => {
+  const { checkAutomationSetup } = require('../automation/profileAutomation.js');
+  const result = checkAutomationSetup();
+  
+  assert(result.isReady !== undefined, 'checkAutomationSetup should return isReady status');
+  assert(Array.isArray(result.issues), 'checkAutomationSetup should return issues array');
+});
+
+test('GitHub Actions workflow exists', () => {
+  assert(fs.existsSync('.github/workflows/profile-automation.yml'), 
+    'GitHub Actions workflow file not found');
+});
+
+// Test 13: One-command setup
+test('package.json contains full-auto script', () => {
+  const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+  assert(packageJson.scripts['full-auto'], 'full-auto script not found');
+  assert(packageJson.scripts['quick-config'], 'quick-config script not found');
+});
+
+test('fullAutoSetup.js has valid syntax', () => {
+  try {
+    execSync('node -c fullAutoSetup.js', { stdio: 'pipe' });
+  } catch (error) {
+    throw new Error('fullAutoSetup.js has syntax errors');
+  }
+});
+
+test('quickConfig.js has valid syntax', () => {
+  try {
+    execSync('node -c quickConfig.js', { stdio: 'pipe' });
+  } catch (error) {
+    throw new Error('quickConfig.js has syntax errors');
   }
 });
 

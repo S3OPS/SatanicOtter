@@ -13,7 +13,31 @@ A comprehensive toolkit for Amazon affiliate marketing through TikTok Shop and I
 
 ## ⚡ Quick Start (5 Minutes)
 
-Get started with one command:
+### 🚀 ONE-COMMAND SETUP (NEW!)
+
+Run everything with a single command:
+
+```bash
+# Step 1: Quick configuration (interactive)
+npm run quick-config
+
+# Step 2: Full auto setup
+npm run full-auto
+```
+
+**That's it!** The system will automatically:
+- ✅ Set up your TikTok & Instagram profiles
+- ✅ Generate AI content
+- ✅ Find high-ticket products
+- ✅ Configure everything for $1,000/day
+
+**See [ONE_COMMAND_SETUP.md](./ONE_COMMAND_SETUP.md) for detailed guide.**
+
+---
+
+### Manual Setup (Alternative)
+
+Get started with the setup wizard:
 
 ```bash
 # Clone the repository
@@ -30,7 +54,27 @@ The setup wizard will guide you through:
 - Running initial test
 - Getting you ready to generate $1,000/day
 
+### 🎯 Profile Setup (NEW!)
+
+Automatically configure your TikTok and Instagram profiles for maximum efficiency:
+
+```bash
+# Setup your social media profiles
+npm run setup-profiles
+
+# Or use the interactive wizard
+npm run setup-profiles:wizard
+
+# 100% AUTOMATED (with GitHub Secrets or browser automation)
+npm run automate-profiles
+```
+
+This will generate optimized bios, link-in-bio structure, and branding recommendations.
+
+**NEW: 100% Automation** - See [PROFILE_AUTOMATION_GUIDE.md](./PROFILE_AUTOMATION_GUIDE.md) for setting up fully automated profile updates using GitHub Secrets or browser automation.
+
 **See [QUICK_START.md](./QUICK_START.md) for detailed quick start guide.**
+**See [PROFILE_SETUP_GUIDE.md](./PROFILE_SETUP_GUIDE.md) for profile setup instructions.**
 
 ---
 
@@ -76,7 +120,10 @@ A simple, client-side web application for creating Amazon affiliate links instan
 ## 📚 Documentation
 
 ### Getting Started
+- **[ONE COMMAND SETUP](./ONE_COMMAND_SETUP.md)** - 🚀 Run everything with one command! (NEW!)
 - **[Setup Guide](./SETUP_GUIDE.md)** - Complete installation and configuration (30 min setup)
+- **[Profile Setup Guide](./PROFILE_SETUP_GUIDE.md)** - Optimize your TikTok & Instagram profiles
+- **[Profile Automation Guide](./PROFILE_AUTOMATION_GUIDE.md)** - 100% automated profile updates
 - **[TikTok & Instagram Guide](./TIKTOK_INSTAGRAM_GUIDE.md)** - Full monetization strategy and tactics
 
 ### Automation Tools
@@ -84,6 +131,11 @@ A simple, client-side web application for creating Amazon affiliate links instan
 # Install dependencies
 npm install
 pip install -r requirements.txt
+
+# Setup your profiles (NEW!)
+npm run setup-profiles        # Generate optimized profile configs
+npm run setup-profiles:wizard # Interactive profile setup
+npm run automate-profiles     # 100% AUTOMATED with secrets/browser automation
 
 # Run product research (find $100+ commission products)
 npm run product-research

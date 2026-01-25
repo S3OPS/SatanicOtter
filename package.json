@@ -6,6 +6,13 @@
   "scripts": {
     "setup": "node setup.js",
     "status": "node status.js",
+    "quick-config": "node quickConfig.js",
+    "full-auto": "node fullAutoSetup.js",
+    "setup-profiles": "node automation/profileSetup.js",
+    "setup-profiles:wizard": "node automation/profileSetup.js --wizard",
+    "automate-profiles": "node automation/profileAutomation.js",
+    "automate-profiles:dry-run": "PROFILE_DRY_RUN=true node automation/profileAutomation.js",
+    "automate-profiles:live": "PROFILE_DRY_RUN=false node automation/profileAutomation.js",
     "generate-content": "node automation/contentGenerator.js",
     "schedule-posts": "node automation/scheduler.js",
     "automate": "node automation/index.js",

@@ -58,31 +58,39 @@ The setup wizard will ask for:
 
 Once setup completes, you can immediately:
 
-### 1. Find High-Commission Products
+### 1. Setup Your Social Media Profiles (NEW!)
+```bash
+npm run setup-profiles
+# or for interactive wizard:
+npm run setup-profiles:wizard
+```
+Generates optimized bio text, branding guidelines, and link-in-bio structure for TikTok & Instagram.
+
+### 2. Find High-Commission Products
 ```bash
 npm run product-research
 ```
 Identifies products with $100+ commission potential.
 
-### 2. Generate AI Content (if OpenAI key configured)
+### 3. Generate AI Content (if OpenAI key configured)
 ```bash
 npm run generate-content
 ```
 Creates viral video scripts, hooks, and captions.
 
-### 3. Track Your Analytics
+### 4. Track Your Analytics
 ```bash
 npm run analytics:add
 ```
 Log daily metrics toward your $1,000/day goal.
 
-### 4. Schedule Posts (if social media configured)
+### 5. Schedule Posts (if social media configured)
 ```bash
 npm run schedule-posts
 ```
 Automatically posts 5x/day at optimal times.
 
-### 5. Full Automation
+### 6. Full Automation
 ```bash
 npm run automate
 ```
@@ -92,6 +100,7 @@ Run the complete workflow end-to-end.
 
 ## 📖 Learn More
 
+- **[PROFILE_SETUP_GUIDE.md](./PROFILE_SETUP_GUIDE.md)** - Optimize your TikTok & Instagram profiles
 - **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** - Detailed setup and configuration
 - **[TIKTOK_INSTAGRAM_GUIDE.md](./TIKTOK_INSTAGRAM_GUIDE.md)** - Complete monetization strategy
 - **[EXAMPLE_WORKFLOW.md](./EXAMPLE_WORKFLOW.md)** - Real-world example
