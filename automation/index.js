@@ -67,10 +67,26 @@ async function runAutomation() {
     
   } catch (error) {
     console.error('\n❌ Automation error:', error.message);
-    console.error('\nTroubleshooting:');
-    console.error('1. Ensure .env file is configured with API keys');
-    console.error('2. Check that all dependencies are installed (npm install)');
-    console.error('3. Verify API keys are valid');
+    
+    // Check for OpenAI quota error
+    if (error.code === 'insufficient_quota' || (error.error && error.error.code === 'insufficient_quota')) {
+      console.error('\n🔴 OpenAI API Quota Exceeded');
+      console.error('─'.repeat(60));
+      console.error('Your OpenAI API key has run out of credits.\n');
+      console.error('💡 Resolution Steps:');
+      console.error('1. Visit https://platform.openai.com/account/billing');
+      console.error('2. Add a payment method or purchase credits');
+      console.error('3. Verify your billing details are up to date');
+      console.error('4. Check usage: https://platform.openai.com/account/usage\n');
+      console.error('📚 Documentation: https://platform.openai.com/docs/guides/error-codes/api-errors');
+      console.error('─'.repeat(60));
+    } else {
+      console.error('\nTroubleshooting:');
+      console.error('1. Ensure .env file is configured with API keys');
+      console.error('2. Check that all dependencies are installed (npm install)');
+      console.error('3. Verify API keys are valid');
+    }
+    
     process.exit(1);
   }
 }

@@ -20,6 +20,24 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
+/**
+ * Helper function to handle OpenAI API errors with user-friendly messages
+ */
+function handleOpenAIError(error, context = '') {
+  if (error.code === 'insufficient_quota' || (error.error && error.error.code === 'insufficient_quota')) {
+    console.error('\n❌ OpenAI API Quota Exceeded');
+    console.error('─'.repeat(60));
+    console.error('Your OpenAI API key has exceeded its quota limit.\n');
+    console.error('💡 How to fix:');
+    console.error('1. Check your billing: https://platform.openai.com/account/billing');
+    console.error('2. Add payment method or upgrade your plan');
+    console.error('3. Review usage: https://platform.openai.com/account/usage');
+    console.error('4. Consider using a different API key\n');
+    console.error('📚 More info: https://platform.openai.com/docs/guides/error-codes/api-errors');
+    console.error('─'.repeat(60));
+  }
+}
+
 // Viral hook templates
 const HOOK_TEMPLATES = [
   "POV: You found the solution to {problem}",
@@ -113,6 +131,7 @@ Format as JSON array with fields: hook, script, valueJustification, cta, hashtag
     }
   } catch (error) {
     console.error('Error generating content:', error);
+    handleOpenAIError(error, 'generating content ideas');
     throw error;
   }
 }
@@ -156,6 +175,7 @@ Make it conversational, exciting, and focused on the transformation/benefit.`;
     return completion.choices[0].message.content;
   } catch (error) {
     console.error('Error generating script:', error);
+    handleOpenAIError(error, 'generating script');
     throw error;
   }
 }
@@ -190,6 +210,7 @@ Requirements:
     return completion.choices[0].message.content;
   } catch (error) {
     console.error('Error generating caption:', error);
+    handleOpenAIError(error, 'generating caption');
     throw error;
   }
 }
@@ -250,6 +271,12 @@ async function batchGenerateContent(options = {}) {
       await new Promise(resolve => setTimeout(resolve, 2000));
     } catch (error) {
       console.error(`Error generating content for ${category}:`, error.message);
+      
+      // Check for OpenAI quota error - if we hit this, stop trying other categories
+      if (error.code === 'insufficient_quota' || (error.error && error.error.code === 'insufficient_quota')) {
+        console.error('\n⚠️  Stopping content generation due to API quota limit');
+        break; // Exit the loop, no point trying other categories
+      }
     }
   }
 
@@ -277,6 +304,16 @@ if (require.main === module) {
     })
     .catch(error => {
       console.error('\n❌ Error:', error.message);
+      
+      // Provide specific guidance for quota errors
+      if (error.code === 'insufficient_quota' || (error.error && error.error.code === 'insufficient_quota')) {
+        console.error('\n💡 Next Steps:');
+        console.error('• Visit https://platform.openai.com/account/billing to add credits');
+        console.error('• Check your usage at https://platform.openai.com/account/usage');
+        console.error('• Consider upgrading your OpenAI plan if needed');
+        console.error('• Make sure your payment method is valid\n');
+      }
+      
       process.exit(1);
     });
 }
