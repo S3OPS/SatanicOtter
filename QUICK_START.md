@@ -151,6 +151,26 @@ npm --version   # Should show v7 or higher
 
 If not installed, download from [nodejs.org](https://nodejs.org/)
 
+### OpenAI API Quota Error
+If you see "insufficient_quota" error:
+
+**Symptoms:**
+```
+Error: You exceeded your current quota, please check your plan and billing details.
+```
+
+**Solution:**
+1. Visit [OpenAI Billing Dashboard](https://platform.openai.com/account/billing)
+2. Add a payment method or purchase credits
+3. Verify your billing details are up to date
+4. Check your [usage dashboard](https://platform.openai.com/account/usage)
+
+**Notes:**
+- Free tier has limited credits that expire
+- Pay-as-you-go requires valid payment method
+- Monitor usage to avoid unexpected costs
+- Consider GPT-4o-mini (cheaper) vs GPT-4 (more expensive)
+
 ### Setup Script Fails
 Try manual installation:
 ```bash
