@@ -60,10 +60,16 @@ function logHeader(message) {
   console.log('');
 }
 
-// Check if command exists
+// Constants for configuration validation
+const PLACEHOLDER_PATTERN = /your_|your-|<.*>|example/i;
+
+function isConfigured(value) {
+  return value && !PLACEHOLDER_PATTERN.test(value);
+}
 function commandExists(command) {
   try {
-    execSync(`which ${command}`, { stdio: 'ignore' });
+    const checkCmd = process.platform === 'win32' ? 'where' : 'which';
+    execSync(`${checkCmd} ${command}`, { stdio: 'ignore' });
     return true;
   } catch {
     return false;
@@ -267,7 +273,7 @@ async function validateConfiguration() {
   // Check required variables
   log('Required Configuration:', 'bright');
   for (const varName of requiredVars) {
-    if (process.env[varName] && process.env[varName] !== `your_${varName.toLowerCase()}`) {
+    if (isConfigured(process.env[varName])) {
       logSuccess(`${varName}: Configured`);
     } else {
       logWarning(`${varName}: Not configured (required for affiliate links)`);
@@ -278,7 +284,7 @@ async function validateConfiguration() {
   console.log('');
   log('Optional Configuration:', 'bright');
   for (const varName of optionalVars) {
-    if (process.env[varName] && !process.env[varName].includes('your_')) {
+    if (isConfigured(process.env[varName])) {
       logSuccess(`${varName}: Configured`);
     } else {
       logInfo(`${varName}: Not configured (optional)`);
@@ -351,7 +357,7 @@ async function displayNextSteps() {
 
 // Main setup function
 async function runSetup() {
-  console.clear();
+  // Don't clear console - preserve output history
   
   log('🔥 SatanicOtter Automation System Setup 🔥\n', 'bright');
   log('Complete Affiliate Marketing Automation for TikTok & Instagram', 'cyan');

@@ -15,6 +15,13 @@ try {
   // dotenv not installed yet, that's ok - we'll report it
 }
 
+// Constants for configuration validation
+const PLACEHOLDER_PATTERN = /your_|your-|<.*>|example/i;
+
+function isConfigured(value) {
+  return value && !PLACEHOLDER_PATTERN.test(value);
+}
+
 // Colors for console output
 const colors = {
   reset: '\x1b[0m',
@@ -82,7 +89,7 @@ function checkSystemStatus() {
     
     let varsConfigured = 0;
     for (const varName of requiredVars) {
-      if (process.env[varName] && !process.env[varName].includes('your_')) {
+      if (isConfigured(process.env[varName])) {
         logSuccess(`${varName} configured`);
         score += 10;
         varsConfigured++;
@@ -92,7 +99,7 @@ function checkSystemStatus() {
     }
 
     for (const varName of optionalVars) {
-      if (process.env[varName] && !process.env[varName].includes('your_')) {
+      if (isConfigured(process.env[varName])) {
         logSuccess(`${varName} configured`);
         varsConfigured++;
       }
@@ -224,11 +231,11 @@ function checkSystemStatus() {
     
     if (!fs.existsSync(path.join(__dirname, '.env'))) {
       log('   2. Run: npm run setup', 'cyan');
-    } else if (!process.env.AMAZON_AFFILIATE_TAG || process.env.AMAZON_AFFILIATE_TAG.includes('your_')) {
+    } else if (!isConfigured(process.env.AMAZON_AFFILIATE_TAG)) {
       log('   2. Configure Amazon Affiliate Tag in .env', 'cyan');
     }
     
-    if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY.includes('your_')) {
+    if (!isConfigured(process.env.OPENAI_API_KEY)) {
       log('   3. Add OpenAI API key for content generation (optional)', 'cyan');
     }
     
