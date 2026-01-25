@@ -22,9 +22,14 @@ const envPath = path.join(__dirname, '.env');
 const envExamplePath = path.join(__dirname, '.env.example');
 
 if (!fs.existsSync(envPath) && fs.existsSync(envExamplePath)) {
-  console.log('📝 Creating .env file from .env.example...');
-  fs.copyFileSync(envExamplePath, envPath);
-  console.log('✅ .env file created! You can now edit it with your credentials.\n');
+  try {
+    console.log('📝 Creating .env file from .env.example...');
+    fs.copyFileSync(envExamplePath, envPath);
+    console.log('✅ .env file created! You can now edit it with your credentials.\n');
+  } catch (error) {
+    console.error('❌ Error creating .env file:', error.message);
+    console.log('⚠️  Please manually copy .env.example to .env\n');
+  }
 }
 
 // Load dotenv only if available
