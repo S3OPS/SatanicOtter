@@ -91,6 +91,26 @@ function isPackageInstalled(packageName) {
 }
 
 /**
+ * Check if an environment variable is properly configured
+ * (not a placeholder value)
+ */
+function isConfigured(value) {
+  const PLACEHOLDER_PATTERN = /your_|your-|<.*>|example|todo|changeme|replace_me|^\[.*\]$/i;
+  
+  // Check for null, undefined, empty string, or whitespace-only
+  if (!value || typeof value !== 'string' || value.trim() === '') {
+    return false;
+  }
+  
+  // Check for literal 'undefined', 'null', or placeholder patterns
+  if (value === 'undefined' || value === 'null' || PLACEHOLDER_PATTERN.test(value)) {
+    return false;
+  }
+  
+  return true;
+}
+
+/**
  * Step 1: Validate Configuration
  */
 async function validateConfiguration() {
@@ -119,13 +139,23 @@ async function validateConfiguration() {
   
   // Check required
   log('Required Configuration:', 'bright');
-  for (const [key, description] of Object.entries(required)) {
-    if (process.env[key] && process.env[key] !== 'your_amazon_tag' && process.env[key] !== 'false') {
-      logSuccess(`${key}: ${description}`);
-    } else {
-      logError(`${key}: ${description} - NOT CONFIGURED`);
-      hasErrors = true;
-    }
+  
+  // Check AMAZON_AFFILIATE_TAG - must be configured (not a placeholder)
+  if (isConfigured(process.env.AMAZON_AFFILIATE_TAG)) {
+    logSuccess('AMAZON_AFFILIATE_TAG: Required for affiliate links');
+  } else {
+    logError('AMAZON_AFFILIATE_TAG: Required for affiliate links - NOT CONFIGURED');
+    hasErrors = true;
+  }
+  
+  // Check PROFILE_AUTOMATION_ENABLED - must be exactly "true"
+  if (process.env.PROFILE_AUTOMATION_ENABLED === 'true') {
+    logSuccess('PROFILE_AUTOMATION_ENABLED: Must be "true" for full automation');
+  } else {
+    logError('PROFILE_AUTOMATION_ENABLED: Must be set to "true" for full automation');
+    logInfo(`  Current value: ${process.env.PROFILE_AUTOMATION_ENABLED ?? '(not set)'}`);
+    logInfo('  Set PROFILE_AUTOMATION_ENABLED=true in .env file');
+    hasErrors = true;
   }
   
   // Check profile automation
@@ -133,7 +163,7 @@ async function validateConfiguration() {
   log('Profile Automation Configuration:', 'bright');
   
   // Special handling for TikTok credentials
-  if (process.env.TIKTOK_USERNAME && !process.env.TIKTOK_USERNAME.includes('your_')) {
+  if (isConfigured(process.env.TIKTOK_USERNAME)) {
     logSuccess('TIKTOK_USERNAME: TikTok username');
   } else {
     logWarning('TIKTOK_USERNAME: TikTok username - Not configured');
@@ -141,8 +171,8 @@ async function validateConfiguration() {
   }
   
   // Check if user has either password OR session ID
-  const hasTikTokPassword = process.env.TIKTOK_PASSWORD && !process.env.TIKTOK_PASSWORD.includes('your_');
-  const hasTikTokSession = process.env.TIKTOK_SESSION_ID && !process.env.TIKTOK_SESSION_ID.includes('your_');
+  const hasTikTokPassword = isConfigured(process.env.TIKTOK_PASSWORD);
+  const hasTikTokSession = isConfigured(process.env.TIKTOK_SESSION_ID);
   
   if (hasTikTokSession) {
     logSuccess('TIKTOK_SESSION_ID: TikTok session ID (recommended method)');
@@ -156,14 +186,14 @@ async function validateConfiguration() {
   }
   
   // Check Instagram credentials
-  if (process.env.INSTAGRAM_USERNAME && !process.env.INSTAGRAM_USERNAME.includes('your_')) {
+  if (isConfigured(process.env.INSTAGRAM_USERNAME)) {
     logSuccess('INSTAGRAM_USERNAME: Instagram username');
   } else {
     logWarning('INSTAGRAM_USERNAME: Instagram username - Not configured');
     hasWarnings = true;
   }
   
-  if (process.env.INSTAGRAM_PASSWORD && !process.env.INSTAGRAM_PASSWORD.includes('your_')) {
+  if (isConfigured(process.env.INSTAGRAM_PASSWORD)) {
     logSuccess('INSTAGRAM_PASSWORD: Instagram password');
   } else {
     logWarning('INSTAGRAM_PASSWORD: Instagram password - Not configured');
@@ -174,7 +204,7 @@ async function validateConfiguration() {
   console.log('');
   log('Optional Configuration:', 'bright');
   for (const [key, description] of Object.entries(optional)) {
-    if (process.env[key] && !process.env[key].includes('your_')) {
+    if (isConfigured(process.env[key])) {
       logSuccess(`${key}: ${description}`);
     } else {
       logInfo(`${key}: ${description} - Not configured`);
@@ -293,7 +323,7 @@ async function runProfileSetup() {
 async function generateContent() {
   logHeader('Step 4: Generating AI Content');
   
-  if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY.includes('your_')) {
+  if (!isConfigured(process.env.OPENAI_API_KEY)) {
     logWarning('OpenAI API key not configured');
     logInfo('Skipping content generation. Add OPENAI_API_KEY to .env to enable');
     console.log('');
