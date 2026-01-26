@@ -451,11 +451,13 @@ async function updateInstagramViaBrowser(config) {
     ];
     
     let bioField = null;
+    let usedBioSelector = null;
     for (const selector of bioSelectors) {
       try {
         await page.waitForSelector(selector, { timeout: 5000 });
         bioField = await page.$(selector);
         if (bioField) {
+          usedBioSelector = selector;
           console.log(`✓ Found bio field using selector: ${selector}`);
           break;
         }
@@ -468,13 +470,13 @@ async function updateInstagramViaBrowser(config) {
       throw new Error('Could not find bio textarea field. Instagram UI may have changed or login failed.');
     }
     
-    // Update bio
-    await page.evaluate((text) => {
-      const textarea = document.querySelector('textarea');
+    // Update bio using the working selector
+    await page.evaluate((selector, text) => {
+      const textarea = document.querySelector(selector);
       textarea.value = text;
       textarea.dispatchEvent(new Event('input', { bubbles: true }));
       textarea.dispatchEvent(new Event('change', { bubbles: true }));
-    }, config.bio);
+    }, usedBioSelector, config.bio);
     
     // Save changes
     const saveSelectors = [
