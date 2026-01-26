@@ -109,19 +109,6 @@ async function quickConfig() {
       }
     }
     
-    log('\n' + '='.repeat(70), 'bright');
-    log('INSTAGRAM CREDENTIALS', 'bright');
-    log('='.repeat(70) + '\n', 'bright');
-    
-    const instagramUsername = await question('Instagram Username: ');
-    if (instagramUsername.trim()) {
-      envContent = envContent.replace(/INSTAGRAM_USERNAME=.*/, `INSTAGRAM_USERNAME=${instagramUsername.trim()}`);
-    }
-    
-    const instagramPassword = await question('Instagram Password (or press Enter to skip): ');
-    if (instagramPassword.trim()) {
-      envContent = envContent.replace(/INSTAGRAM_PASSWORD=.*/, `INSTAGRAM_PASSWORD=${instagramPassword.trim()}`);
-    }
   }
   
   log('\n' + '='.repeat(70), 'bright');

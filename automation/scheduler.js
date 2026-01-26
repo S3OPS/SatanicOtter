@@ -1,8 +1,8 @@
 /**
- * Posting Scheduler for TikTok and Instagram Reels
+ * Posting Scheduler for TikTok
  * 
  * This module handles automated scheduling and posting of content
- * to TikTok and Instagram at optimal times.
+ * to TikTok at optimal times.
  */
 
 // Load dotenv only if available
@@ -121,31 +121,6 @@ async function postToTikTok(content) {
 }
 
 /**
- * Post to Instagram (placeholder - requires Instagram API setup)
- */
-async function postToInstagram(content) {
-  // This is a placeholder for actual Instagram API integration
-  // Actual implementation would require:
-  // - Instagram Business account
-  // - Facebook Graph API credentials
-  // - Video file ready for upload
-  
-  console.log('📸 Posting to Instagram Reels:', {
-    hook: content.hook || 'Generated content',
-    category: content.category,
-    timestamp: new Date().toISOString()
-  });
-  
-  if (POSTING_CONFIG.manualReview) {
-    console.log('⏸️  Manual review enabled - content queued for approval');
-    await saveForReview(content, 'instagram');
-    return { status: 'pending_review', platform: 'instagram' };
-  }
-  
-  // Actual posting logic would go here
-  return { status: 'posted', platform: 'instagram', contentId: content.timestamp };
-}
-
 /**
  * Save content for manual review
  */
@@ -179,23 +154,17 @@ async function executeScheduledPost() {
   }
   
   try {
-    // Post to both platforms
-    const [tiktokResult, instagramResult] = await Promise.all([
-      postToTikTok(content),
-      postToInstagram(content)
-    ]);
+    const tiktokResult = await postToTikTok(content);
     
     console.log('✅ Post execution complete:', {
-      tiktok: tiktokResult.status,
-      instagram: instagramResult.status
+      tiktok: tiktokResult.status
     });
     
     // Log posting activity
     await logActivity({
       timestamp: new Date().toISOString(),
       content: content.hook || content.category,
-      tiktok: tiktokResult,
-      instagram: instagramResult
+      tiktok: tiktokResult
     });
     
   } catch (error) {
@@ -299,6 +268,5 @@ module.exports = {
   initializeQueue,
   schedulePosts,
   postToTikTok,
-  postToInstagram,
   start
 };

@@ -1,8 +1,8 @@
-# 🎯 TikTok & Instagram Profile Setup Guide
+# 🎯 TikTok Profile Setup Guide
 
 ## Automated Profile Configuration for Maximum Affiliate Efficiency
 
-This guide helps you optimize your TikTok and Instagram profiles using automated configuration generation for high-ticket affiliate marketing. The tool generates optimized bio text, branding guidelines, and setup instructions based on your environment configuration.
+This guide helps you optimize your TikTok profile using automated configuration generation for high-ticket affiliate marketing. The tool generates optimized bio text, branding guidelines, and setup instructions based on your environment configuration.
 
 ---
 
@@ -88,22 +88,6 @@ Video View → Profile Visit → Link Click → Amazon Purchase
 ⬇️ Level up your workouts
 ```
 
-**Instagram Bio Examples:**
-
-**High-Ticket Focus:**
-```
-💰 Premium Product Curator | $1000+ Commission Finds
-🎯 Tech • Home • Fitness
-👇 Shop High-Value Deals
-```
-
-**Tech Niche:**
-```
-🎮 Premium Tech & Gaming Reviews
-💰 High-Value Product Finds
-👇 Shop Latest Tech Deals
-```
-
 **Bio Best Practices:**
 - ✅ First line: Your value proposition
 - ✅ Second line: What you cover/sell
@@ -133,13 +117,6 @@ Video View → Profile Visit → Link Click → Amazon Purchase
 - **Canva** - Free templates, easy to use
 - **Looka** - AI logo generator ($20)
 - **Figma** - Advanced design (free)
-
-**Cover Image (Instagram Only):**
-- Size: 1080x1920px (vertical)
-- Include your value proposition
-- Add call-to-action
-- Keep text large and minimal
-- Update seasonally
 
 ### 3. Link-in-Bio Setup
 
@@ -198,7 +175,7 @@ Video View → Profile Visit → Link Click → Amazon Purchase
 | **Stan Store** | $29/mo | Full monetization | Shopping, email, analytics |
 | **Linktree** | Free-$24/mo | Simple setup | Multiple links, analytics |
 | **Beacons** | Free-$10/mo | All-in-one | Store, links, media kit |
-| **Milkshake** | Free | Mobile-first | Instagram-optimized |
+| **Milkshake** | Free | Mobile-first | TikTok-friendly |
 
 ### 4. Account Settings
 
@@ -223,28 +200,6 @@ Video View → Profile Visit → Link Click → Amazon Purchase
    - Public account (required for growth)
    - Allow comments, duets, stitches
    - Enable download (helps virality)
-
-**Instagram:**
-
-1. **Account Type:** Business or Creator Account
-   - Required for analytics and link features
-   - Switch in Settings > Account
-
-2. **Category:** Shopping & Retail
-   - Or: Product/Service
-   - Or: Electronics (tech niche)
-
-3. **Contact Options:**
-   - ✅ Email button
-   - ❌ Phone (unless you want calls)
-   - ❌ Address (not needed for affiliates)
-
-4. **Features to Enable:**
-   - ✅ Professional dashboard
-   - ✅ Shopping (if eligible - requires business)
-   - ✅ Action buttons (Contact)
-   - ✅ Link in bio (default)
-   - ✅ Story links (at 10k+ followers or verified)
 
 ---
 
@@ -334,7 +289,6 @@ npm run setup-profiles -- --niche fitness
 The script uses your `.env` file:
 ```env
 TIKTOK_USERNAME=your_tiktok_username
-INSTAGRAM_USERNAME=your_instagram_username
 AMAZON_AFFILIATE_TAG=yourname-20
 ```
 
@@ -353,18 +307,6 @@ AMAZON_AFFILIATE_TAG=yourname-20
 - [ ] Join Creator Fund (when eligible: 1000+ followers)
 - [ ] Enable product links (if available)
 
-### Instagram Setup
-
-- [ ] Switch to Business/Creator account
-- [ ] Update bio with optimized text
-- [ ] Upload profile picture (same as TikTok)
-- [ ] Upload cover image (branded)
-- [ ] Add link-in-bio URL
-- [ ] Set category to "Shopping & Retail"
-- [ ] Add email contact button
-- [ ] Enable Instagram Shopping (if eligible)
-- [ ] Create story highlights for categories
-
 ### Link-in-Bio Setup
 
 - [ ] Choose tool (Stan Store, Linktree, or Beacons)
@@ -382,7 +324,7 @@ AMAZON_AFFILIATE_TAG=yourname-20
 - [ ] Choose color scheme
 - [ ] Create profile picture (Canva/Looka)
 - [ ] Create cover images
-- [ ] Design story highlight covers (Instagram)
+- [ ] Design story highlight covers (optional)
 - [ ] Create video thumbnail templates
 - [ ] Save brand assets for future use
 
@@ -452,7 +394,7 @@ AMAZON_AFFILIATE_TAG=yourname-20
 4. **Schedule Your Posts**
    - Follow optimal posting times
    - Queue review items for manual posting
-   - See [TIKTOK_INSTAGRAM_GUIDE.md](./TIKTOK_INSTAGRAM_GUIDE.md)
+    - See [TIKTOK_GUIDE.md](./TIKTOK_GUIDE.md)
 
 5. **Monitor and Optimize**
    - Check analytics weekly
@@ -522,7 +464,7 @@ AMAZON_AFFILIATE_TAG=yourname-20
 ## 📚 Additional Resources
 
 ### Documentation
-- [TikTok Instagram Guide](./TIKTOK_INSTAGRAM_GUIDE.md) - Full strategy
+- [TikTok Guide](./TIKTOK_GUIDE.md) - Full strategy
 - [Setup Guide](./SETUP_GUIDE.md) - Complete system setup
 - [Quick Start](./QUICK_START.md) - Get started fast
 
@@ -534,7 +476,6 @@ AMAZON_AFFILIATE_TAG=yourname-20
 
 ### Platform Resources
 - [TikTok Creator Portal](https://www.tiktok.com/creators/)
-- [Instagram Business Help](https://business.instagram.com/)
 - [Amazon Associates](https://affiliate-program.amazon.com/)
 
 ---

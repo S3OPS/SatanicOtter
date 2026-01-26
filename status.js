@@ -85,7 +85,7 @@ function checkSystemStatus() {
 
     // Check critical variables
     const requiredVars = ['AMAZON_AFFILIATE_TAG'];
-    const optionalVars = ['OPENAI_API_KEY', 'TIKTOK_USERNAME', 'INSTAGRAM_USERNAME'];
+    const optionalVars = ['OPENAI_API_KEY', 'TIKTOK_USERNAME'];
     
     let varsConfigured = 0;
     for (const varName of requiredVars) {
@@ -143,7 +143,7 @@ function checkSystemStatus() {
     'README.md',
     'QUICK_START.md',
     'SETUP_GUIDE.md',
-    'TIKTOK_INSTAGRAM_GUIDE.md',
+    'TIKTOK_GUIDE.md',
     'EXAMPLE_WORKFLOW.md'
   ];
 

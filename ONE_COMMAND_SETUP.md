@@ -23,7 +23,7 @@ npm run full-auto
 That's it! The system will:
 - ✅ Validate your configuration
 - ✅ Install necessary dependencies (Puppeteer, etc.)
-- ✅ Set up your TikTok & Instagram profiles automatically
+- ✅ Set up your TikTok profile automatically
 - ✅ Generate AI content (if OpenAI configured)
 - ✅ Find high-ticket products ($100+ commission)
 - ✅ Display summary and next steps
@@ -38,11 +38,6 @@ That's it! The system will:
   - Sets category to "Shopping & Retail"
   - Configures for affiliate marketing
   
-- **Instagram Profile**
-  - Updates bio with conversion-optimized text
-  - Configures Business/Creator settings
-  - Sets up contact options
-
 ### Content Generation
 - Creates viral video scripts using AI
 - Generates hooks for 5+ videos
@@ -65,8 +60,6 @@ AMAZON_AFFILIATE_TAG=yourname-20
 PROFILE_AUTOMATION_ENABLED=true
 TIKTOK_USERNAME=your_tiktok_username
 TIKTOK_SESSION_ID=your_session_id
-INSTAGRAM_USERNAME=your_instagram_username
-INSTAGRAM_PASSWORD=your_password
 ```
 Use `TIKTOK_SESSION_ID` for TikTok automation (more reliable than password-based login). See [TIKTOK_CREDENTIALS_GUIDE.md](./TIKTOK_CREDENTIALS_GUIDE.md) for details.
 
@@ -79,8 +72,6 @@ PROFILE_AUTOMATION_ENABLED=true
 # Social Media
 TIKTOK_USERNAME=your_tiktok_username
 TIKTOK_SESSION_ID=your_session_id
-INSTAGRAM_USERNAME=your_instagram_username
-INSTAGRAM_PASSWORD=your_password
 
 # AI Content (Optional)
 OPENAI_API_KEY=sk-your-key-here
@@ -159,9 +150,9 @@ Required Configuration:
 
 Profile Automation Configuration:
 ✅ TIKTOK_USERNAME: TikTok username
+✅ TIKTOK_SESSION_ID: TikTok session ID
 ✅ TIKTOK_SESSION_ID: TikTok session ID (recommended)
-✅ INSTAGRAM_USERNAME: Instagram username
-✅ INSTAGRAM_PASSWORD: Instagram password
+✅ TIKTOK_USERNAME: TikTok username
 
 ======================================================================
 Step 2: Installing Dependencies
@@ -184,14 +175,7 @@ Would update TikTok profile with:
        🎯 Tech, Home, Fitness deals
        ⬇️ Shop high-value finds
 
-📸 Updating Instagram profile...
-Would update Instagram profile with:
-  Username: your_username
-  Bio: 💰 Premium Product Curator | $1000+ Commission Finds
-       🎯 Tech • Home • Fitness
-       👇 Shop High-Value Deals
-
-✅ Successful: 2
+✅ Successful: 1
 ❌ Failed: 0
 
 ======================================================================
@@ -227,7 +211,6 @@ Your affiliate marketing automation system is now configured!
 
 📱 Social Media Profiles:
    • Check your TikTok profile for updated bio
-   • Check your Instagram profile for updated bio
    • Review profile-configs/ folder for configuration
 
 📝 Content Creation:
@@ -374,7 +357,7 @@ After running full auto setup, you should have:
 
 - **[PROFILE_AUTOMATION_GUIDE.md](./PROFILE_AUTOMATION_GUIDE.md)** - Detailed automation guide
 - **[PROFILE_SETUP_GUIDE.md](./PROFILE_SETUP_GUIDE.md)** - Profile optimization
-- **[TIKTOK_INSTAGRAM_GUIDE.md](./TIKTOK_INSTAGRAM_GUIDE.md)** - Monetization strategy
+- **[TIKTOK_GUIDE.md](./TIKTOK_GUIDE.md)** - Monetization strategy
 - **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** - Complete setup guide
 
 ---

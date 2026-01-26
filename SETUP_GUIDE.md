@@ -1,4 +1,4 @@
-# 🚀 Complete Setup Guide - TikTok & Instagram Automation Toolkit
+# 🚀 Complete Setup Guide - TikTok Automation Toolkit
 
 This guide walks you through configuring the automation toolkit, including the manual review queue used for posting.
 
@@ -18,7 +18,6 @@ This guide walks you through configuring the automation toolkit, including the m
 ### Required Accounts
 - ✅ **Amazon Associates Account** (approved) - [Sign Up](https://affiliate-program.amazon.com/)
 - ✅ **TikTok Account** (optional for profile automation; personal accounts work)
-- ✅ **Instagram Account** (optional for profile automation; Business only needed for Graph API)
 - ✅ **OpenAI Account** (optional for AI content generation) - [Get API Key](https://platform.openai.com/)
 
 ### Software Requirements
@@ -146,15 +145,6 @@ For manual posting, skip this. For profile automation:
    TIKTOK_USERNAME=your_username
    ```
 
-### Instagram (Optional - for profile automation)
-For manual posting, skip this. For profile automation:
-1. Use browser automation with username/password **or** configure the Graph API (Business accounts only)
-2. Add to `.env`:
-   ```
-   INSTAGRAM_USERNAME=your_username
-   INSTAGRAM_PASSWORD=your_app_password
-   ```
-
 ---
 
 ## Running the System
@@ -174,7 +164,7 @@ This creates AI-generated scripts, hooks, and video concepts in `generated-conte
 - Export as vertical video (9:16 ratio)
 
 **Step 3: Post Manually**
-- Post to TikTok and Instagram Reels
+- Post to TikTok
 - Use generated captions and hashtags
 - Add link in bio
 - Post at optimal times (see guide)
@@ -211,7 +201,7 @@ Review the queued JSON in `review-queue/` and post manually. Each file includes 
 
 ### Option 3: Automation Runner (Advanced)
 
-The current automation runner generates content and schedules a review queue; it does **not** upload videos to TikTok or Instagram.
+The current automation runner generates content and schedules a review queue; it does **not** upload videos to TikTok.
 
 Enable in `.env`:
 ```
@@ -240,7 +230,7 @@ System will:
 npm run analytics:summary
 
 # 2. Review top-performing content
-# Check TikTok/Instagram analytics
+# Check TikTok analytics
 
 # 3. Update link-in-bio
 # Move best sellers to top positions
@@ -508,7 +498,7 @@ npm run analytics:summary 7
 ## Additional Resources
 
 ### Documentation
-- [TikTok Instagram Guide](./TIKTOK_INSTAGRAM_GUIDE.md) - Complete strategy guide
+- [TikTok Guide](./TIKTOK_GUIDE.md) - Complete strategy guide
 - [Main README](./README.md) - Amazon link generator tool
 
 ### Tools

@@ -49,7 +49,6 @@ The setup wizard will ask for:
 
 ### Optional (for profile automation)
 - **TikTok Credentials** - Username and session ID
-- **Instagram Credentials** - Username and password
 - Can skip and post manually
 
 ---
@@ -64,7 +63,7 @@ npm run setup-profiles
 # or for interactive wizard:
 npm run setup-profiles:wizard
 ```
-Generates optimized bio text, branding guidelines, and link-in-bio structure for TikTok & Instagram.
+Generates optimized bio text, branding guidelines, and link-in-bio structure for TikTok.
 
 ### 2. Find High-Commission Products
 ```bash
@@ -100,9 +99,9 @@ Run the complete workflow end-to-end.
 
 ## 📖 Learn More
 
-- **[PROFILE_SETUP_GUIDE.md](./PROFILE_SETUP_GUIDE.md)** - Optimize your TikTok & Instagram profiles
+- **[PROFILE_SETUP_GUIDE.md](./PROFILE_SETUP_GUIDE.md)** - Optimize your TikTok profile
 - **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** - Detailed setup and configuration
-- **[TIKTOK_INSTAGRAM_GUIDE.md](./TIKTOK_INSTAGRAM_GUIDE.md)** - Complete monetization strategy
+- **[TIKTOK_GUIDE.md](./TIKTOK_GUIDE.md)** - Complete monetization strategy
 - **[EXAMPLE_WORKFLOW.md](./EXAMPLE_WORKFLOW.md)** - Real-world example
 - **[README.md](./README.md)** - Project overview
 
@@ -114,7 +113,7 @@ Run the complete workflow end-to-end.
 1. Run `npm run product-research` to find products
 2. Run `npm run generate-content` to get AI scripts
 3. Create videos manually using the scripts
-4. Post to TikTok/Instagram manually
+4. Post to TikTok manually
 5. Track results with `npm run analytics:add`
 
 ### Semi-Automated Mode (After Learning)

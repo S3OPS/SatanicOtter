@@ -96,7 +96,7 @@ const docs = [
   'README.md',
   'QUICK_START.md',
   'SETUP_GUIDE.md',
-  'TIKTOK_INSTAGRAM_GUIDE.md',
+  'TIKTOK_GUIDE.md',
   'EXAMPLE_WORKFLOW.md',
   'PROFILE_SETUP_GUIDE.md',
   'PROFILE_AUTOMATION_GUIDE.md',
@@ -204,20 +204,16 @@ test('profile setup module can be loaded', () => {
 test('profile setup has bio templates for all platforms', () => {
   const { BIO_TEMPLATES } = require('../automation/profileSetup.js');
   assert(BIO_TEMPLATES.tiktok, 'TikTok templates missing');
-  assert(BIO_TEMPLATES.instagram, 'Instagram templates missing');
   assert(BIO_TEMPLATES.tiktok.highTicket, 'TikTok high-ticket templates missing');
-  assert(BIO_TEMPLATES.instagram.highTicket, 'Instagram high-ticket templates missing');
+  assert(BIO_TEMPLATES.tiktok.tech, 'TikTok tech templates missing');
 });
 
 test('profile setup has bio generation function', () => {
   const { generateBio } = require('../automation/profileSetup.js');
   const tiktokBio = generateBio('tiktok', 'tech');
-  const instagramBio = generateBio('instagram', 'tech');
   
   assert(tiktokBio, 'TikTok bio not generated');
-  assert(instagramBio, 'Instagram bio not generated');
   assert(typeof tiktokBio === 'string', 'TikTok bio is not a string');
-  assert(typeof instagramBio === 'string', 'Instagram bio is not a string');
 });
 
 // Test 12: Profile automation module

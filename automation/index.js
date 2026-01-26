@@ -87,7 +87,7 @@ async function runAutomation() {
  */
 function checkEnvironment() {
   const required = ['OPENAI_API_KEY'];
-  const recommended = ['TIKTOK_SESSION_ID', 'INSTAGRAM_USERNAME'];
+  const recommended = ['TIKTOK_SESSION_ID'];
   
   console.log('🔍 Environment Check:\n');
   

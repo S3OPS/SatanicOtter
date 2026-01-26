@@ -123,9 +123,7 @@ async function validateConfiguration() {
   
   const profileAutomation = {
     'TIKTOK_USERNAME': 'TikTok username',
-    'TIKTOK_SESSION_ID': 'TikTok session ID (recommended) OR TIKTOK_PASSWORD',
-    'INSTAGRAM_USERNAME': 'Instagram username',
-    'INSTAGRAM_PASSWORD': 'Instagram password'
+    'TIKTOK_SESSION_ID': 'TikTok session ID (recommended) OR TIKTOK_PASSWORD (fallback)'
   };
   
   const optional = {
@@ -185,21 +183,6 @@ async function validateConfiguration() {
     hasWarnings = true;
   }
   
-  // Check Instagram credentials
-  if (isConfigured(process.env.INSTAGRAM_USERNAME)) {
-    logSuccess('INSTAGRAM_USERNAME: Instagram username');
-  } else {
-    logWarning('INSTAGRAM_USERNAME: Instagram username - Not configured');
-    hasWarnings = true;
-  }
-  
-  if (isConfigured(process.env.INSTAGRAM_PASSWORD)) {
-    logSuccess('INSTAGRAM_PASSWORD: Instagram password');
-  } else {
-    logWarning('INSTAGRAM_PASSWORD: Instagram password - Not configured');
-    hasWarnings = true;
-  }
-  
   // Check optional
   console.log('');
   log('Optional Configuration:', 'bright');
@@ -253,23 +236,6 @@ async function installDependencies() {
     logSuccess('Puppeteer already installed');
   } else {
     logInfo('Puppeteer not needed (automation not enabled)');
-  }
-  
-  // Check if axios is needed for Graph API
-  const needsAxios = process.env.INSTAGRAM_GRAPH_API_TOKEN && 
-                     !isPackageInstalled('axios');
-  
-  if (needsAxios) {
-    logInfo('Installing axios for Instagram Graph API...');
-    try {
-      execSync('npm install axios --no-save', { 
-        stdio: 'inherit',
-        cwd: __dirname
-      });
-      logSuccess('Axios installed successfully');
-    } catch (error) {
-      logWarning('Failed to install axios');
-    }
   }
   
   console.log('');
@@ -388,13 +354,12 @@ async function displaySummary() {
   
   log('📱 Social Media Profiles:', 'cyan');
   log('   • Check your TikTok profile for updated bio');
-  log('   • Check your Instagram profile for updated bio');
   log('   • Review profile-configs/ folder for configuration\n');
   
   log('📝 Content Creation:', 'cyan');
   log('   • Review generated content in generated-content/ folder');
   log('   • Create videos using the AI-generated scripts');
-  log('   • See TIKTOK_INSTAGRAM_GUIDE.md for video tips\n');
+  log('   • See TIKTOK_GUIDE.md for video tips\n');
   
   log('📊 Analytics:', 'cyan');
   log('   • Start tracking: npm run analytics:add');
@@ -407,7 +372,7 @@ async function displaySummary() {
   log('📚 DOCUMENTATION:\n', 'bright');
   log('   • PROFILE_SETUP_GUIDE.md - Profile optimization', 'cyan');
   log('   • PROFILE_AUTOMATION_GUIDE.md - 100% automation', 'cyan');
-  log('   • TIKTOK_INSTAGRAM_GUIDE.md - Monetization strategy', 'cyan');
+  log('   • TIKTOK_GUIDE.md - Monetization strategy', 'cyan');
   log('   • SETUP_GUIDE.md - Complete setup guide\n', 'cyan');
   
   if (process.env.PROFILE_DRY_RUN !== 'false') {

@@ -1,7 +1,7 @@
 /**
- * Profile Setup Automation for TikTok and Instagram
+ * Profile Setup Automation for TikTok
  * 
- * This module helps automatically configure your TikTok and Instagram profiles
+ * This module helps automatically configure your TikTok profile
  * to match the efficiency of the auto system for affiliate marketing.
  * 
  * It sets up:
@@ -42,25 +42,6 @@ const BIO_TEMPLATES = {
     fitness: [
       "💪 Fitness gear reviews\n🏋️ Premium equipment finds\n⬇️ Level up your workouts",
       "🎯 Fitness & wellness\n💎 High-quality gear\n👇 Shop pro equipment"
-    ]
-  },
-  instagram: {
-    highTicket: [
-      "💰 Premium Product Curator | $1000+ Commission Finds\n🎯 Tech • Home • Fitness\n👇 Shop High-Value Deals",
-      "🔥 Luxury Finds at Smart Prices\n💎 Honest Reviews • Best Deals\n🛒 Link Below for Premium Products",
-      "⚡ Testing Premium Products So You Don't Have To\n📈 $500-$2500 Range\n👇 Shop Curated Collection"
-    ],
-    tech: [
-      "🎮 Premium Tech & Gaming Reviews\n💰 High-Value Product Finds\n👇 Shop Latest Tech Deals",
-      "📱 Tech Enthusiast | Premium Gear Curator\n💎 Best Deals on High-End Products\n🔗 Shop Collection Below"
-    ],
-    home: [
-      "🏡 Home & Lifestyle Curator\n💰 Premium Quality Products\n👇 Transform Your Living Space",
-      "✨ Luxury Home Essentials | Smart Investments\n🎁 Curated Premium Collection\n👇 Shop the Best"
-    ],
-    fitness: [
-      "💪 Premium Fitness Equipment Reviews\n🏋️ High-Quality Gear Finds\n👇 Level Up Your Home Gym",
-      "🎯 Fitness & Wellness | Premium Equipment\n💎 Professional-Grade Gear\n👇 Shop Pro Collection"
     ]
   }
 };
@@ -166,7 +147,6 @@ function generateBio(platform, niche = 'highTicket') {
  */
 async function createProfileConfig(options = {}) {
   const {
-    platforms = ['tiktok', 'instagram'],
     niche = 'highTicket',
     linkInBioUrl = null,
     customBio = null
@@ -174,27 +154,23 @@ async function createProfileConfig(options = {}) {
 
   const config = {
     timestamp: new Date().toISOString(),
-    platforms: {},
+    platforms: {
+      tiktok: {
+        bio: customBio || generateBio('tiktok', niche),
+        niche: niche,
+        username: process.env.TIKTOK_USERNAME || '[Set tiktok username in .env]',
+        linkInBio: linkInBioUrl || '[Set up link-in-bio tool and add URL here]',
+        setup: {
+          accountType: 'Regular Account',
+          category: getNicheCategory(niche),
+          contactOptions: ['Email'],
+          features: getRecommendedFeatures()
+        }
+      }
+    },
     branding: BRANDING_GUIDE,
     linkInBio: LINK_IN_BIO_CONFIG
   };
-
-  for (const platform of platforms) {
-    const bio = customBio || generateBio(platform, niche);
-    
-    config.platforms[platform] = {
-      bio: bio,
-      niche: niche,
-      username: process.env[`${platform.toUpperCase()}_USERNAME`] || `[Set ${platform} username in .env]`,
-      linkInBio: linkInBioUrl || `[Set up link-in-bio tool and add URL here]`,
-      setup: {
-        accountType: platform === 'instagram' ? 'Business/Creator Account' : 'Regular Account',
-        category: getNicheCategory(niche),
-        contactOptions: ['Email'],
-        features: getRecommendedFeatures(platform)
-      }
-    };
-  }
 
   return config;
 }
@@ -217,27 +193,14 @@ function getNicheCategory(niche) {
 /**
  * Get platform-specific recommended features
  */
-function getRecommendedFeatures(platform) {
-  if (platform === 'tiktok') {
-    return [
-      'Add website link in bio',
-      'Enable TikTok Shop (if available in region)',
-      'Set up Creator Fund (1000+ followers, 10k+ views)',
-      'Enable product links in videos',
-      'Join TikTok Creator Marketplace'
-    ];
-  } else if (platform === 'instagram') {
-    return [
-      'Switch to Business/Creator account',
-      'Add category (Shopping & Retail)',
-      'Enable shopping features (if eligible)',
-      'Add contact button (Email)',
-      'Set up Instagram Shop (optional)',
-      'Enable story link stickers (10k+ followers or verified)'
-    ];
-  }
-  
-  return [];
+function getRecommendedFeatures() {
+  return [
+    'Add website link in bio',
+    'Enable TikTok Shop (if available in region)',
+    'Set up Creator Fund (1000+ followers, 10k+ views)',
+    'Enable product links in videos',
+    'Join TikTok Creator Marketplace'
+  ];
 }
 
 /**
@@ -345,11 +308,9 @@ async function setupProfiles(options = {}) {
   
   // Check for required environment variables
   const tiktokUsername = process.env.TIKTOK_USERNAME;
-  const instagramUsername = process.env.INSTAGRAM_USERNAME;
-  
-  if (!tiktokUsername && !instagramUsername) {
+  if (!tiktokUsername) {
     console.warn('⚠️  No usernames found in .env file');
-    console.warn('Add TIKTOK_USERNAME and/or INSTAGRAM_USERNAME to .env for personalization\n');
+    console.warn('Add TIKTOK_USERNAME to .env for personalization\n');
   }
   
   // Create profile configuration
@@ -375,7 +336,7 @@ async function runSetupWizard() {
   console.log('\n' + '='.repeat(70));
   console.log('🎯 PROFILE SETUP WIZARD');
   console.log('='.repeat(70));
-  console.log('\nThis wizard will help you set up your TikTok and Instagram profiles');
+  console.log('\nThis wizard will help you set up your TikTok profile');
   console.log('for maximum efficiency with the affiliate marketing automation system.\n');
   
   // Note: For a fully interactive experience, you could use readline to prompt for niche
