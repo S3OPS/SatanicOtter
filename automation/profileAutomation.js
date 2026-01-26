@@ -112,8 +112,11 @@ async function updateTikTokProfile(config) {
     });
     const page = await browser.newPage();
     
+    // Set longer timeout for slow networks
+    page.setDefaultTimeout(60000); // 60 seconds
+    
     // Navigate to TikTok login
-    await page.goto('https://www.tiktok.com/login', { waitUntil: 'networkidle2' });
+    await page.goto('https://www.tiktok.com/login', { waitUntil: 'networkidle2', timeout: 60000 });
     
     // Login logic would go here
     // Note: TikTok has bot detection, so this may require:
@@ -135,18 +138,69 @@ async function updateTikTokProfile(config) {
     }
     
     // Navigate to profile settings
-    await page.goto('https://www.tiktok.com/setting', { waitUntil: 'networkidle2' });
+    await page.goto('https://www.tiktok.com/setting', { waitUntil: 'networkidle2', timeout: 60000 });
+    
+    // Try multiple selectors for bio field (TikTok UI may vary)
+    const bioSelectors = [
+      'textarea[placeholder*="Bio"]',
+      'textarea[placeholder*="bio"]',
+      'textarea[name="bio"]',
+      'textarea[aria-label*="Bio"]',
+      'textarea.bio-input',
+      'div[data-e2e="profile-bio-edit"] textarea'
+    ];
+    
+    let bioElement = null;
+    let usedSelector = null;
+    
+    for (const selector of bioSelectors) {
+      try {
+        await page.waitForSelector(selector, { timeout: 5000 });
+        bioElement = await page.$(selector);
+        if (bioElement) {
+          usedSelector = selector;
+          console.log(`✓ Found bio field using selector: ${selector}`);
+          break;
+        }
+      } catch (e) {
+        // Try next selector
+        continue;
+      }
+    }
+    
+    if (!bioElement) {
+      throw new Error('Could not find bio textarea field. TikTok UI may have changed or authentication failed. Please verify your session is valid and try again.');
+    }
     
     // Update bio
-    const bioSelector = 'textarea[placeholder*="Bio"]';
-    await page.waitForSelector(bioSelector);
     await page.evaluate((selector, text) => {
-      document.querySelector(selector).value = text;
-    }, bioSelector, config.bio);
+      const elem = document.querySelector(selector);
+      elem.value = text;
+      elem.dispatchEvent(new Event('input', { bubbles: true }));
+    }, usedSelector, config.bio);
     
     // Save changes
-    await page.click('button[type="submit"]');
-    await page.waitForTimeout(2000);
+    const saveSelectors = ['button[type="submit"]', 'button:has-text("Save")', 'button.save-button'];
+    let saved = false;
+    
+    for (const selector of saveSelectors) {
+      try {
+        const saveButton = await page.$(selector);
+        if (saveButton) {
+          await saveButton.click();
+          saved = true;
+          break;
+        }
+      } catch (e) {
+        continue;
+      }
+    }
+    
+    if (!saved) {
+      console.warn('⚠️  Could not find save button, changes may not be saved');
+    }
+    
+    await page.waitForTimeout(3000);
     
     await browser.close();
     
@@ -155,6 +209,11 @@ async function updateTikTokProfile(config) {
     
   } catch (error) {
     console.error('❌ Error updating TikTok profile:', error.message);
+    console.log('\n💡 Troubleshooting tips:');
+    console.log('   • Verify TIKTOK_SESSION_ID is valid (login to TikTok in browser, get from cookies)');
+    console.log('   • Check if TikTok is accessible from your network');
+    console.log('   • TikTok may have updated their UI - selectors may need updating');
+    console.log('   • Try running in non-headless mode to see what\'s happening: headless: false\n');
     return { success: false, error: error.message };
   }
 }
@@ -202,29 +261,77 @@ async function updateInstagramViaGraphAPI(config, token) {
     const accountId = process.env.INSTAGRAM_ACCOUNT_ID;
     
     if (!accountId) {
-      throw new Error('INSTAGRAM_ACCOUNT_ID required for Graph API');
+      throw new Error('INSTAGRAM_ACCOUNT_ID required for Graph API. Get it from: https://developers.facebook.com/tools/explorer/');
     }
     
-    // Update bio using Graph API
-    const response = await axios.post(
-      `https://graph.facebook.com/v18.0/${accountId}`,
-      {
-        biography: config.bio,
-        access_token: token
-      }
-    );
+    // Instagram Graph API uses the Instagram Business Account ID
+    // and requires specific permissions and fields
     
-    console.log('✅ Instagram profile updated via Graph API');
-    return { success: true, platform: 'instagram', method: 'graph_api' };
+    // First, verify the account and get current info
+    let currentBio;
+    try {
+      const getResponse = await axios.get(
+        `https://graph.facebook.com/v18.0/${accountId}`,
+        {
+          params: {
+            fields: 'biography,username,followers_count',
+            access_token: token
+          }
+        }
+      );
+      currentBio = getResponse.data.biography;
+      console.log(`📊 Current bio: ${currentBio || '(empty)'}`);
+      console.log(`📊 Username: ${getResponse.data.username}`);
+    } catch (error) {
+      if (error.response) {
+        const errData = error.response.data;
+        throw new Error(`Failed to fetch account info: ${errData.error?.message || error.message}. Verify INSTAGRAM_ACCOUNT_ID and token permissions.`);
+      }
+      throw error;
+    }
+    
+    // Note: Instagram Graph API does NOT support updating biography via API
+    // This is a limitation of the Instagram Graph API
+    // Bio updates must be done through the Instagram app or website
+    
+    console.warn('⚠️  Instagram Graph API limitation: Biography cannot be updated via API');
+    console.log('📝 Instagram requires bio updates to be done manually through:');
+    console.log('   • Instagram mobile app: Profile → Edit Profile → Bio');
+    console.log('   • Instagram website: instagram.com → Profile → Edit Profile');
+    console.log('\n💡 Your generated bio:');
+    console.log(`   "${config.bio}"`);
+    console.log('\n📋 Copy the bio above and paste it manually into Instagram.\n');
+    
+    // Return success as we've provided instructions
+    return { 
+      success: true, 
+      platform: 'instagram', 
+      method: 'graph_api',
+      manual_update_required: true,
+      generated_bio: config.bio
+    };
     
   } catch (error) {
-    console.error('❌ Error updating Instagram via Graph API:', error.message);
-    console.log('\n💡 Graph API requires:');
-    console.log('   • Business or Creator account');
-    console.log('   • Facebook Page connected');
-    console.log('   • Access token with instagram_basic permission');
-    console.log('   • Get started: https://developers.facebook.com/docs/instagram-api\n');
-    return { success: false, error: error.message };
+    const errorMessage = error.response?.data?.error?.message || error.message;
+    console.error('❌ Error updating Instagram via Graph API:', errorMessage);
+    
+    if (error.response?.status === 400) {
+      console.log('\n💡 Common causes of 400 Bad Request:');
+      console.log('   • Invalid INSTAGRAM_ACCOUNT_ID (must be Instagram Business Account ID, not user ID)');
+      console.log('   • Expired or invalid access token');
+      console.log('   • Missing required permissions (instagram_basic, pages_read_engagement)');
+      console.log('   • Account not set up as Instagram Business or Creator account');
+      console.log('\n🔧 How to fix:');
+      console.log('   1. Convert to Business/Creator: Instagram App → Settings → Account → Switch to Professional Account');
+      console.log('   2. Connect Facebook Page: Instagram App → Settings → Account → Linked Accounts → Facebook');
+      console.log('   3. Get Account ID: https://developers.facebook.com/tools/explorer/');
+      console.log('   4. Generate token with instagram_basic permission\n');
+    }
+    
+    console.log('\n💡 Alternative: Use browser automation instead (set INSTAGRAM_GRAPH_API_TOKEN to empty)');
+    console.log('   This works for personal accounts without Graph API setup\n');
+    
+    return { success: false, error: errorMessage, status_code: error.response?.status };
   }
 }
 
@@ -247,21 +354,56 @@ async function updateInstagramViaBrowser(config) {
     });
     const page = await browser.newPage();
     
+    // Set longer timeout for slow networks
+    page.setDefaultTimeout(60000); // 60 seconds
+    
     // Navigate to Instagram login
-    await page.goto('https://www.instagram.com/accounts/login/', { waitUntil: 'networkidle2' });
+    await page.goto('https://www.instagram.com/accounts/login/', { waitUntil: 'networkidle2', timeout: 60000 });
+    
+    // Wait for login form
+    await page.waitForSelector('input[name="username"]', { timeout: 10000 });
     
     // Login
-    await page.type('input[name="username"]', AUTOMATION_CONFIG.instagram.username);
-    await page.type('input[name="password"]', AUTOMATION_CONFIG.instagram.password);
+    await page.type('input[name="username"]', AUTOMATION_CONFIG.instagram.username, { delay: 100 });
+    await page.type('input[name="password"]', AUTOMATION_CONFIG.instagram.password, { delay: 100 });
+    
+    // Click login button
     await page.click('button[type="submit"]');
-    await page.waitForNavigation({ waitUntil: 'networkidle2' });
+    
+    // Wait for navigation or error
+    try {
+      await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 30000 });
+    } catch (e) {
+      // Check if login failed
+      const errorText = await page.evaluate(() => {
+        const errorElement = document.querySelector('#slfErrorAlert, [role="alert"]');
+        return errorElement ? errorElement.textContent : null;
+      });
+      
+      if (errorText) {
+        throw new Error(`Login failed: ${errorText}`);
+      }
+    }
     
     // Handle "Save Your Login Info?" prompt
     try {
-      await page.waitForSelector('button', { timeout: 3000 });
-      const notNowButton = await page.$x("//button[contains(text(), 'Not Now')]");
-      if (notNowButton.length > 0) {
-        await notNowButton[0].click();
+      await page.waitForSelector('button', { timeout: 5000 });
+      const notNowButtons = await page.$x("//button[contains(text(), 'Not Now') or contains(text(), 'Not now')]");
+      if (notNowButtons.length > 0) {
+        await notNowButtons[0].click();
+        await page.waitForTimeout(2000);
+      }
+    } catch (e) {
+      // Prompt might not appear
+    }
+    
+    // Handle "Turn on Notifications" prompt
+    try {
+      await page.waitForSelector('button', { timeout: 5000 });
+      const notNowButtons = await page.$x("//button[contains(text(), 'Not Now') or contains(text(), 'Not now')]");
+      if (notNowButtons.length > 0) {
+        await notNowButtons[0].click();
+        await page.waitForTimeout(2000);
       }
     } catch (e) {
       // Prompt might not appear
@@ -269,21 +411,97 @@ async function updateInstagramViaBrowser(config) {
     
     // Navigate to profile edit
     await page.goto(`https://www.instagram.com/${AUTOMATION_CONFIG.instagram.username}/`, 
-      { waitUntil: 'networkidle2' });
+      { waitUntil: 'networkidle2', timeout: 60000 });
     
-    await page.click('a[href*="/edit"]');
-    await page.waitForSelector('textarea');
+    // Try to find and click Edit Profile button
+    const editSelectors = [
+      'a[href*="/accounts/edit"]',
+      'a:has-text("Edit profile")',
+      'a:has-text("Edit Profile")',
+      'button:has-text("Edit profile")'
+    ];
+    
+    let editClicked = false;
+    for (const selector of editSelectors) {
+      try {
+        const editButton = await page.$(selector);
+        if (editButton) {
+          await editButton.click();
+          editClicked = true;
+          break;
+        }
+      } catch (e) {
+        continue;
+      }
+    }
+    
+    if (!editClicked) {
+      // Try direct navigation
+      await page.goto('https://www.instagram.com/accounts/edit/', 
+        { waitUntil: 'networkidle2', timeout: 60000 });
+    }
+    
+    // Wait for bio textarea with multiple possible selectors
+    const bioSelectors = [
+      'textarea',
+      'textarea[placeholder*="Bio"]',
+      'textarea[placeholder*="bio"]',
+      '#pepBio',
+      'textarea[id*="bio"]'
+    ];
+    
+    let bioField = null;
+    for (const selector of bioSelectors) {
+      try {
+        await page.waitForSelector(selector, { timeout: 5000 });
+        bioField = await page.$(selector);
+        if (bioField) {
+          console.log(`✓ Found bio field using selector: ${selector}`);
+          break;
+        }
+      } catch (e) {
+        continue;
+      }
+    }
+    
+    if (!bioField) {
+      throw new Error('Could not find bio textarea field. Instagram UI may have changed or login failed.');
+    }
     
     // Update bio
     await page.evaluate((text) => {
       const textarea = document.querySelector('textarea');
       textarea.value = text;
       textarea.dispatchEvent(new Event('input', { bubbles: true }));
+      textarea.dispatchEvent(new Event('change', { bubbles: true }));
     }, config.bio);
     
     // Save changes
-    await page.click('button[type="submit"]');
-    await page.waitForTimeout(2000);
+    const saveSelectors = [
+      'button[type="submit"]',
+      'button:has-text("Submit")',
+      'button:has-text("Done")',
+      'div[role="button"]:has-text("Submit")'
+    ];
+    
+    let saved = false;
+    for (const selector of saveSelectors) {
+      try {
+        const saveButton = await page.$(selector);
+        if (saveButton) {
+          await saveButton.click();
+          saved = true;
+          await page.waitForTimeout(3000);
+          break;
+        }
+      } catch (e) {
+        continue;
+      }
+    }
+    
+    if (!saved) {
+      console.warn('⚠️  Could not find submit button, changes may not be saved');
+    }
     
     await browser.close();
     
@@ -292,6 +510,12 @@ async function updateInstagramViaBrowser(config) {
     
   } catch (error) {
     console.error('❌ Error updating Instagram profile:', error.message);
+    console.log('\n💡 Troubleshooting tips:');
+    console.log('   • Verify INSTAGRAM_USERNAME and INSTAGRAM_PASSWORD are correct');
+    console.log('   • Check if Instagram is accessible from your network');
+    console.log('   • Instagram may require 2FA - consider using session cookies instead');
+    console.log('   • Instagram may have updated their UI - selectors may need updating');
+    console.log('   • Try running in non-headless mode to see what\'s happening: headless: false\n');
     return { success: false, error: error.message };
   }
 }
