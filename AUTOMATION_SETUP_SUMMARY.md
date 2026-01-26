@@ -30,7 +30,7 @@ The system automatically handles everything with interactive prompts, reducing s
 
 **Features:**
 - ✅ Cross-platform support (Windows, macOS, Linux)
-- ✅ System prerequisites check (Node.js 16+, npm 7+, Python 3.8+ optional)
+- ✅ System prerequisites check (Node.js 16+, npm 7+, Python 3.8+ optional for external tooling)
 - ✅ Automatic dependency installation
 - ✅ Interactive .env file creation with guided prompts
 - ✅ Configuration validation with robust placeholder detection
@@ -42,7 +42,7 @@ The system automatically handles everything with interactive prompts, reducing s
 npm run setup
 ```
 
-**Output:** Fully configured system ready to generate $1,000/day in affiliate revenue.
+**Output:** Fully configured system ready to generate $1,000/day in affiliate revenue (manual posting workflow).
 
 ---
 
@@ -91,7 +91,7 @@ Score: 69/80 (86%)
 - Clear prerequisites list
 - What you'll need (API keys)
 - Post-setup workflow examples
-- Three operation modes (manual, semi-auto, full-auto)
+- Three operation modes (manual, semi-auto, automation runner)
 - Troubleshooting section
 - Links to detailed documentation
 
@@ -250,10 +250,10 @@ npm run setup              # Run automated setup wizard
 npm run status             # Check system health
 npm run product-research   # Find high-commission products
 npm run generate-content   # Generate AI content (requires OpenAI)
-npm run schedule-posts     # Schedule social media posts
+npm run schedule-posts     # Queue review items for manual posting
 npm run analytics:add      # Track daily metrics
 npm run analytics:summary  # View performance summary
-npm run automate           # Run full automation
+npm run automate           # Run automation runner (manual posting)
 npm test                   # Run integration tests
 ```
 
@@ -332,7 +332,7 @@ Potential improvements for future iterations:
 
 The automated setup system transforms the SatanicOtter platform from a complex manual setup to a streamlined one-command experience. Users can now get started in 5 minutes and immediately begin working toward their $1,000/day revenue goal.
 
-**Key Achievement:** Configured the "next step in the process" for this automated system - a fully automated initialization and setup process that eliminates manual configuration and reduces errors.
+**Key Achievement:** Configured the "next step in the process" for this automation system - a streamlined initialization and setup process that eliminates manual configuration and reduces errors.
 
 ---
 

@@ -451,6 +451,7 @@ AMAZON_AFFILIATE_TAG=yourname-20
 
 4. **Schedule Your Posts**
    - Follow optimal posting times
+   - Queue review items for manual posting
    - See [TIKTOK_INSTAGRAM_GUIDE.md](./TIKTOK_INSTAGRAM_GUIDE.md)
 
 5. **Monitor and Optimize**
@@ -548,8 +549,8 @@ npm run setup-profiles -- --niche tech  # Tech niche
 
 # Content & Posting
 npm run generate-content            # Generate AI content
-npm run schedule-posts              # Schedule posts
-npm run automate                    # Full automation
+npm run schedule-posts              # Queue review items
+npm run automate                    # Automation runner
 
 # Analytics
 npm run analytics:add               # Track daily metrics

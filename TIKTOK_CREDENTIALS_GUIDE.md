@@ -199,7 +199,7 @@ Session IDs expire after some time. You'll need to refresh when:
 
 ## 📚 Related Documentation
 
-- [Full Automation Guide](./PROFILE_AUTOMATION_GUIDE.md)
+- [Profile Automation Guide](./PROFILE_AUTOMATION_GUIDE.md)
 - [One Command Setup](./ONE_COMMAND_SETUP.md)
 - [Quick Start Guide](./QUICK_START.md)
 
