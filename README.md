@@ -43,7 +43,7 @@ Open `index.html` in a browser to create Amazon affiliate links locally.
 npm run generate-content    # AI scripts/hooks/captions
 npm run product-research    # High-ticket product report
 npm run schedule-posts      # Scheduler (manual review by default)
-npm run automate            # Generate + schedule
+npm run automate            # Generate + schedule review items
 npm run analytics:add       # Add daily metrics
 npm run analytics:summary   # View summary
 npm run setup-profiles      # Generate profile configs/bio templates

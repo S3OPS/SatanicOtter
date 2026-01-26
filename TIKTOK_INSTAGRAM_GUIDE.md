@@ -433,7 +433,7 @@ Formula in Column J: =H2/C2*1000
 ### Phase 2: Automation (Weeks 5-8) - Target: $1,000-$2,000/day
 - ✅ Implement AI content generation
 - ✅ Batch create 20-30 videos weekly
-- ✅ Auto-schedule posts
+- ✅ Schedule posts and queue for manual review
 - ✅ Expand to 5+ product categories
 - ✅ Grow audience (10,000-50,000 followers)
 
@@ -500,7 +500,7 @@ Formula in Column J: =H2/C2*1000
 - Prepare link-in-bio updates
 
 **Total:** 10 hours on Sunday = 30 videos = 6 videos/day × 7 days
-**Output:** Completely hands-off posting Monday-Saturday
+**Output:** Fully prepped content queued for manual posting Monday-Saturday
 
 ### Multi-Account Strategy (Advanced)
 
@@ -742,7 +742,7 @@ Regular periods: 5 videos/day
 
 ### Content Batching Tips
 1. **Create 15-20 videos per batch session**
-2. **Schedule using automation tools** (see AI Automation section)
+2. **Schedule using automation tools** (see AI Automation section; queue for manual review)
 3. **Mix trending and evergreen content** (70% trending, 30% evergreen)
 4. **Repurpose top performers** after 2-3 weeks
 5. **A/B test different posting times** for your niche
@@ -815,14 +815,13 @@ Regular periods: 5 videos/day
 ## 🤖 AI-Powered Automation Setup
 
 ### Overview
-This system automatically creates content and posts to TikTok and Instagram Reels using AI-generated scripts, voiceovers, and video editing.
+This system creates AI-generated scripts and queues scheduled review items. It does **not** upload videos to TikTok or Instagram in the current build.
 
 ### Prerequisites
 - Node.js 16+ installed
-- Python 3.8+ installed
-- TikTok account with API access
-- Instagram Business account with API access
-- OpenAI API key (for AI content generation)
+- TikTok account (optional for profile automation)
+- Instagram account (optional for profile automation)
+- OpenAI API key (optional for AI content generation)
 - Amazon Associates account
 
 ### Quick Start
@@ -830,7 +829,6 @@ This system automatically creates content and posts to TikTok and Instagram Reel
 1. **Install Dependencies**
    ```bash
    npm install
-   pip install -r requirements.txt
    ```
 
 2. **Configure API Keys**
@@ -843,29 +841,25 @@ This system automatically creates content and posts to TikTok and Instagram Reel
    # Generate content
    npm run generate-content
    
-   # Schedule posts
+   # Schedule posts (queues review items)
    npm run schedule-posts
    
-   # Run full automation
+   # Run automation runner
    npm run automate
    ```
 
 ### How It Works
 
 **Content Generation Flow:**
-1. AI analyzes trending products from Amazon
+1. AI analyzes suggested products from your categories
 2. Generates viral hooks and scripts
-3. Creates voiceover using text-to-speech
-4. Assembles video using templates
-5. Adds captions, effects, and music
-6. Exports in platform-optimized formats
+3. Saves scripts and captions for manual video creation
 
 **Posting Algorithm:**
-1. Content queue is loaded with generated videos
+1. Content queue is loaded with generated scripts
 2. Scheduler monitors optimal posting times
-3. Videos are automatically posted based on schedule
-4. Performance metrics are tracked
-5. Top-performing content is identified for repurposing
+3. Items are queued in `review-queue/` for manual posting
+4. Performance metrics are tracked manually with analytics
 
 ### Configuration Options
 
@@ -893,27 +887,23 @@ This system automatically creates content and posts to TikTok and Instagram Reel
 ### Advanced Features
 
 **Auto-Optimization:**
-- Automatically tests different hooks
-- A/B tests posting times
-- Identifies best-performing products
-- Adjusts content strategy based on analytics
+- A/B test hooks and posting times manually
+- Identify best-performing products from analytics
+- Adjust content strategy based on results
 
 **Content Variations:**
-- Generates multiple versions of each video
-- Tests different captions and hashtags
-- Varies video length and format
-- Rotates through viral templates
+- Generate multiple script versions per product
+- Test different captions and hashtags
+- Vary video length and format manually
 
 **Safety Features:**
-- Rate limiting to avoid platform bans
-- Content review queue (optional manual approval)
-- Automatic backup of all generated content
+- Content review queue for manual approval
+- Automatic backup of generated content
 - Error handling and retry logic
 
 ### See Also
-- [AI Content Generator Setup](./docs/ai-content-setup.md)
-- [Posting Automation Guide](./docs/posting-automation.md)
-- [Platform API Configuration](./docs/api-config.md)
+- [Profile Automation Guide](./PROFILE_AUTOMATION_GUIDE.md)
+- [Setup Guide](./SETUP_GUIDE.md)
 
 ---
 

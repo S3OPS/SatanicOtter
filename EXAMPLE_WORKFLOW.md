@@ -142,8 +142,8 @@ Link in bio before price goes up 🔗
 ## Step 6: Post Content
 
 **Schedule:**
-- 6:30 AM - Post to TikTok
-- 6:35 AM - Post to Instagram Reels
+- 6:30 AM - Post to TikTok (manual)
+- 6:35 AM - Post to Instagram Reels (manual)
 - Engage with comments first 30 minutes
 
 **Posting Details:**

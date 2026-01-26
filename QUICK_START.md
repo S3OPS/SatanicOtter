@@ -2,7 +2,7 @@
 
 ## 🚀 One-Command Setup
 
-Get your $1,000/day affiliate marketing automation system running with a single command!
+Get your affiliate marketing automation toolkit running with a single command!
 
 ### Prerequisites
 
@@ -47,7 +47,7 @@ The setup wizard will ask for:
   - Enables AI-powered video script generation
   - Can skip and add later
 
-### Optional (for auto-posting)
+### Optional (for profile automation)
 - **TikTok Credentials** - Username and session ID
 - **Instagram Credentials** - Username and password
 - Can skip and post manually
@@ -84,13 +84,13 @@ npm run analytics:add
 ```
 Log daily metrics toward your $1,000/day goal.
 
-### 5. Schedule Posts (if social media configured)
+### 5. Schedule Posts (manual review queue)
 ```bash
 npm run schedule-posts
 ```
-Automatically posts 5x/day at optimal times.
+Queues content into `review-queue/` for manual posting.
 
-### 6. Full Automation
+### 6. Automation Runner
 ```bash
 npm run automate
 ```
@@ -120,20 +120,20 @@ Run the complete workflow end-to-end.
 ### Semi-Automated Mode (After Learning)
 1. Run `npm run automate` to generate and queue content
 2. Review generated content
-3. Approve and auto-post at scheduled times
-4. Analytics tracked automatically
+3. Post manually using the queued content
+4. Analytics tracked via `npm run analytics:add`
 
-### Full Automation (Advanced)
-1. Set `AUTO_POST=true` in `.env`
+### Automation Runner (Advanced)
+1. Set `AUTO_POST=true` and `MANUAL_REVIEW=true` in `.env`
 2. Run `npm run automate`
-3. System handles everything
+3. System queues review items and logs placeholder posting activity
 4. Monitor with `npm run analytics:summary`
 
 ---
 
-## 🎯 Your Goal: $1,000/Day
+## 🎯 Revenue Targets
 
-The system is designed to help you reach $1,000/day through:
+The system is designed to help you track progress toward your revenue targets through:
 
 **Strategy:**
 - Focus on high-ticket products ($500-$2,500)
@@ -144,8 +144,8 @@ The system is designed to help you reach $1,000/day through:
 **Timeline:**
 - **Week 1-2:** Learn what works ($100-300/day)
 - **Week 3-4:** Optimize winners ($300-600/day)
-- **Week 5-8:** Scale to $1,000/day
-- **Week 9-12:** Maintain and grow ($1,000-2,000+/day)
+- **Week 5-8:** Scale to consistent daily revenue
+- **Week 9-12:** Maintain and grow
 
 ---
 
@@ -205,4 +205,4 @@ npm run setup
 npm run product-research
 ```
 
-**Let's get to $1,000/day!** 🚀
+**Let's get started!** 🚀

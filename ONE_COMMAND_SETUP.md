@@ -1,8 +1,8 @@
-# 🚀 One-Command Full Auto Setup
+# 🚀 One-Command Automation Setup
 
 ## Run Everything with a Single Command
 
-This system provides a **one-command full automation** that sets up your entire affiliate marketing system.
+This system provides a **one-command automation runner** that sets up your affiliate marketing tooling. It does not auto-upload videos; the scheduler queues review items for manual posting.
 
 ---
 
@@ -64,7 +64,7 @@ That's it! The system will:
 AMAZON_AFFILIATE_TAG=yourname-20
 PROFILE_AUTOMATION_ENABLED=true
 TIKTOK_USERNAME=your_tiktok_username
-TIKTOK_PASSWORD=your_password
+TIKTOK_SESSION_ID=your_session_id
 INSTAGRAM_USERNAME=your_instagram_username
 INSTAGRAM_PASSWORD=your_password
 ```
@@ -77,7 +77,7 @@ PROFILE_AUTOMATION_ENABLED=true
 
 # Social Media
 TIKTOK_USERNAME=your_tiktok_username
-TIKTOK_PASSWORD=your_password
+TIKTOK_SESSION_ID=your_session_id
 INSTAGRAM_USERNAME=your_instagram_username
 INSTAGRAM_PASSWORD=your_password
 
@@ -154,7 +154,7 @@ Step 1: Validating Configuration
 
 Required Configuration:
 ✅ AMAZON_AFFILIATE_TAG: Required for affiliate links
-✅ PROFILE_AUTOMATION_ENABLED: Must be "true" for full automation
+✅ PROFILE_AUTOMATION_ENABLED: Must be "true" for automation runner
 
 Profile Automation Configuration:
 ✅ TIKTOK_USERNAME: TikTok username
@@ -365,7 +365,7 @@ After running full auto setup, you should have:
 ✅ **System Ready**
 - All tools configured
 - Dependencies installed
-- Ready to post
+- Ready to post manually or via the review queue
 
 ---
 

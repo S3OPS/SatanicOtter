@@ -1,6 +1,6 @@
-# 🚀 Complete Setup Guide - $1,000/Day TikTok & Instagram Automation
+# 🚀 Complete Setup Guide - TikTok & Instagram Automation Toolkit
 
-This guide will walk you through setting up the complete automation system to reach $1,000/day in affiliate revenue.
+This guide walks you through configuring the automation toolkit, including the manual review queue used for posting.
 
 ## 📋 Table of Contents
 1. [Prerequisites](#prerequisites)
@@ -17,14 +17,14 @@ This guide will walk you through setting up the complete automation system to re
 
 ### Required Accounts
 - ✅ **Amazon Associates Account** (approved) - [Sign Up](https://affiliate-program.amazon.com/)
-- ✅ **TikTok Account** (can start with personal, upgrade to business later)
-- ✅ **Instagram Business Account** (required for API access)
-- ✅ **OpenAI Account** with API access - [Get API Key](https://platform.openai.com/)
+- ✅ **TikTok Account** (optional for profile automation; personal accounts work)
+- ✅ **Instagram Account** (optional for profile automation; Business only needed for Graph API)
+- ✅ **OpenAI Account** (optional for AI content generation) - [Get API Key](https://platform.openai.com/)
 
 ### Software Requirements
 - ✅ **Node.js 16+** - [Download](https://nodejs.org/)
-- ✅ **Python 3.8+** - [Download](https://www.python.org/)
 - ✅ **Git** - [Download](https://git-scm.com/)
+- ✅ **Python 3.8+** (optional for external video tooling; not used by current scripts) - [Download](https://www.python.org/)
 
 ### Recommended Tools
 - ✅ **Link-in-Bio Tool** (Stan Store, Linktree, or Beacons)
@@ -46,15 +46,10 @@ node --version
 # Check npm is available
 npm --version
 
-# Check Python version (should be 3.8+)
+# Optional: Check Python version (if you use external video tooling)
 python --version
 # or on some systems:
 python3 --version
-
-# Check pip is available
-pip --version
-# or on some systems:
-pip3 --version
 
 # Check Git is installed
 git --version
@@ -62,7 +57,7 @@ git --version
 
 **If any command returns "command not found":**
 - **Node.js/npm not found:** Install from [nodejs.org](https://nodejs.org/)
-- **Python/pip not found:** Install from [python.org](https://www.python.org/)
+- **Python not found:** Install from [python.org](https://www.python.org/) (only needed for external tooling)
 - **Git not found:** Install from [git-scm.com](https://git-scm.com/)
 
 After installing, **restart your terminal** before continuing.
@@ -96,17 +91,7 @@ cd SatanicOtter
 npm install
 ```
 
-Then install Python dependencies:
-
-```bash
-# Install Python dependencies
-pip install -r requirements.txt
-```
-
-**Note:** On some systems, you may need to use `pip3` instead of `pip`:
-```bash
-pip3 install -r requirements.txt
-```
+Optional: install Python dependencies if you use external tooling that reads `requirements.txt` (current Node.js scripts do not require this).
 
 ---
 
@@ -135,7 +120,7 @@ This will create a report showing:
 
 ## API Configuration
 
-### OpenAI API (Required)
+### OpenAI API (Optional)
 1. Go to [OpenAI Platform](https://platform.openai.com/)
 2. Navigate to API Keys section
 3. Create new secret key
@@ -152,8 +137,8 @@ This will create a report showing:
    AMAZON_AFFILIATE_TAG=yourname-20
    ```
 
-### TikTok (Optional - for auto-posting)
-For manual posting, skip this. For automation:
+### TikTok (Optional - for profile automation)
+For manual posting, skip this. For profile automation:
 1. Get session ID from browser cookies
 2. Add to `.env`:
    ```
@@ -161,11 +146,10 @@ For manual posting, skip this. For automation:
    TIKTOK_USERNAME=your_username
    ```
 
-### Instagram (Optional - for auto-posting)
-For manual posting, skip this. For automation:
-1. Convert to Business Account
-2. Get Facebook Graph API credentials
-3. Add to `.env`:
+### Instagram (Optional - for profile automation)
+For manual posting, skip this. For profile automation:
+1. Use browser automation with username/password **or** configure the Graph API (Business accounts only)
+2. Add to `.env`:
    ```
    INSTAGRAM_USERNAME=your_username
    INSTAGRAM_PASSWORD=your_app_password
@@ -221,16 +205,18 @@ npm run automate
 Check `review-queue/` folder for generated content before posting.
 
 **Step 3: Approve & Post**
-Videos are posted at scheduled times after approval.
+Review the queued JSON in `review-queue/` and post manually (auto-posting is not implemented in the current build).
 
 ---
 
-### Option 3: Full Automation (Advanced)
+### Option 3: Automation Runner (Advanced)
+
+The current automation runner generates content and schedules a review queue; it does **not** upload videos to TikTok or Instagram.
 
 Enable in `.env`:
 ```
 AUTO_POST=true
-MANUAL_REVIEW=false
+MANUAL_REVIEW=true
 ```
 
 Then run:
@@ -240,12 +226,9 @@ npm run automate
 
 System will:
 1. Generate content based on high-ticket products
-2. Schedule posts for optimal times
-3. Auto-post to TikTok and Instagram
-4. Track performance
-5. Optimize based on results
-
-⚠️ **Warning:** Start with manual mode to learn what works before enabling full automation.
+2. Schedule review items for optimal times
+3. Log placeholder posting activity
+4. Track performance manually via analytics
 
 ---
 
@@ -391,12 +374,12 @@ npm run analytics:summary 7
 **Solutions:**
 1. **Verify Installation:** Make sure you've installed the required software:
    - Node.js from [nodejs.org](https://nodejs.org/)
-   - Python from [python.org](https://www.python.org/)
+   - Python from [python.org](https://www.python.org/) (optional)
    
 2. **Restart Terminal:** After installing software, close and reopen your terminal
 
 3. **Check PATH:** The software may be installed but not in your system PATH
-   - On Windows: Search for "Environment Variables" and verify Node.js and Python are in PATH
+   - On Windows: Search for "Environment Variables" and verify Node.js (and Python if used) are in PATH
    - On Mac/Linux: Check `~/.bashrc`, `~/.zshrc`, or `~/.bash_profile`
 
 4. **Use Full Paths:** If PATH isn't configured, use full paths (examples, actual paths may vary):
@@ -404,8 +387,7 @@ npm run analytics:summary 7
    - Mac: `/usr/local/bin/npm install` (or `/opt/homebrew/bin/npm` for Apple Silicon)
 
 5. **Try Alternative Commands:**
-   - Use `python3` instead of `python`
-   - Use `pip3` instead of `pip`
+   - Use `python3` instead of `python` (optional tooling only)
 
 ### "destination path already exists" Error
 
@@ -552,8 +534,8 @@ npm run product-research          # Find high-ticket products
 npm run generate-content          # Generate AI scripts
 
 # Posting Automation
-npm run schedule-posts            # Schedule posts
-npm run automate                  # Full automation
+npm run schedule-posts            # Queue review items
+npm run automate                  # Automation runner
 
 # Analytics
 npm run analytics:add             # Add daily metrics
