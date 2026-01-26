@@ -159,7 +159,7 @@ Required Configuration:
 
 Profile Automation Configuration:
 ✅ TIKTOK_USERNAME: TikTok username
-✅ TIKTOK_PASSWORD: TikTok password (or TIKTOK_SESSION_ID)
+✅ TIKTOK_SESSION_ID: TikTok session ID (recommended)
 ✅ INSTAGRAM_USERNAME: Instagram username
 ✅ INSTAGRAM_PASSWORD: Instagram password
 

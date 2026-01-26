@@ -205,7 +205,7 @@ npm run automate
 Check `review-queue/` folder for generated content before posting.
 
 **Step 3: Approve & Post**
-Review the queued JSON in `review-queue/` and post manually. Automatic posting is not available in the current version.
+Review the queued JSON in `review-queue/` and post manually. Each file includes the platform, content fields (hook/script/caption), and a queued timestamp. Automatic posting is not available in the current version.
 
 ---
 
