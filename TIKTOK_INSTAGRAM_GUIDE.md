@@ -815,7 +815,7 @@ Regular periods: 5 videos/day
 ## 🤖 AI-Powered Automation Setup
 
 ### Overview
-This system creates AI-generated scripts and queues scheduled review items. It does **not** upload videos to TikTok or Instagram in the current build.
+This system creates AI-generated scripts and queues scheduled review items. It does **not** upload videos to TikTok or Instagram in the current version.
 
 ### Prerequisites
 - Node.js 16+ installed

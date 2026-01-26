@@ -24,7 +24,7 @@ This guide walks you through configuring the automation toolkit, including the m
 ### Software Requirements
 - ✅ **Node.js 16+** - [Download](https://nodejs.org/)
 - ✅ **Git** - [Download](https://git-scm.com/)
-- ✅ **Python 3.8+** (optional for external video tooling; not used by current scripts) - [Download](https://www.python.org/)
+- ✅ **Python 3.8+** (optional for external video tooling) - [Download](https://www.python.org/)
 
 ### Recommended Tools
 - ✅ **Link-in-Bio Tool** (Stan Store, Linktree, or Beacons)
@@ -205,7 +205,7 @@ npm run automate
 Check `review-queue/` folder for generated content before posting.
 
 **Step 3: Approve & Post**
-Review the queued JSON in `review-queue/` and post manually (auto-posting is not implemented in the current build).
+Review the queued JSON in `review-queue/` and post manually. Automatic posting is not available in the current version.
 
 ---
 

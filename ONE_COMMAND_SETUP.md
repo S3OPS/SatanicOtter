@@ -68,6 +68,7 @@ TIKTOK_SESSION_ID=your_session_id
 INSTAGRAM_USERNAME=your_instagram_username
 INSTAGRAM_PASSWORD=your_password
 ```
+Use `TIKTOK_SESSION_ID` for TikTok automation (more reliable than password-based login). See [TIKTOK_CREDENTIALS_GUIDE.md](./TIKTOK_CREDENTIALS_GUIDE.md) for details.
 
 ### Full Configuration (Recommended)
 ```env
