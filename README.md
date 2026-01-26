@@ -1,6 +1,6 @@
 # SatanicOtter
 
-SatanicOtter is a Node.js toolkit for Amazon affiliate marketing workflows with TikTok/Instagram content automation. The current build includes:
+SatanicOtter is a Node.js toolkit for Amazon affiliate marketing workflows with TikTok content automation. The current build includes:
 
 - Amazon affiliate link generator (`index.html`)
 - AI content generation with OpenAI (scripts, hooks, captions)
@@ -53,7 +53,7 @@ npm run automate-profiles   # Browser automation (dry-run by default)
 
 ## Automation notes
 
-- The scheduler currently queues content for manual review (`review-queue/`). TikTok/Instagram posting is stubbed in code and requires custom integration or browser automation.
+- The scheduler currently queues content for manual review (`review-queue/`). TikTok posting is stubbed in code and requires custom integration or browser automation.
 - Profile automation uses Puppeteer when installed and requires credentials in `.env`. Set `PROFILE_DRY_RUN=false` to apply changes.
 - OpenAI features require `OPENAI_API_KEY` in `.env` (see `.env.example`).
 
@@ -65,7 +65,7 @@ npm run automate-profiles   # Browser automation (dry-run by default)
 - [PROFILE_SETUP_GUIDE.md](./PROFILE_SETUP_GUIDE.md) - profile setup guidance
 - [PROFILE_AUTOMATION_GUIDE.md](./PROFILE_AUTOMATION_GUIDE.md) - automation with secrets/browser control
 - [TIKTOK_CREDENTIALS_GUIDE.md](./TIKTOK_CREDENTIALS_GUIDE.md) - session ID instructions
-- [TIKTOK_INSTAGRAM_GUIDE.md](./TIKTOK_INSTAGRAM_GUIDE.md) - strategy and content guidance
+- [TIKTOK_GUIDE.md](./TIKTOK_GUIDE.md) - strategy and content guidance
 
 ## License
 

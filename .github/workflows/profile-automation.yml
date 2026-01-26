@@ -41,7 +41,7 @@ jobs:
       - name: Install dependencies
         run: |
           npm ci
-          npm install puppeteer axios --no-save
+          npm install puppeteer --no-save
       
       - name: Run automated profile setup
         env:
@@ -49,14 +49,6 @@ jobs:
           TIKTOK_USERNAME: ${{ secrets.TIKTOK_USERNAME }}
           TIKTOK_PASSWORD: ${{ secrets.TIKTOK_PASSWORD }}
           TIKTOK_SESSION_ID: ${{ secrets.TIKTOK_SESSION_ID }}
-          
-          # Instagram credentials (add as GitHub Secrets)
-          INSTAGRAM_USERNAME: ${{ secrets.INSTAGRAM_USERNAME }}
-          INSTAGRAM_PASSWORD: ${{ secrets.INSTAGRAM_PASSWORD }}
-          
-          # Instagram Graph API (for Business accounts)
-          INSTAGRAM_GRAPH_API_TOKEN: ${{ secrets.INSTAGRAM_GRAPH_API_TOKEN }}
-          INSTAGRAM_ACCOUNT_ID: ${{ secrets.INSTAGRAM_ACCOUNT_ID }}
           
           # Automation configuration
           PROFILE_NICHE: ${{ github.event.inputs.niche || 'highTicket' }}

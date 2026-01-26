@@ -1,5 +1,5 @@
 /**
- * AI Content Generator for TikTok and Instagram Reels
+ * AI Content Generator for TikTok
  * 
  * This module generates viral content scripts, hooks, and video concepts
  * using AI (OpenAI GPT-4) based on trending products and templates.
@@ -97,7 +97,7 @@ async function generateContentIdeas(category, count = 5) {
   const categoryData = PRODUCT_CATEGORIES[category] || PRODUCT_CATEGORIES.electronics;
   const products = categoryData.keywords;
   
-  const prompt = `Generate ${count} viral TikTok/Instagram Reels content ideas for HIGH-TICKET affiliate marketing ($1,000/day revenue goal).
+  const prompt = `Generate ${count} viral TikTok content ideas for HIGH-TICKET affiliate marketing ($1,000/day revenue goal).
 
 Category: ${category}
 Products: ${products.join(', ')}
@@ -152,7 +152,7 @@ Format as JSON array with fields: hook, script, valueJustification, cta, hashtag
 async function generateScript(productName, productPrice, productBenefit) {
   const randomHook = HOOK_TEMPLATES[Math.floor(Math.random() * HOOK_TEMPLATES.length)];
   
-  const prompt = `Create a 25-second viral video script for TikTok/Instagram Reels promoting this product:
+  const prompt = `Create a 25-second viral video script for TikTok promoting this product:
 
 Product: ${productName}
 Price: $${productPrice}
@@ -194,7 +194,7 @@ Make it conversational, exciting, and focused on the transformation/benefit.`;
  * Generate caption with hashtags
  */
 async function generateCaption(productName, hook) {
-  const prompt = `Create a short, engaging Instagram/TikTok caption for this product video:
+  const prompt = `Create a short, engaging TikTok caption for this product video:
 
 Product: ${productName}
 Video Hook: ${hook}

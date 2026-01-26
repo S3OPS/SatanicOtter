@@ -18,10 +18,10 @@ This guide shows you how to make the profile setup **100% automated** using GitH
 **Security:** Credentials in local .env file
 **Setup time:** 5 minutes
 
-### Option 3: API-Based (Instagram Business Only)
-**Best for:** Instagram Business/Creator accounts
+### Option 3: API-Based (TikTok Partner Tools)
+**Best for:** TikTok Business/Creator accounts with approved tooling
 **Security:** Access tokens as secrets
-**Setup time:** 15 minutes (requires Facebook Developer app)
+**Setup time:** 15 minutes (requires TikTok Developer app)
 
 ---
 
@@ -59,15 +59,6 @@ TIKTOK_SESSION_ID=your_session_id_from_browser_cookies
 - ✅ No need to handle 2FA or captcha
 - ✅ No risk of account lockout from failed login attempts
 - ✅ Works even if you have 2FA enabled on your account
-
-**Required for Instagram:**
-```
-INSTAGRAM_USERNAME=your_instagram_username
-INSTAGRAM_PASSWORD=your_instagram_password
-# OR for Business accounts, use Graph API:
-INSTAGRAM_GRAPH_API_TOKEN=your_access_token
-INSTAGRAM_ACCOUNT_ID=your_instagram_account_id
-```
 
 **Optional Configuration:**
 ```
@@ -125,17 +116,13 @@ jobs:
       - name: Install dependencies
         run: |
           npm install
-          npm install puppeteer axios
+          npm install puppeteer
       
       - name: Run automated profile setup
         env:
           TIKTOK_USERNAME: ${{ secrets.TIKTOK_USERNAME }}
           TIKTOK_PASSWORD: ${{ secrets.TIKTOK_PASSWORD }}
           TIKTOK_SESSION_ID: ${{ secrets.TIKTOK_SESSION_ID }}
-          INSTAGRAM_USERNAME: ${{ secrets.INSTAGRAM_USERNAME }}
-          INSTAGRAM_PASSWORD: ${{ secrets.INSTAGRAM_PASSWORD }}
-          INSTAGRAM_GRAPH_API_TOKEN: ${{ secrets.INSTAGRAM_GRAPH_API_TOKEN }}
-          INSTAGRAM_ACCOUNT_ID: ${{ secrets.INSTAGRAM_ACCOUNT_ID }}
           PROFILE_NICHE: ${{ github.event.inputs.niche || 'highTicket' }}
           PROFILE_DRY_RUN: ${{ github.event.inputs.dry_run || 'true' }}
           PROFILE_AUTOMATION_ENABLED: true
@@ -192,10 +179,6 @@ TIKTOK_SESSION_ID=your_session_id_from_cookies
 # ALTERNATIVE: Use password (may require 2FA/captcha handling)
 # TIKTOK_PASSWORD=your_tiktok_password
 
-# Instagram credentials
-INSTAGRAM_USERNAME=your_instagram_username
-INSTAGRAM_PASSWORD=your_instagram_password
-
 # Configuration
 PROFILE_NICHE=highTicket
 PROFILE_DRY_RUN=true
@@ -225,69 +208,29 @@ npm run automate-profiles -- --niche tech
 
 After running, check:
 1. Your TikTok profile bio
-2. Your Instagram profile bio
+2. Your TikTok profile bio
 3. Logs in `logs/profile-automation.log`
 
 ---
 
-## 📱 Option 3: Instagram Graph API (Business Accounts Only)
+## 📱 Option 3: TikTok Partner Integrations
 
 ### Prerequisites
-- Instagram Business or Creator account
-- Facebook Page connected to Instagram
-- Facebook Developer account
+- TikTok Business or Creator account
+- Approved TikTok integration
+- TikTok Developer account
 
 ### Step 1: Create Facebook App
 
-1. Go to [Facebook Developers](https://developers.facebook.com/)
+1. Go to [TikTok Developers](https://developers.tiktok.com/)
 2. Create new app → Business type
-3. Add Instagram Basic Display product
+3. Request approved scopes
 4. Configure OAuth redirect URLs
 
 ### Step 2: Get Access Token
 
-1. Go to Graph API Explorer
-2. Select your app
-3. Add `instagram_basic` permission
-4. Generate access token
-5. Exchange for long-lived token (60 days)
-
-**Get long-lived token:**
-```bash
-curl -X GET "https://graph.facebook.com/v18.0/oauth/access_token?\
-grant_type=fb_exchange_token&\
-client_id=YOUR_APP_ID&\
-client_secret=YOUR_APP_SECRET&\
-fb_exchange_token=SHORT_LIVED_TOKEN"
-```
-
-### Step 3: Get Instagram Account ID
-
-```bash
-curl -X GET "https://graph.facebook.com/v18.0/me/accounts?\
-access_token=YOUR_ACCESS_TOKEN"
-
-# Then get Instagram account:
-curl -X GET "https://graph.facebook.com/v18.0/PAGE_ID?\
-fields=instagram_business_account&\
-access_token=YOUR_ACCESS_TOKEN"
-```
-
-### Step 4: Configure and Run
-
-Add to `.env`:
-```env
-INSTAGRAM_GRAPH_API_TOKEN=your_long_lived_token
-INSTAGRAM_ACCOUNT_ID=your_instagram_account_id
-PROFILE_AUTOMATION_ENABLED=true
-```
-
-Run:
-```bash
-npm run automate-profiles
-```
-
----
+1. Use TikTok OAuth to generate an access token
+2. Store it as a secret for automation
 
 ## 🔒 Security Best Practices
 
@@ -390,18 +333,16 @@ The password-based login is less reliable because:
 3. Add TIKTOK_SESSION_ID to your .env file
 4. This method is much more reliable and doesn't trigger security checks
 
-### "Invalid credentials" (Instagram)
-- Check username/password are correct
-- Disable 2FA temporarily or use session cookies
-- Try Graph API for Business accounts
-- Check for Instagram security alerts
+### "Invalid credentials" (TikTok)
+- Check TIKTOK_USERNAME is correct
+- Refresh TIKTOK_SESSION_ID
+- Check for TikTok security alerts
 
 ### "Captcha detected"
 Browser automation may trigger captchas:
 - Use session IDs instead of login
 - Add random delays between actions
 - Use puppeteer-extra-plugin-stealth
-- Consider Graph API for Instagram
 
 ### "Rate limited"
 Too many automation attempts:
@@ -466,13 +407,6 @@ After automation runs:
 - [ ] Profile accessible on TikTok app
 - [ ] Link in bio clickable
 
-### Instagram:
-- [ ] Bio text updated correctly
-- [ ] Business category set (if applicable)
-- [ ] Contact button enabled (if configured)
-- [ ] Profile public and accessible
-- [ ] Link in bio working
-
 ### Security:
 - [ ] No credentials in logs
 - [ ] Secrets not exposed in output
@@ -496,7 +430,7 @@ After automation runs:
 
 - [Puppeteer Documentation](https://pptr.dev/)
 - [Playwright Documentation](https://playwright.dev/)
-- [Instagram Graph API](https://developers.facebook.com/docs/instagram-api)
+- [TikTok Developers](https://developers.tiktok.com/)
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [GitHub Secrets Management](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 

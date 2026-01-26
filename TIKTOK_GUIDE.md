@@ -1,4 +1,4 @@
-# 🎬 TikTok Shop + Instagram Reels Monetization Guide
+# 🎬 TikTok Shop Monetization Guide
 
 ## 💰 Revenue Target: $1,000/Day Strategy
 
@@ -337,7 +337,7 @@ Track daily:
 - Audience demographics
 ```
 
-**2. Instagram Insights (Native)**
+**2. TikTok Insights (Native)**
 ```
 Track daily:
 - Reels plays
@@ -372,7 +372,7 @@ Track:
 Create master tracking sheet:
 Column A: Date
 Column B: Videos Posted
-Column C: Total Views (TikTok + Instagram)
+Column C: Total Views (TikTok)
 Column D: Profile Visits
 Column E: Link Clicks (from bio tool)
 Column F: Amazon Clicks (from Associates)
@@ -454,7 +454,7 @@ Formula in Column J: =H2/C2*1000
 5. **Pexels/Pixabay** - Stock footage (Free)
 
 **Scheduling:**
-1. **Later** - Instagram scheduling ($25/month)
+1. **Later** - TikTok scheduling ($25/month)
 2. **Buffer** - Multi-platform ($6/month)
 3. **Metricool** - Analytics + scheduling ($12/month)
 
@@ -702,7 +702,7 @@ Regular periods: 5 videos/day
 
 ### Optimal Posting Times (All Times EST)
 
-**Instagram Reels:**
+**TikTok:**
 - **Morning**: 6:00 AM - 9:00 AM (commute time)
 - **Lunch**: 11:30 AM - 1:30 PM (lunch break)
 - **Evening**: 7:00 PM - 9:00 PM (prime time)
@@ -768,7 +768,7 @@ Regular periods: 5 videos/day
    - Free tier available
 
 4. **Milkshake** (Mobile-first)
-   - Instagram-friendly
+   - TikTok-friendly
    - Card-style layout
    - Easy to update
 
@@ -815,12 +815,12 @@ Regular periods: 5 videos/day
 ## 🤖 AI-Powered Automation Setup
 
 ### Overview
-This system creates AI-generated scripts and queues review items for scheduled times. It does **not** upload videos to TikTok or Instagram in the current version.
+This system creates AI-generated scripts and queues review items for scheduled times. It does **not** upload videos to TikTok in the current version.
 
 ### Prerequisites
 - Node.js 16+ installed
 - TikTok account (optional for profile automation)
-- Instagram account (optional for profile automation)
+- TikTok account (optional for profile automation)
 - OpenAI API key (optional for AI content generation)
 - Amazon Associates account
 
@@ -878,7 +878,7 @@ This system creates AI-generated scripts and queues review items for scheduled t
 ```javascript
 {
   "timezone": "America/New_York",
-  "platforms": ["tiktok", "instagram"],
+  "platforms": ["tiktok"],
   "times": ["06:30", "09:00", "12:30", "15:00", "20:00"],
   "skipWeekends": false
 }
@@ -925,7 +925,7 @@ This system creates AI-generated scripts and queues review items for scheduled t
 
 ### Tracking Tools
 1. **TikTok Analytics** - Built-in platform insights
-2. **Instagram Insights** - Business account analytics
+2. **TikTok Insights** - Business/Creator analytics
 3. **Amazon Associates Dashboard** - Affiliate performance
 4. **Google Analytics** - Link-in-bio traffic tracking
 
@@ -954,7 +954,7 @@ This system creates AI-generated scripts and queues review items for scheduled t
 ## 🚀 Quick Win Checklist
 
 - [ ] Set up TikTok Shop affiliate account
-- [ ] Configure Instagram Business account
+- [ ] Configure TikTok Business account
 - [ ] Create link-in-bio page with top products
 - [ ] Batch create 20 videos using templates
 - [ ] Schedule posts for optimal times
@@ -984,7 +984,7 @@ This system creates AI-generated scripts and queues review items for scheduled t
 ## 📚 Additional Resources
 
 - [TikTok Creator Portal](https://www.tiktok.com/creators/)
-- [Instagram Reels Best Practices](https://business.instagram.com/instagram-reels)
+- [TikTok Creator Portal](https://www.tiktok.com/creators/)
 - [Amazon Associates Program](https://affiliate-program.amazon.com/)
 - [FTC Affiliate Disclosure Guidelines](https://www.ftc.gov/business-guidance/resources/disclosures-101-social-media-influencers)
 

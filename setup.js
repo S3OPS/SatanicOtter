@@ -229,20 +229,6 @@ async function createEnvironmentConfig() {
     }
   }
 
-  // Optional: Instagram
-  const configureInstagram = await question('Configure Instagram posting? (y/N): ');
-  if (configureInstagram.toLowerCase() === 'y') {
-    const instaUsername = await question('Instagram Username: ');
-    const instaPassword = await question('Instagram Password: ');
-    
-    if (instaUsername.trim()) {
-      envContent = envContent.replace('INSTAGRAM_USERNAME=your_instagram_username', `INSTAGRAM_USERNAME=${instaUsername.trim()}`);
-    }
-    if (instaPassword.trim()) {
-      envContent = envContent.replace('INSTAGRAM_PASSWORD=your_instagram_password', `INSTAGRAM_PASSWORD=${instaPassword.trim()}`);
-    }
-  }
-
   // Save .env file
   fs.writeFileSync(envPath, envContent);
   logSuccess('.env file created successfully');
@@ -266,7 +252,7 @@ async function validateConfiguration() {
   require('dotenv').config();
 
   const requiredVars = ['AMAZON_AFFILIATE_TAG'];
-  const optionalVars = ['OPENAI_API_KEY', 'TIKTOK_USERNAME', 'INSTAGRAM_USERNAME'];
+  const optionalVars = ['OPENAI_API_KEY', 'TIKTOK_USERNAME'];
 
   let isValid = true;
 
@@ -348,9 +334,9 @@ async function displayNextSteps() {
   log('   npm run automate\n');
 
   log('📖 DOCUMENTATION:\n', 'bright');
-  log('   • PROFILE_SETUP_GUIDE.md - Optimize TikTok & Instagram profiles', 'cyan');
+  log('   • PROFILE_SETUP_GUIDE.md - Optimize TikTok profiles', 'cyan');
   log('   • SETUP_GUIDE.md - Complete setup and operations guide', 'cyan');
-  log('   • TIKTOK_INSTAGRAM_GUIDE.md - Full monetization strategy', 'cyan');
+  log('   • TIKTOK_GUIDE.md - Full monetization strategy', 'cyan');
   log('   • EXAMPLE_WORKFLOW.md - Real-world example workflow', 'cyan');
   log('   • README.md - Project overview and quick start\n', 'cyan');
 
@@ -365,7 +351,7 @@ async function runSetup() {
   // Don't clear console - preserve output history
   
   log('🔥 SatanicOtter Automation System Setup 🔥\n', 'bright');
-  log('Complete Affiliate Marketing Automation for TikTok & Instagram', 'cyan');
+  log('Complete Affiliate Marketing Automation for TikTok', 'cyan');
   log('Goal: $1,000/day through high-ticket Amazon products\n', 'cyan');
 
   try {

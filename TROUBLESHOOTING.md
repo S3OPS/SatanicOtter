@@ -1,6 +1,6 @@
 # Troubleshooting Profile Automation
 
-This guide helps you resolve common issues with automated profile updates for TikTok and Instagram.
+This guide helps you resolve common issues with automated profile updates for TikTok.
 
 ## Common Issues
 
@@ -56,113 +56,6 @@ PROFILE_DRY_RUN=true npm run automate-profiles
 
 ---
 
-### Instagram: "Request failed with status code 400"
-
-**Symptom:**
-```
-❌ Error updating Instagram via Graph API: Request failed with status code 400
-```
-
-**Important:** Instagram Graph API does NOT support updating bio via API. This is a platform limitation.
-
-**Solutions:**
-
-#### Option 1: Manual Bio Update (Recommended for Graph API)
-The automation will now display your generated bio for manual copying:
-
-```
-💡 Your generated bio:
-   "🛍️ High-Ticket Product Reviews..."
-
-📋 Copy the bio above and paste it manually into Instagram.
-```
-
-**How to update manually:**
-1. Open Instagram app or website
-2. Go to Profile → Edit Profile → Bio
-3. Paste the generated bio
-4. Save
-
-#### Option 2: Use Browser Automation Instead
-For automatic updates, use browser automation (doesn't require Graph API):
-
-1. Remove or empty `INSTAGRAM_GRAPH_API_TOKEN` from `.env`
-2. Set these instead:
-   ```
-   INSTAGRAM_USERNAME=your_username
-   INSTAGRAM_PASSWORD=your_password
-   ```
-3. Run automation again
-
-**Note:** Browser automation works for personal accounts without Business/Creator setup.
-
-#### Option 3: Fix Graph API Configuration
-If you still see 400 errors when checking account info:
-
-**Common Causes:**
-- Invalid `INSTAGRAM_ACCOUNT_ID` (must be Instagram Business Account ID, not user ID)
-- Expired or invalid access token
-- Missing required permissions
-- Account not set up as Business or Creator account
-
-**How to Fix:**
-
-1. **Convert to Business Account:**
-   - Instagram App → Settings → Account
-   - Switch to Professional Account
-   - Choose Creator or Business
-
-2. **Connect Facebook Page:**
-   - Instagram App → Settings → Account
-   - Linked Accounts → Facebook
-   - Connect a Facebook Page
-
-3. **Get Your Account ID:**
-   - Visit: https://developers.facebook.com/tools/explorer/
-   - Select your app or create one
-   - Get User Access Token with `instagram_basic` permission
-   - Make a GET request to `/me/accounts` to find your Instagram Business Account ID
-
-4. **Update `.env`:**
-   ```
-   INSTAGRAM_ACCOUNT_ID=your_instagram_business_account_id
-   INSTAGRAM_GRAPH_API_TOKEN=your_access_token
-   ```
-
----
-
-### Instagram Browser Automation: Login Failed
-
-**Symptom:**
-```
-❌ Error updating Instagram profile: Login failed: ...
-```
-
-**Solutions:**
-
-#### 1. Verify Credentials
-```bash
-# Check your .env file
-cat .env | grep INSTAGRAM
-```
-
-Make sure username and password are correct.
-
-#### 2. Handle Two-Factor Authentication
-If you have 2FA enabled:
-
-**Option A:** Use session cookies (like TikTok)
-1. Login to Instagram in browser
-2. Get session cookies from Developer Tools
-3. Modify the code to inject cookies instead of login
-
-**Option B:** Disable 2FA temporarily (not recommended)
-
-#### 3. Check for Rate Limiting
-Instagram may temporarily block automated logins. Wait 30-60 minutes and try again.
-
----
-
 ## Testing Your Setup
 
 ### 1. Check Configuration
@@ -180,12 +73,6 @@ The automation now provides detailed troubleshooting tips:
 - Network accessibility checks
 - UI change notifications
 - Debug mode suggestions
-
-**Instagram errors include:**
-- Credential verification
-- 2FA handling advice
-- UI change notifications
-- Alternative approaches
 
 ### 3. Verify Automation Setup
 ```bash
@@ -249,18 +136,10 @@ If issues persist:
 - ✅ Better error messages with troubleshooting tips
 - ✅ Improved save button detection
 
-**Instagram Graph API:**
-- ✅ Proper error handling for 400 Bad Request
-- ✅ Account verification before bio update attempt
-- ✅ Clear documentation of API limitations
-- ✅ Manual bio copy workflow for Graph API users
-
-**Instagram Browser Automation:**
-- ✅ Multiple fallback selectors for all elements
-- ✅ Login error detection and reporting
-- ✅ Better handling of Instagram prompts
-- ✅ Improved form submission reliability
-- ✅ 60-second timeout for slow networks
+**TikTok troubleshooting includes:**
+- Session ID validation tips
+- UI change notifications
+- Browser debug guidance
 
 ---
 
@@ -268,7 +147,5 @@ If issues persist:
 
 1. **Always test in dry-run mode first**
 2. **Keep session IDs/tokens updated** - they expire
-3. **Use browser automation for personal accounts**
-4. **Use Graph API only if you need Business features**
-5. **Monitor for UI changes** - platforms update frequently
-6. **Run automation during off-peak hours** to avoid rate limits
+3. **Monitor for UI changes** - platforms update frequently
+4. **Run automation during off-peak hours** to avoid rate limits

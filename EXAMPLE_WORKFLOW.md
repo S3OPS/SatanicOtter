@@ -143,7 +143,7 @@ Link in bio before price goes up 🔗
 
 **Schedule:**
 - 6:30 AM - Post to TikTok (manual)
-- 6:35 AM - Post to Instagram Reels (manual)
+- 6:35 AM - Post to TikTok (manual)
 - Engage with comments first 30 minutes
 
 **Posting Details:**
