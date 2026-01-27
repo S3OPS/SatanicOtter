@@ -134,13 +134,19 @@ async function updateTikTokProfile(config) {
       'textarea[placeholder*="bio"]',
       'textarea[name="bio"]',
       'textarea[aria-label*="Bio"]',
+      'textarea[data-e2e="profile-bio-input"]',
       'textarea.bio-input',
-      'div[data-e2e="profile-bio-edit"] textarea'
+      'div[data-e2e="profile-bio-edit"] textarea',
+      'div[data-e2e="profile-bio-input"]',
+      'div[role="textbox"][data-e2e*="bio"]',
+      'div[contenteditable="true"][data-e2e*="bio"]',
+      'div[contenteditable="true"][aria-label*="Bio"]'
     ];
     
     let bioElement = null;
     let usedSelector = null;
-    
+    let hasContentEditableBio = false;
+
     for (const selector of bioSelectors) {
       try {
         await page.waitForSelector(selector, { timeout: 5000 });
@@ -155,16 +161,65 @@ async function updateTikTokProfile(config) {
         continue;
       }
     }
-    
+
     if (!bioElement) {
+      try {
+        hasContentEditableBio = await page.evaluate(() => {
+          const candidates = Array.from(document.querySelectorAll('[contenteditable="true"]'));
+          return Boolean(candidates.find((el) => {
+            const label = (el.getAttribute('aria-label') || '').toLowerCase();
+            const placeholder = (el.getAttribute('data-placeholder') || '').toLowerCase();
+            const e2e = (el.getAttribute('data-e2e') || '').toLowerCase();
+            const id = (el.getAttribute('id') || '').toLowerCase();
+            return (
+              label.includes('bio') ||
+              placeholder.includes('bio') ||
+              e2e.includes('bio') ||
+              id.includes('bio')
+            );
+          }));
+        });
+        if (hasContentEditableBio) {
+          console.log('✓ Found bio field using contenteditable search');
+        }
+      } catch (e) {
+        hasContentEditableBio = false;
+      }
+    }
+    
+    if (!bioElement && !hasContentEditableBio) {
       throw new Error('Could not find bio textarea field. TikTok UI may have changed or authentication failed. Please verify your session is valid and try again.');
     }
     
     // Update bio
     await page.evaluate((selector, text) => {
-      const elem = document.querySelector(selector);
-      elem.value = text;
+      const findEditableBio = () => Array.from(document.querySelectorAll('[contenteditable="true"]')).find((el) => {
+        const label = (el.getAttribute('aria-label') || '').toLowerCase();
+        const placeholder = (el.getAttribute('data-placeholder') || '').toLowerCase();
+        const e2e = (el.getAttribute('data-e2e') || '').toLowerCase();
+        const id = (el.getAttribute('id') || '').toLowerCase();
+        return (
+          label.includes('bio') ||
+          placeholder.includes('bio') ||
+          e2e.includes('bio') ||
+          id.includes('bio')
+        );
+      });
+
+      const elem = selector ? document.querySelector(selector) : findEditableBio();
+      if (!elem) {
+        return;
+      }
+
+      if ('value' in elem) {
+        elem.value = text;
+        elem.dispatchEvent(new Event('input', { bubbles: true }));
+        return;
+      }
+
+      elem.textContent = text;
       elem.dispatchEvent(new Event('input', { bubbles: true }));
+      elem.dispatchEvent(new Event('change', { bubbles: true }));
     }, usedSelector, config.bio);
     
     // Save changes
