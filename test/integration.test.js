@@ -243,6 +243,13 @@ test('profile automation checks configuration', () => {
   assert(Array.isArray(result.issues), 'checkAutomationSetup should return issues array');
 });
 
+test('profile automation includes TikTok bio selector fallbacks', () => {
+  const automationSource = fs.readFileSync('automation/profileAutomation.js', 'utf8');
+  assert(automationSource.includes('data-e2e="profile-bio-input"'), 'missing data-e2e bio selector');
+  assert(automationSource.includes('contenteditable="true"'), 'missing contenteditable bio selector');
+  assert(automationSource.includes('data-e2e*="bio"'), 'missing contenteditable bio fallback');
+});
+
 test('GitHub Actions workflow exists', () => {
   assert(fs.existsSync('.github/workflows/profile-automation.yml'), 
     'GitHub Actions workflow file not found');
