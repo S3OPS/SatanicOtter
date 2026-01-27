@@ -84,16 +84,23 @@ async function findElement(page, selectors, timeout = 5000) {
 /**
  * Find editable element by attributes
  */
-async function findEditableByAttributes(page, attributes) {
-  return await page.evaluate((attrs) => {
+async function findEditableByAttributes(page, searchTerms) {
+  return await page.evaluate((terms) => {
     const candidates = Array.from(document.querySelectorAll('[contenteditable="true"]'));
     return Boolean(candidates.find((el) => {
-      return attrs.some(attr => {
-        const value = (el.getAttribute(attr) || '').toLowerCase();
-        return attrs.some(searchTerm => value.includes(searchTerm.toLowerCase()));
+      const attrValues = [
+        el.getAttribute('aria-label') || '',
+        el.getAttribute('data-placeholder') || '',
+        el.getAttribute('data-e2e') || '',
+        el.getAttribute('id') || ''
+      ];
+      
+      return attrValues.some(value => {
+        const lowerValue = value.toLowerCase();
+        return terms.some(term => lowerValue.includes(term.toLowerCase()));
       });
     }));
-  }, attributes);
+  }, searchTerms);
 }
 
 /**

@@ -19,15 +19,12 @@ function validateFilePath(filepath, allowedDir = null) {
   // If allowedDir specified, ensure file is within that directory
   if (allowedDir) {
     const allowedResolved = path.resolve(allowedDir);
-    if (!resolved.startsWith(allowedResolved)) {
+    const relative = path.relative(allowedResolved, resolved);
+    
+    // Check if the relative path escapes the allowed directory
+    if (relative.startsWith('..') || path.isAbsolute(relative)) {
       throw new Error('Path traversal attempt detected');
     }
-  }
-  
-  // Block dangerous patterns
-  const dangerous = ['..', '~', '$'];
-  if (dangerous.some(pattern => filepath.includes(pattern))) {
-    throw new Error('Invalid characters in path');
   }
   
   return resolved;

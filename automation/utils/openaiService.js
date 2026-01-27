@@ -24,8 +24,11 @@ function getOpenAIClient() {
  * Check if an error is an OpenAI quota error
  */
 function isQuotaError(error) {
+  // Check various possible error formats from OpenAI API
   return error.code === 'insufficient_quota' || 
-         (error.error && error.error.code === 'insufficient_quota');
+         error.status === 429 ||
+         (error.error && error.error.code === 'insufficient_quota') ||
+         (error.error && error.error.type === 'insufficient_quota');
 }
 
 /**

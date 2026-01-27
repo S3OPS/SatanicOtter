@@ -68,7 +68,7 @@ function info(module, message, data) {
 }
 
 function debug(module, message, data) {
-  log(LogLevel.DEBUG, message, data);
+  log(LogLevel.DEBUG, module, message, data);
 }
 
 /**
