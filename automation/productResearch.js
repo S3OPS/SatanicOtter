@@ -45,9 +45,8 @@ const AMAZON_COMMISSION_RATES = {
   'Luggage': 6,
   'Musical Instruments': 3,
   'Office Products': 3,
-  'Outdoors': 5.5,
   'PC': 2.5,
-  'Pet Products': 5,
+  'Pet Products': 5
 };
 
 /**

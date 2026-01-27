@@ -93,6 +93,14 @@ module.exports = {
       rules: {
         'no-unused-expressions': 'off'
       }
+    },
+    {
+      // Browser automation files use page.evaluate() which runs in browser context
+      files: ['automation/utils/browserAutomation.js', 'automation/profileAutomation.js'],
+      globals: {
+        document: 'readonly',
+        window: 'readonly'
+      }
     }
   ],
   ignorePatterns: [
