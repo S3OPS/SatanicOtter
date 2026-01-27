@@ -5,202 +5,90 @@
  * to TikTok at optimal times.
  */
 
-// Load dotenv only if available
-try {
-  require('dotenv').config();
-} catch (e) {
-  // dotenv not available, continue without it
-}
-
+const { loadEnv, getEnv, getEnvBool, getEnvInt, getEnvArray } = require('./utils/config');
+const { appendToLog } = require('./utils/fileOps');
+const { info, error: logError, section } = require('./utils/logger');
+const ContentQueue = require('./services/contentQueue');
+const { postToTikTok } = require('./services/platformPosting');
 const cron = require('node-cron');
-const fs = require('fs').promises;
 const path = require('path');
+
+loadEnv();
 
 // Posting configuration
 const POSTING_CONFIG = {
-  timezone: process.env.TIMEZONE || 'America/New_York',
-  postsPerDay: parseInt(process.env.POSTS_PER_DAY) || 5,
-  times: (process.env.POSTING_TIMES || '06:30,09:00,12:30,15:00,20:00').split(','),
-  autoPost: process.env.AUTO_POST === 'true',
-  manualReview: process.env.MANUAL_REVIEW !== 'false'
+  timezone: getEnv('TIMEZONE', 'America/New_York'),
+  postsPerDay: getEnvInt('POSTS_PER_DAY', 5),
+  times: getEnvArray('POSTING_TIMES', ['06:30', '09:00', '12:30', '15:00', '20:00']),
+  autoPost: getEnvBool('AUTO_POST', false)
 };
 
-// Content queue
-let contentQueue = [];
+// Content queue and scheduled jobs
+const contentQueue = new ContentQueue();
 let scheduledJobs = [];
-
-/**
- * Load content from generated files
- */
-async function loadContent(filepath) {
-  try {
-    const contentDir = path.join(__dirname, '../generated-content');
-    const files = await fs.readdir(contentDir);
-    
-    // If no specific file, load the most recent
-    if (!filepath) {
-      const sortedFiles = files
-        .filter(f => f.endsWith('.json'))
-        .sort()
-        .reverse();
-      
-      if (sortedFiles.length === 0) {
-        throw new Error('No content files found. Run content generator first.');
-      }
-      
-      filepath = path.join(contentDir, sortedFiles[0]);
-    }
-    
-    const data = await fs.readFile(filepath, 'utf8');
-    const content = JSON.parse(data);
-    
-    console.log(`Loaded ${Array.isArray(content) ? content.length : 1} content items`);
-    return Array.isArray(content) ? content : [content];
-  } catch (error) {
-    console.error('Error loading content:', error.message);
-    throw error;
-  }
-}
 
 /**
  * Initialize content queue
  */
 async function initializeQueue(contentFile = null) {
-  contentQueue = await loadContent(contentFile);
-  console.log(`Content queue initialized with ${contentQueue.length} items`);
-  return contentQueue;
+  const count = await contentQueue.load(contentFile);
+  info('Scheduler', `Content queue initialized with ${count} items`);
+  return count;
 }
 
 /**
  * Get next content item from queue
  */
 function getNextContent() {
-  if (contentQueue.length === 0) {
-    console.warn('Content queue is empty!');
-    return null;
-  }
-  
-  // Rotate through queue
-  const content = contentQueue.shift();
-  contentQueue.push(content); // Add back to end for rotation
-  
-  return content;
+  return contentQueue.next();
 }
 
 /**
- * Post to TikTok (placeholder - requires TikTok API setup)
- * 
- * NOTE: TikTok does not provide a public API for posting videos.
- * Automated posting typically requires:
- * - Unofficial TikTok API libraries (may violate ToS)
- * - Browser automation (Puppeteer/Playwright)
- * - Manual upload via TikTok app
- * 
- * This is a placeholder showing the intended flow.
- * For production, consider:
- * 1. Manual posting with generated content
- * 2. Using TikTok's Creator Marketplace (if eligible)
- * 3. Browser automation (use with caution)
+ * Post to TikTok (delegates to platform posting service)
  */
-async function postToTikTok(content) {
-  
-  console.log('📱 Posting to TikTok:', {
-    hook: content.hook || 'Generated content',
-    category: content.category,
-    timestamp: new Date().toISOString()
-  });
-  
-  if (POSTING_CONFIG.manualReview) {
-    console.log('⏸️  Manual review enabled - content queued for approval');
-    await saveForReview(content, 'tiktok');
-    return { status: 'pending_review', platform: 'tiktok' };
-  }
-  
-  // Actual posting logic would go here
-  return { status: 'posted', platform: 'tiktok', contentId: content.timestamp };
-}
-
-/**
-/**
- * Save content for manual review
- */
-async function saveForReview(content, platform) {
-  const reviewDir = path.join(__dirname, '../review-queue');
-  await fs.mkdir(reviewDir, { recursive: true });
-  
-  const filename = `${platform}-${Date.now()}.json`;
-  const filepath = path.join(reviewDir, filename);
-  
-  await fs.writeFile(filepath, JSON.stringify({
-    platform,
-    content,
-    queuedAt: new Date().toISOString(),
-    status: 'pending'
-  }, null, 2));
-  
-  console.log(`Content saved for review: ${filepath}`);
+async function postContent(content) {
+  info('Scheduler', `Posting to TikTok: ${content.hook || content.category}`);
+  return await postToTikTok(content);
 }
 
 /**
  * Execute scheduled post
  */
 async function executeScheduledPost() {
-  console.log('\n⏰ Scheduled post execution triggered');
+  info('Scheduler', 'Scheduled post execution triggered');
   
   const content = getNextContent();
   if (!content) {
-    console.error('No content available to post');
+    logError('Scheduler', 'No content available to post');
     return;
   }
   
   try {
-    const tiktokResult = await postToTikTok(content);
+    const result = await postContent(content);
     
-    console.log('✅ Post execution complete:', {
-      tiktok: tiktokResult.status
-    });
+    info('Scheduler', `Post execution complete: ${result.status}`);
     
     // Log posting activity
-    await logActivity({
+    const logFile = path.join(__dirname, '../logs', `posting-log-${new Date().toISOString().split('T')[0]}.json`);
+    await appendToLog(logFile, {
       timestamp: new Date().toISOString(),
       content: content.hook || content.category,
-      tiktok: tiktokResult
+      result
     });
     
-  } catch (error) {
-    console.error('❌ Error executing post:', error.message);
+  } catch (err) {
+    logError('Scheduler', `Error executing post: ${err.message}`);
   }
-}
-
-/**
- * Log posting activity
- */
-async function logActivity(activity) {
-  const logDir = path.join(__dirname, '../logs');
-  await fs.mkdir(logDir, { recursive: true });
-  
-  const logFile = path.join(logDir, `posting-log-${new Date().toISOString().split('T')[0]}.json`);
-  
-  let logs = [];
-  try {
-    const existing = await fs.readFile(logFile, 'utf8');
-    logs = JSON.parse(existing);
-  } catch (error) {
-    // File doesn't exist yet
-  }
-  
-  logs.push(activity);
-  await fs.writeFile(logFile, JSON.stringify(logs, null, 2));
 }
 
 /**
  * Schedule posts for the day
  */
 function schedulePosts() {
-  console.log('\n📅 Scheduling posts...');
-  console.log('Timezone:', POSTING_CONFIG.timezone);
-  console.log('Posts per day:', POSTING_CONFIG.postsPerDay);
-  console.log('Times:', POSTING_CONFIG.times.join(', '));
+  section('Scheduling posts');
+  info('Scheduler', `Timezone: ${POSTING_CONFIG.timezone}`);
+  info('Scheduler', `Posts per day: ${POSTING_CONFIG.postsPerDay}`);
+  info('Scheduler', `Times: ${POSTING_CONFIG.times.join(', ')}`);
   
   // Clear existing scheduled jobs
   scheduledJobs.forEach(job => job.stop());
@@ -216,15 +104,15 @@ function schedulePosts() {
     });
     
     scheduledJobs.push(job);
-    console.log(`✓ Scheduled post for ${time} (${cronExpression})`);
+    info('Scheduler', `Scheduled post for ${time} (${cronExpression})`);
   });
   
-  console.log(`\n✅ ${scheduledJobs.length} posts scheduled`);
+  info('Scheduler', `${scheduledJobs.length} posts scheduled`);
   
   if (POSTING_CONFIG.autoPost) {
-    console.log('🤖 Auto-posting ENABLED - posts will publish automatically');
+    info('Scheduler', 'Auto-posting ENABLED - posts will publish automatically');
   } else {
-    console.log('👤 Manual review ENABLED - posts will be queued for approval');
+    info('Scheduler', 'Manual review ENABLED - posts will be queued for approval');
   }
 }
 
@@ -232,7 +120,7 @@ function schedulePosts() {
  * Start the scheduler
  */
 async function start(contentFile = null) {
-  console.log('🚀 Starting posting scheduler...\n');
+  section('Starting posting scheduler');
   
   try {
     // Load content
@@ -241,19 +129,19 @@ async function start(contentFile = null) {
     // Schedule posts
     schedulePosts();
     
-    console.log('\n✅ Scheduler running. Press Ctrl+C to stop.');
-    console.log(`Next posts scheduled for: ${POSTING_CONFIG.times.join(', ')}`);
+    info('Scheduler', 'Scheduler running. Press Ctrl+C to stop.');
+    info('Scheduler', `Next posts scheduled for: ${POSTING_CONFIG.times.join(', ')}`);
     
     // Keep process alive
     process.on('SIGINT', () => {
-      console.log('\n\n🛑 Stopping scheduler...');
+      section('Stopping scheduler');
       scheduledJobs.forEach(job => job.stop());
-      console.log('Goodbye!');
+      info('Scheduler', 'Goodbye!');
       process.exit(0);
     });
     
-  } catch (error) {
-    console.error('❌ Error starting scheduler:', error.message);
+  } catch (err) {
+    logError('Scheduler', `Error starting scheduler: ${err.message}`);
     process.exit(1);
   }
 }
@@ -267,6 +155,6 @@ if (require.main === module) {
 module.exports = {
   initializeQueue,
   schedulePosts,
-  postToTikTok,
+  postContent,
   start
 };

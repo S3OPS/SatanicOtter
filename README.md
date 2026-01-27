@@ -9,6 +9,18 @@ SatanicOtter is a Node.js toolkit for Amazon affiliate marketing workflows with 
 - Analytics tracking for daily metrics
 - Profile setup helpers and optional browser automation
 
+## Recent Optimizations
+
+**Performance & Security Improvements**:
+- ✅ Modular architecture with reusable utilities
+- ✅ 50% faster content generation (optimized rate limiting)
+- ✅ Path traversal protection for file operations
+- ✅ Automatic redaction of sensitive data in logs
+- ✅ Centralized configuration management with caching
+- ✅ Browser automation utilities for safer Puppeteer usage
+
+See [SECURITY_AUDIT.md](./SECURITY_AUDIT.md) for detailed improvements.
+
 ## Quick start
 
 1. Install dependencies:

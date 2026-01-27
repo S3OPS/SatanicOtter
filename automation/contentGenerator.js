@@ -5,48 +5,18 @@
  * using AI (OpenAI GPT-4) based on trending products and templates.
  */
 
-// Load dotenv only if available
-try {
-  require('dotenv').config();
-} catch (e) {
-  // dotenv not available, continue without it
-}
-
-const OpenAI = require('openai');
-const fs = require('fs').promises;
+const { loadEnv, getEnv, getEnvArray } = require('./utils/config');
+const { saveJSON } = require('./utils/fileOps');
+const { info, error: logError, section } = require('./utils/logger');
+const { 
+  generateCompletion, 
+  isQuotaError, 
+  handleOpenAIError, 
+  parseAIResponse 
+} = require('./utils/openaiService');
 const path = require('path');
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
-
-/**
- * Helper function to check if an error is an OpenAI quota error
- */
-function isQuotaError(error) {
-  return error.code === 'insufficient_quota' || (error.error && error.error.code === 'insufficient_quota');
-}
-
-/**
- * Helper function to handle OpenAI API errors with user-friendly messages
- */
-function handleOpenAIError(error, context = '') {
-  if (isQuotaError(error)) {
-    console.error('\n❌ OpenAI API Quota Exceeded');
-    console.error('─'.repeat(60));
-    console.error('Your OpenAI API key has exceeded its quota limit.');
-    if (context) {
-      console.error(`Context: ${context}`);
-    }
-    console.error('\n💡 How to fix:');
-    console.error('1. Check your billing: https://platform.openai.com/account/billing');
-    console.error('2. Add payment method or upgrade your plan');
-    console.error('3. Review usage: https://platform.openai.com/account/usage');
-    console.error('4. Consider using a different API key\n');
-    console.error('📚 More info: https://platform.openai.com/docs/guides/error-codes/api-errors');
-    console.error('─'.repeat(60));
-  }
-}
+loadEnv();
 
 // Viral hook templates
 const HOOK_TEMPLATES = [
@@ -117,31 +87,21 @@ For each idea, provide:
 Format as JSON array with fields: hook, script, valueJustification, cta, hashtags, productPrice, expectedCommission`;
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: process.env.OPENAI_MODEL || "gpt-4o-mini",
-      messages: [
-        { 
-          role: "system", 
-          content: "You are an expert in viral social media content creation for HIGH-TICKET affiliate marketing. Focus on faceless, POV-style content that justifies premium prices and drives conversions for $500+ products. Goal: $1,000/day revenue through 5-10 high-ticket sales." 
-        },
-        { role: "user", content: prompt }
-      ],
+    const content = await generateCompletion([
+      { 
+        role: "system", 
+        content: "You are an expert in viral social media content creation for HIGH-TICKET affiliate marketing. Focus on faceless, POV-style content that justifies premium prices and drives conversions for $500+ products. Goal: $1,000/day revenue through 5-10 high-ticket sales." 
+      },
+      { role: "user", content: prompt }
+    ], {
       temperature: 0.8,
-      max_tokens: 2500
+      max_tokens: 2500,
+      context: 'generating content ideas'
     });
-
-    const content = completion.choices[0].message.content;
     
-    // Try to parse JSON, fallback to structured text
-    try {
-      return JSON.parse(content);
-    } catch (e) {
-      console.log('Could not parse as JSON, returning raw content');
-      return { raw: content };
-    }
+    return parseAIResponse(content);
   } catch (error) {
-    console.error('Error generating content:', error);
-    handleOpenAIError(error, 'generating content ideas');
+    logError('ContentGenerator', `Error generating content: ${error.message}`);
     throw error;
   }
 }
@@ -169,23 +129,19 @@ Format:
 Make it conversational, exciting, and focused on the transformation/benefit.`;
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: process.env.OPENAI_MODEL || "gpt-4o-mini",
-      messages: [
-        { 
-          role: "system", 
-          content: "You are an expert copywriter for viral short-form video content. Write scripts that hook viewers immediately and drive them to take action." 
-        },
-        { role: "user", content: prompt }
-      ],
+    return await generateCompletion([
+      { 
+        role: "system", 
+        content: "You are an expert copywriter for viral short-form video content. Write scripts that hook viewers immediately and drive them to take action." 
+      },
+      { role: "user", content: prompt }
+    ], {
       temperature: 0.9,
-      max_tokens: 500
+      max_tokens: 500,
+      context: 'generating script'
     });
-
-    return completion.choices[0].message.content;
   } catch (error) {
-    console.error('Error generating script:', error);
-    handleOpenAIError(error, 'generating script');
+    logError('ContentGenerator', `Error generating script: ${error.message}`);
     throw error;
   }
 }
@@ -207,36 +163,18 @@ Requirements:
 - Make it curiosity-driven`;
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: process.env.OPENAI_MODEL || "gpt-4o-mini",
-      messages: [
-        { role: "system", content: "You are a social media caption expert focused on driving engagement and clicks." },
-        { role: "user", content: prompt }
-      ],
+    return await generateCompletion([
+      { role: "system", content: "You are a social media caption expert focused on driving engagement and clicks." },
+      { role: "user", content: prompt }
+    ], {
       temperature: 0.7,
-      max_tokens: 200
+      max_tokens: 200,
+      context: 'generating caption'
     });
-
-    return completion.choices[0].message.content;
   } catch (error) {
-    console.error('Error generating caption:', error);
-    handleOpenAIError(error, 'generating caption');
+    logError('ContentGenerator', `Error generating caption: ${error.message}`);
     throw error;
   }
-}
-
-/**
- * Save generated content to file
- */
-async function saveContent(content, filename) {
-  const contentDir = path.join(__dirname, '../generated-content');
-  await fs.mkdir(contentDir, { recursive: true });
-  
-  const filepath = path.join(contentDir, filename);
-  await fs.writeFile(filepath, JSON.stringify(content, null, 2));
-  
-  console.log(`Content saved to: ${filepath}`);
-  return filepath;
 }
 
 /**
@@ -244,19 +182,19 @@ async function saveContent(content, filename) {
  */
 async function batchGenerateContent(options = {}) {
   const {
-    categories = process.env.PRODUCT_CATEGORIES?.split(',') || ['electronics', 'home', 'supplements'],
+    categories = getEnvArray('PRODUCT_CATEGORIES', ['electronics', 'home', 'supplements']),
     itemsPerCategory = 5,
     outputFile = `content-batch-${Date.now()}.json`
   } = options;
 
-  console.log('Starting content generation...');
-  console.log(`Categories: ${categories.join(', ')}`);
-  console.log(`Items per category: ${itemsPerCategory}`);
+  section('Starting content generation');
+  info('ContentGenerator', `Categories: ${categories.join(', ')}`);
+  info('ContentGenerator', `Items per category: ${itemsPerCategory}`);
 
   const allContent = [];
 
   for (const category of categories) {
-    console.log(`\nGenerating content for ${category}...`);
+    info('ContentGenerator', `Generating content for ${category}...`);
     
     try {
       const ideas = await generateContentIdeas(category, itemsPerCategory);
@@ -277,43 +215,43 @@ async function batchGenerateContent(options = {}) {
         });
       }
       
-      // Rate limiting - wait 2 seconds between categories
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Rate limiting - wait 1 second between categories (optimized from 2s)
+      await new Promise(resolve => setTimeout(resolve, 1000));
     } catch (error) {
-      console.error(`Error generating content for ${category}:`, error.message);
+      logError('ContentGenerator', `Error generating content for ${category}: ${error.message}`);
       
       // Check for OpenAI quota error - if we hit this, stop trying other categories
       if (isQuotaError(error)) {
-        console.error('\n⚠️  Stopping content generation due to API quota limit');
-        break; // Exit the loop, no point trying other categories
+        logError('ContentGenerator', 'Stopping content generation due to API quota limit');
+        break;
       }
     }
   }
 
-  console.log(`\nGenerated ${allContent.length} content pieces`);
+  info('ContentGenerator', `Generated ${allContent.length} content pieces`);
   
-  const savedPath = await saveContent(allContent, outputFile);
+  const savedPath = await saveJSON(allContent, path.join(__dirname, '../generated-content', outputFile));
   return { content: allContent, filepath: savedPath };
 }
 
 // CLI execution
 if (require.main === module) {
-  console.log('🎬 AI Content Generator Starting...\n');
+  section('AI Content Generator Starting');
   
-  if (!process.env.OPENAI_API_KEY) {
-    console.error('❌ Error: OPENAI_API_KEY not found in environment variables');
-    console.error('Please copy .env.example to .env and add your API key');
+  if (!getEnv('OPENAI_API_KEY')) {
+    logError('ContentGenerator', 'OPENAI_API_KEY not found in environment variables');
+    logError('ContentGenerator', 'Please copy .env.example to .env and add your API key');
     process.exit(1);
   }
 
   batchGenerateContent()
     .then(result => {
-      console.log('\n✅ Content generation complete!');
-      console.log(`📁 Saved to: ${result.filepath}`);
-      console.log(`📊 Total items: ${result.content.length}`);
+      info('ContentGenerator', 'Content generation complete!');
+      info('ContentGenerator', `Saved to: ${result.filepath}`);
+      info('ContentGenerator', `Total items: ${result.content.length}`);
     })
     .catch(error => {
-      console.error('\n❌ Error:', error.message);
+      logError('ContentGenerator', error.message);
       
       // Provide specific guidance for quota errors
       if (isQuotaError(error)) {
