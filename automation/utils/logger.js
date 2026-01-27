@@ -1,7 +1,9 @@
 /**
  * Logging Utility
- * Standardized logging across modules
+ * Standardized logging across modules with security
  */
+
+const { redactSensitive } = require('./security');
 
 /**
  * Log levels
@@ -21,7 +23,7 @@ function timestamp() {
 }
 
 /**
- * Log with level
+ * Log with level (with automatic redaction of sensitive data)
  */
 function log(level, module, message, data = null) {
   const prefix = {
@@ -31,7 +33,9 @@ function log(level, module, message, data = null) {
     DEBUG: '🔍'
   }[level] || 'ℹ️ ';
   
-  const msg = `${prefix} [${module}] ${message}`;
+  // Redact sensitive data from message
+  const safeMessage = redactSensitive(message);
+  const msg = `${prefix} [${module}] ${safeMessage}`;
   
   if (level === LogLevel.ERROR) {
     console.error(msg);
@@ -42,7 +46,9 @@ function log(level, module, message, data = null) {
   }
   
   if (data) {
-    console.log(data);
+    // Redact sensitive data if data is a string
+    const safeData = typeof data === 'string' ? redactSensitive(data) : data;
+    console.log(safeData);
   }
 }
 

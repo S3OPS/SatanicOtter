@@ -1,17 +1,20 @@
 /**
  * File Operations Utility
- * Centralized file I/O with error handling
+ * Centralized file I/O with error handling and security
  */
 
 const fs = require('fs').promises;
 const path = require('path');
+const { validateFilePath } = require('./security');
 
 /**
  * Ensure directory exists (create if not)
  */
 async function ensureDir(dirPath) {
   try {
-    await fs.mkdir(dirPath, { recursive: true });
+    // Validate path to prevent path traversal
+    const safePath = validateFilePath(dirPath);
+    await fs.mkdir(safePath, { recursive: true });
     return true;
   } catch (error) {
     console.error(`Failed to create directory ${dirPath}:`, error.message);
@@ -23,10 +26,12 @@ async function ensureDir(dirPath) {
  * Save JSON to file with automatic directory creation
  */
 async function saveJSON(data, filepath) {
-  const dir = path.dirname(filepath);
+  // Validate path to prevent path traversal
+  const safePath = validateFilePath(filepath);
+  const dir = path.dirname(safePath);
   await ensureDir(dir);
-  await fs.writeFile(filepath, JSON.stringify(data, null, 2));
-  return filepath;
+  await fs.writeFile(safePath, JSON.stringify(data, null, 2));
+  return safePath;
 }
 
 /**
@@ -34,7 +39,9 @@ async function saveJSON(data, filepath) {
  */
 async function loadJSON(filepath) {
   try {
-    const data = await fs.readFile(filepath, 'utf8');
+    // Validate path to prevent path traversal
+    const safePath = validateFilePath(filepath);
+    const data = await fs.readFile(safePath, 'utf8');
     return JSON.parse(data);
   } catch (error) {
     throw new Error(`Failed to load JSON from ${filepath}: ${error.message}`);
@@ -46,12 +53,14 @@ async function loadJSON(filepath) {
  */
 async function getMostRecentFile(dirPath, pattern = /\.json$/) {
   try {
-    const files = await fs.readdir(dirPath);
+    // Validate path to prevent path traversal
+    const safePath = validateFilePath(dirPath);
+    const files = await fs.readdir(safePath);
     const matchingFiles = files
       .filter(f => pattern.test(f))
       .map(f => ({
         name: f,
-        path: path.join(dirPath, f)
+        path: path.join(safePath, f)
       }))
       .sort((a, b) => b.name.localeCompare(a.name));
     
@@ -65,18 +74,20 @@ async function getMostRecentFile(dirPath, pattern = /\.json$/) {
  * Append to log file (creates if not exists)
  */
 async function appendToLog(logPath, entry) {
-  const dir = path.dirname(logPath);
+  // Validate path to prevent path traversal
+  const safePath = validateFilePath(logPath);
+  const dir = path.dirname(safePath);
   await ensureDir(dir);
   
   let logs = [];
   try {
-    logs = await loadJSON(logPath);
+    logs = await loadJSON(safePath);
   } catch (error) {
     // File doesn't exist yet, start fresh
   }
   
   logs.push(entry);
-  await saveJSON(logs, logPath);
+  await saveJSON(logs, safePath);
   return logs.length;
 }
 

@@ -7,27 +7,33 @@
  * Security: Uses GitHub Secrets or environment variables for sensitive data.
  */
 
-// Load dotenv only if available
-try {
-  require('dotenv').config();
-} catch (e) {
-  // dotenv not available, continue without it
-}
-
+const { loadEnv, getEnv, getEnvBool } = require('./utils/config');
+const { info, error: logError, warn, section } = require('./utils/logger');
+const { 
+  isPuppeteerAvailable, 
+  launchBrowser, 
+  setSessionCookie, 
+  findElement,
+  setText,
+  navigateSafe,
+  humanDelay
+} = require('./utils/browserAutomation');
 const { generateBio } = require('./profileSetup');
+
+loadEnv();
 
 /**
  * Configuration for automated profile updates
  */
 const AUTOMATION_CONFIG = {
-  enabled: process.env.PROFILE_AUTOMATION_ENABLED === 'true',
+  enabled: getEnvBool('PROFILE_AUTOMATION_ENABLED', false),
   tiktok: {
-    username: process.env.TIKTOK_USERNAME,
-    password: process.env.TIKTOK_PASSWORD,
-    sessionId: process.env.TIKTOK_SESSION_ID
+    username: getEnv('TIKTOK_USERNAME'),
+    password: getEnv('TIKTOK_PASSWORD'),
+    sessionId: getEnv('TIKTOK_SESSION_ID')
   },
-  niche: process.env.PROFILE_NICHE || 'highTicket',
-  dryRun: process.env.PROFILE_DRY_RUN !== 'false' // Default to dry run for safety
+  niche: getEnv('PROFILE_NICHE', 'highTicket'),
+  dryRun: getEnvBool('PROFILE_DRY_RUN', true) // Default to dry run for safety
 };
 
 /**
@@ -68,24 +74,20 @@ function checkAutomationSetup() {
  * @returns {Promise<Object>} - Update result
  */
 async function updateTikTokProfile(config) {
-  console.log('🎬 Updating TikTok profile...');
+  info('ProfileAutomation', 'Updating TikTok profile...');
   
   if (AUTOMATION_CONFIG.dryRun) {
-    console.log('🔍 DRY RUN MODE - No actual changes will be made\n');
-    console.log('Would update TikTok profile with:');
-    console.log(`  Username: ${AUTOMATION_CONFIG.tiktok.username}`);
-    console.log(`  Bio: ${config.bio}`);
-    console.log(`  Category: ${config.setup.category}`);
-    console.log('\nTo enable actual updates, set PROFILE_DRY_RUN=false in .env\n');
+    info('ProfileAutomation', 'DRY RUN MODE - No actual changes will be made');
+    info('ProfileAutomation', `Would update TikTok profile for: ${AUTOMATION_CONFIG.tiktok.username}`);
+    info('ProfileAutomation', `Bio: ${config.bio}`);
+    info('ProfileAutomation', `Category: ${config.setup.category}`);
+    warn('ProfileAutomation', 'To enable actual updates, set PROFILE_DRY_RUN=false in .env');
     return { success: true, dryRun: true };
   }
   
   // Check if Puppeteer is available
-  let puppeteer;
-  try {
-    puppeteer = require('puppeteer');
-  } catch (error) {
-    console.error('❌ Puppeteer not installed. Install with: npm install puppeteer');
+  if (!isPuppeteerAvailable()) {
+    logError('ProfileAutomation', 'Puppeteer not installed. Install with: npm install puppeteer');
     console.log('\n💡 Alternative: Use browser automation tools:');
     console.log('   • Puppeteer: npm install puppeteer');
     console.log('   • Playwright: npm install playwright');
@@ -94,169 +96,83 @@ async function updateTikTokProfile(config) {
   }
   
   try {
-    const browser = await puppeteer.launch({ 
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
-    });
+    const browser = await launchBrowser();
     const page = await browser.newPage();
     
     // Set longer timeout for slow networks
-    page.setDefaultTimeout(60000); // 60 seconds
+    page.setDefaultTimeout(60000);
     
     // Navigate to TikTok login
-    await page.goto('https://www.tiktok.com/login', { waitUntil: 'networkidle2', timeout: 60000 });
+    const loginSuccess = await navigateSafe(page, 'https://www.tiktok.com/login');
+    if (!loginSuccess) {
+      throw new Error('Failed to navigate to TikTok login page');
+    }
     
-    // Login logic would go here
-    // Note: TikTok has bot detection, so this may require:
-    // - Session cookie injection (using TIKTOK_SESSION_ID)
-    // - Stealth plugins
-    // - Human-like delays and mouse movements
-    
+    // Use session cookie if available (recommended)
     if (AUTOMATION_CONFIG.tiktok.sessionId) {
-      // Use existing session
-      await page.setCookie({
-        name: 'sessionid',
-        value: AUTOMATION_CONFIG.tiktok.sessionId,
-        domain: '.tiktok.com'
-      });
+      await setSessionCookie(page, '.tiktok.com', AUTOMATION_CONFIG.tiktok.sessionId);
     } else {
-      // Login with credentials (requires handling 2FA, captcha, etc.)
-      // This is complex and may violate TikTok ToS
-      console.warn('⚠️  Username/password login requires additional captcha/2FA handling');
+      warn('ProfileAutomation', 'Username/password login requires additional captcha/2FA handling');
     }
     
     // Navigate to profile settings
-    await page.goto('https://www.tiktok.com/setting', { waitUntil: 'networkidle2', timeout: 60000 });
+    const settingsSuccess = await navigateSafe(page, 'https://www.tiktok.com/setting');
+    if (!settingsSuccess) {
+      throw new Error('Failed to navigate to TikTok settings page');
+    }
     
-    // Try multiple selectors for bio field (TikTok UI may vary)
+    // Human-like delay
+    await humanDelay(1000, 2000);
+    
+    // Find bio field using multiple selectors
     const bioSelectors = [
       'textarea[placeholder*="Bio"]',
       'textarea[placeholder*="bio"]',
       'textarea[name="bio"]',
       'textarea[aria-label*="Bio"]',
       'textarea[data-e2e="profile-bio-input"]',
-      'textarea.bio-input',
-      'div[data-e2e="profile-bio-edit"] textarea',
-      'div[data-e2e="profile-bio-input"]',
-      'div[role="textbox"][data-e2e*="bio"]',
       'div[contenteditable="true"][data-e2e*="bio"]',
       'div[contenteditable="true"][aria-label*="Bio"]'
     ];
     
-    let bioElement = null;
-    let usedSelector = null;
-    let hasContentEditableBio = false;
-
-    for (const selector of bioSelectors) {
-      try {
-        await page.waitForSelector(selector, { timeout: 5000 });
-        bioElement = await page.$(selector);
-        if (bioElement) {
-          usedSelector = selector;
-          console.log(`✓ Found bio field using selector: ${selector}`);
-          break;
-        }
-      } catch (e) {
-        // Try next selector
-        continue;
-      }
-    }
-
+    const { element: bioElement, selector: usedSelector } = await findElement(page, bioSelectors);
+    
     if (!bioElement) {
-      try {
-        hasContentEditableBio = await page.evaluate(() => {
-          const candidates = Array.from(document.querySelectorAll('[contenteditable="true"]'));
-          return Boolean(candidates.find((el) => {
-            const label = (el.getAttribute('aria-label') || '').toLowerCase();
-            const placeholder = (el.getAttribute('data-placeholder') || '').toLowerCase();
-            const e2e = (el.getAttribute('data-e2e') || '').toLowerCase();
-            const id = (el.getAttribute('id') || '').toLowerCase();
-            return (
-              label.includes('bio') ||
-              placeholder.includes('bio') ||
-              e2e.includes('bio') ||
-              id.includes('bio')
-            );
-          }));
-        });
-        if (hasContentEditableBio) {
-          console.log('✓ Found bio field using contenteditable search');
-        }
-      } catch (e) {
-        hasContentEditableBio = false;
-      }
+      throw new Error('Could not find bio field. TikTok UI may have changed or authentication failed.');
     }
     
-    if (!bioElement && !hasContentEditableBio) {
-      throw new Error('Could not find bio textarea field. TikTok UI may have changed or authentication failed. Please verify your session is valid and try again.');
-    }
+    info('ProfileAutomation', `Found bio field using selector: ${usedSelector}`);
     
     // Update bio
-    await page.evaluate((selector, text) => {
-      const findEditableBio = () => Array.from(document.querySelectorAll('[contenteditable="true"]')).find((el) => {
-        const label = (el.getAttribute('aria-label') || '').toLowerCase();
-        const placeholder = (el.getAttribute('data-placeholder') || '').toLowerCase();
-        const e2e = (el.getAttribute('data-e2e') || '').toLowerCase();
-        const id = (el.getAttribute('id') || '').toLowerCase();
-        return (
-          label.includes('bio') ||
-          placeholder.includes('bio') ||
-          e2e.includes('bio') ||
-          id.includes('bio')
-        );
-      });
-
-      const elem = selector ? document.querySelector(selector) : findEditableBio();
-      if (!elem) {
-        return;
-      }
-
-      if ('value' in elem) {
-        elem.value = text;
-        elem.dispatchEvent(new Event('input', { bubbles: true }));
-        return;
-      }
-
-      elem.textContent = text;
-      elem.dispatchEvent(new Event('input', { bubbles: true }));
-      elem.dispatchEvent(new Event('change', { bubbles: true }));
-    }, usedSelector, config.bio);
+    const isContentEditable = usedSelector.includes('contenteditable');
+    await setText(page, usedSelector, config.bio, isContentEditable);
     
-    // Save changes
+    // Human-like delay before saving
+    await humanDelay(500, 1000);
+    
+    // Find and click save button
     const saveSelectors = ['button[type="submit"]', 'button:has-text("Save")', 'button.save-button'];
-    let saved = false;
+    const { element: saveButton } = await findElement(page, saveSelectors, 3000);
     
-    for (const selector of saveSelectors) {
-      try {
-        const saveButton = await page.$(selector);
-        if (saveButton) {
-          await saveButton.click();
-          saved = true;
-          break;
-        }
-      } catch (e) {
-        continue;
-      }
+    if (saveButton) {
+      await saveButton.click();
+      await humanDelay(2000, 3000);
+    } else {
+      warn('ProfileAutomation', 'Could not find save button, changes may not be saved');
     }
-    
-    if (!saved) {
-      console.warn('⚠️  Could not find save button, changes may not be saved');
-    }
-    
-    await page.waitForTimeout(3000);
     
     await browser.close();
     
-    console.log('✅ TikTok profile updated successfully');
+    info('ProfileAutomation', 'TikTok profile updated successfully');
     return { success: true, platform: 'tiktok' };
     
   } catch (error) {
-    console.error('❌ Error updating TikTok profile:', error.message);
+    logError('ProfileAutomation', `Error updating TikTok profile: ${error.message}`);
     console.log('\n💡 Troubleshooting tips:');
     console.log('   • Verify TIKTOK_SESSION_ID is valid (login to TikTok in browser, get from cookies)');
     console.log('   • Check if TikTok is accessible from your network');
     console.log('   • TikTok may have updated their UI - selectors may need updating');
-    console.log('   • Try running in non-headless mode to see what\'s happening: headless: false\n');
+    console.log('   • Try running in non-headless mode to see what\'s happening\n');
     return { success: false, error: error.message };
   }
 }
@@ -265,16 +181,13 @@ async function updateTikTokProfile(config) {
  * Run automated profile setup for TikTok
  */
 async function runAutomatedSetup(options = {}) {
-  console.log('\n' + '='.repeat(70));
-  console.log('🤖 100% AUTOMATED PROFILE SETUP');
-  console.log('='.repeat(70));
-  console.log('');
+  section('100% AUTOMATED PROFILE SETUP');
   
   // Check setup
   const setupCheck = checkAutomationSetup();
   
   if (!setupCheck.isReady) {
-    console.log('⚠️  Automation not fully configured:\n');
+    warn('ProfileAutomation', 'Automation not fully configured:');
     setupCheck.issues.forEach(issue => {
       console.log(`   • ${issue}`);
     });
@@ -282,12 +195,12 @@ async function runAutomatedSetup(options = {}) {
     return { success: false, issues: setupCheck.issues };
   }
   
-  console.log('✅ Automation configured and ready\n');
+  info('ProfileAutomation', 'Automation configured and ready');
   
   if (AUTOMATION_CONFIG.dryRun) {
-    console.log('🔍 Running in DRY RUN mode (safe - no actual changes)\n');
+    info('ProfileAutomation', 'Running in DRY RUN mode (safe - no actual changes)');
   } else {
-    console.log('⚡ Running in LIVE mode - will make actual profile changes\n');
+    info('ProfileAutomation', 'Running in LIVE mode - will make actual profile changes');
   }
   
   const niche = options.niche || AUTOMATION_CONFIG.niche;
@@ -295,6 +208,7 @@ async function runAutomatedSetup(options = {}) {
   
   // Generate profile configurations
   const tiktokBio = generateBio('tiktok', niche);
+  
   // Update TikTok profile
   if (AUTOMATION_CONFIG.tiktok.username) {
     const tiktokConfig = {
@@ -310,21 +224,19 @@ async function runAutomatedSetup(options = {}) {
   }
   
   // Summary
-  console.log('\n' + '='.repeat(70));
-  console.log('📊 AUTOMATION SUMMARY');
-  console.log('='.repeat(70));
+  section('AUTOMATION SUMMARY');
   
   const successful = results.filter(r => r.success).length;
   const failed = results.filter(r => !r.success).length;
   
-  console.log(`\n✅ Successful: ${successful}`);
-  console.log(`❌ Failed: ${failed}`);
-  
-  if (AUTOMATION_CONFIG.dryRun) {
-    console.log('\n💡 This was a DRY RUN. Set PROFILE_DRY_RUN=false to apply changes.');
+  info('ProfileAutomation', `Successful: ${successful}`);
+  if (failed > 0) {
+    logError('ProfileAutomation', `Failed: ${failed}`);
   }
   
-  console.log('\n' + '='.repeat(70) + '\n');
+  if (AUTOMATION_CONFIG.dryRun) {
+    warn('ProfileAutomation', 'This was a DRY RUN. Set PROFILE_DRY_RUN=false to apply changes.');
+  }
   
   return {
     success: failed === 0,
@@ -346,15 +258,15 @@ if (require.main === module) {
   runAutomatedSetup(options)
     .then((result) => {
       if (result.success) {
-        console.log('✅ Automated profile setup completed successfully!');
+        info('ProfileAutomation', 'Automated profile setup completed successfully!');
         process.exit(0);
       } else {
-        console.log('❌ Automated profile setup completed with errors');
+        logError('ProfileAutomation', 'Automated profile setup completed with errors');
         process.exit(1);
       }
     })
     .catch(error => {
-      console.error('❌ Fatal error:', error.message);
+      logError('ProfileAutomation', `Fatal error: ${error.message}`);
       process.exit(1);
     });
 }

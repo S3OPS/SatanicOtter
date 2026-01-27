@@ -5,15 +5,12 @@
  * It coordinates content generation and posting scheduling.
  */
 
-// Load dotenv only if available
-try {
-  require('dotenv').config();
-} catch (e) {
-  // dotenv not available, continue without it
-}
-
+const { loadEnv, getEnv, getEnvArray } = require('./utils/config');
+const { info, error: logError, section } = require('./utils/logger');
 const { batchGenerateContent, isQuotaError, handleOpenAIError } = require('./contentGenerator');
 const { start: startScheduler } = require('./scheduler');
+
+loadEnv();
 
 const AUTOMATION_CONFIG = {
   generateOnStart: true,
@@ -25,19 +22,16 @@ const AUTOMATION_CONFIG = {
  * Main automation flow
  */
 async function runAutomation() {
-  console.log('🎬 SatanicOtter Social Media Automation System');
-  console.log('='.repeat(60));
-  console.log('\n');
+  section('SatanicOtter Social Media Automation System');
   
   try {
     let contentFile = null;
     
     // Step 1: Generate content if enabled
     if (AUTOMATION_CONFIG.generateOnStart) {
-      console.log('📝 Step 1: Generating AI content...\n');
+      info('Automation', 'Step 1: Generating AI content...');
       
-      const categories = process.env.PRODUCT_CATEGORIES?.split(',') || 
-                        ['electronics', 'home', 'supplements'];
+      const categories = getEnvArray('PRODUCT_CATEGORIES', ['electronics', 'home', 'supplements']);
       
       const result = await batchGenerateContent({
         categories,
@@ -47,26 +41,26 @@ async function runAutomation() {
       
       contentFile = result.filepath;
       
-      console.log('\n✅ Content generation complete!');
-      console.log(`Generated ${result.content.length} content pieces`);
-      console.log(`Saved to: ${contentFile}\n`);
+      info('Automation', 'Content generation complete!');
+      info('Automation', `Generated ${result.content.length} content pieces`);
+      info('Automation', `Saved to: ${contentFile}`);
       
       // Wait a moment before scheduling
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(resolve => setTimeout(resolve, 1000));
     }
     
     // Step 2: Start scheduler
     if (AUTOMATION_CONFIG.autoSchedule) {
-      console.log('📅 Step 2: Starting post scheduler...\n');
+      info('Automation', 'Step 2: Starting post scheduler...');
       await startScheduler(contentFile);
     } else {
-      console.log('\n✅ Automation complete!');
-      console.log('To schedule posts, run: npm run schedule-posts');
+      info('Automation', 'Automation complete!');
+      info('Automation', 'To schedule posts, run: npm run schedule-posts');
       process.exit(0);
     }
     
   } catch (error) {
-    console.error('\n❌ Automation error:', error.message);
+    logError('Automation', `Automation error: ${error.message}`);
     
     // Check for OpenAI quota error
     if (isQuotaError(error)) {
@@ -89,24 +83,24 @@ function checkEnvironment() {
   const required = ['OPENAI_API_KEY'];
   const recommended = ['TIKTOK_SESSION_ID'];
   
-  console.log('🔍 Environment Check:\n');
+  section('Environment Check');
   
   let hasErrors = false;
   
   // Check required
   required.forEach(key => {
-    if (process.env[key]) {
-      console.log(`✅ ${key}: configured`);
+    if (getEnv(key)) {
+      info('Environment', `${key}: configured`);
     } else {
-      console.log(`❌ ${key}: MISSING (required)`);
+      logError('Environment', `${key}: MISSING (required)`);
       hasErrors = true;
     }
   });
   
   // Check recommended
   recommended.forEach(key => {
-    if (process.env[key]) {
-      console.log(`✅ ${key}: configured`);
+    if (getEnv(key)) {
+      info('Environment', `${key}: configured`);
     } else {
       console.log(`⚠️  ${key}: not configured (recommended for posting)`);
     }
@@ -115,8 +109,8 @@ function checkEnvironment() {
   console.log('\n');
   
   if (hasErrors) {
-    console.error('❌ Missing required environment variables');
-    console.error('Please configure .env file (see .env.example)\n');
+    logError('Environment', 'Missing required environment variables');
+    logError('Environment', 'Please configure .env file (see .env.example)');
     return false;
   }
   
