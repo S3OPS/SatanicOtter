@@ -278,6 +278,83 @@ test('quickConfig.js has valid syntax', () => {
   }
 });
 
+// Test 14: New utility modules
+test('cache utility module can be loaded', () => {
+  try {
+    const cache = require('../automation/utils/cache.js');
+    assert(cache.set, 'cache.set function not exported');
+    assert(cache.get, 'cache.get function not exported');
+    assert(cache.withCache, 'cache.withCache function not exported');
+  } catch (error) {
+    throw new Error(`Failed to load cache module: ${error.message}`);
+  }
+});
+
+test('rate limiter utility module can be loaded', () => {
+  try {
+    const rateLimiter = require('../automation/utils/rateLimiter.js');
+    assert(rateLimiter.withRateLimit, 'rateLimiter.withRateLimit function not exported');
+    assert(rateLimiter.withRetry, 'rateLimiter.withRetry function not exported');
+    assert(rateLimiter.calculateBackoff, 'rateLimiter.calculateBackoff function not exported');
+  } catch (error) {
+    throw new Error(`Failed to load rate limiter module: ${error.message}`);
+  }
+});
+
+test('error handler utility module can be loaded', () => {
+  try {
+    const errorHandler = require('../automation/utils/errorHandler.js');
+    assert(errorHandler.ErrorType, 'errorHandler.ErrorType not exported');
+    assert(errorHandler.AppError, 'errorHandler.AppError not exported');
+    assert(errorHandler.categorizeError, 'errorHandler.categorizeError function not exported');
+  } catch (error) {
+    throw new Error(`Failed to load error handler module: ${error.message}`);
+  }
+});
+
+test('validators utility module can be loaded', () => {
+  try {
+    const validators = require('../automation/utils/validators.js');
+    assert(validators.isNonEmptyString, 'validators.isNonEmptyString function not exported');
+    assert(validators.isValidUrl, 'validators.isValidUrl function not exported');
+    assert(validators.validateEnvConfig, 'validators.validateEnvConfig function not exported');
+  } catch (error) {
+    throw new Error(`Failed to load validators module: ${error.message}`);
+  }
+});
+
+test('formatters utility module can be loaded', () => {
+  try {
+    const formatters = require('../automation/utils/formatters.js');
+    assert(formatters.formatCurrency, 'formatters.formatCurrency function not exported');
+    assert(formatters.formatDate, 'formatters.formatDate function not exported');
+    assert(formatters.formatTable, 'formatters.formatTable function not exported');
+  } catch (error) {
+    throw new Error(`Failed to load formatters module: ${error.message}`);
+  }
+});
+
+// Test 15: ESLint and CI/CD configuration
+test('ESLint configuration exists', () => {
+  assert(fs.existsSync('.eslintrc.js'), '.eslintrc.js not found');
+});
+
+test('package.json contains lint script', () => {
+  const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+  assert(packageJson.scripts['lint'], 'lint script not found');
+  assert(packageJson.scripts['lint:fix'], 'lint:fix script not found');
+});
+
+test('CI/CD workflow exists', () => {
+  assert(fs.existsSync('.github/workflows/ci.yml'), 
+    'CI/CD workflow file not found');
+});
+
+test('Dependabot configuration exists', () => {
+  assert(fs.existsSync('.github/dependabot.yml'), 
+    'Dependabot configuration not found');
+});
+
 // Summary
 console.log('\n' + '='.repeat(70));
 console.log(`Tests Passed: ${testsPassed}`);

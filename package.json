@@ -20,7 +20,9 @@
     "analytics": "node automation/analyticsTracker.js",
     "analytics:add": "node automation/analyticsTracker.js add",
     "analytics:summary": "node automation/analyticsTracker.js summary",
-    "test": "node test/integration.test.js"
+    "test": "node test/integration.test.js",
+    "lint": "eslint . --ext .js",
+    "lint:fix": "eslint . --ext .js --fix"
   },
   "keywords": [
     "tiktok",
