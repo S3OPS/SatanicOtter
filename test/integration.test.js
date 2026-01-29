@@ -57,8 +57,8 @@ test('status.js exists', () => {
   assert(fs.existsSync('status.js'), 'status.js not found');
 });
 
-test('QUICK_START.md exists', () => {
-  assert(fs.existsSync('QUICK_START.md'), 'QUICK_START.md not found');
+test('DOCUMENTATION.md exists', () => {
+  assert(fs.existsSync('DOCUMENTATION.md'), 'DOCUMENTATION.md not found');
 });
 
 test('.env.example exists', () => {
@@ -91,16 +91,13 @@ test('quickConfig.js exists', () => {
   assert(fs.existsSync('quickConfig.js'), 'quickConfig.js not found');
 });
 
-// Test 4: Documentation exists
+// Test 4: Documentation exists (consolidated)
 const docs = [
   'README.md',
-  'QUICK_START.md',
-  'SETUP_GUIDE.md',
-  'TIKTOK_GUIDE.md',
-  'EXAMPLE_WORKFLOW.md',
-  'PROFILE_SETUP_GUIDE.md',
-  'PROFILE_AUTOMATION_GUIDE.md',
-  'ONE_COMMAND_SETUP.md'
+  'DOCUMENTATION.md',
+  'SECURITY_REPORT.md',
+  'PLATFORM_ALTERNATIVES.md',
+  'TROUBLESHOOTING.md'
 ];
 
 docs.forEach(doc => {
@@ -138,9 +135,10 @@ modules.forEach(module => {
 });
 
 // Test 7: README contains quick start reference
-test('README.md references QUICK_START.md', () => {
+// Test 7: README contains documentation reference
+test('README.md references DOCUMENTATION.md', () => {
   const readme = fs.readFileSync('README.md', 'utf8');
-  assert(readme.includes('QUICK_START.md'), 'README does not reference QUICK_START.md');
+  assert(readme.includes('DOCUMENTATION.md'), 'README does not reference DOCUMENTATION.md');
 });
 
 test('README.md contains npm run setup command', () => {
@@ -148,11 +146,27 @@ test('README.md contains npm run setup command', () => {
   assert(readme.includes('npm run setup'), 'README does not mention npm run setup');
 });
 
-// Test 8: QUICK_START.md has proper content
-test('QUICK_START.md contains setup instructions', () => {
-  const quickStart = fs.readFileSync('QUICK_START.md', 'utf8');
-  assert(quickStart.includes('npm run setup'), 'QUICK_START does not contain setup command');
-  assert(quickStart.includes('npm run product-research'), 'QUICK_START does not contain product-research command');
+// Test 8: DOCUMENTATION.md has proper content
+test('DOCUMENTATION.md contains setup instructions', () => {
+  const documentation = fs.readFileSync('DOCUMENTATION.md', 'utf8');
+  assert(documentation.includes('npm run setup'), 'DOCUMENTATION does not contain setup command');
+  assert(documentation.includes('product-research'), 'DOCUMENTATION does not contain product-research command');
+  assert(documentation.includes('Quick Start'), 'DOCUMENTATION does not contain Quick Start section');
+});
+
+// Test 8b: Security documentation exists
+test('SECURITY_REPORT.md contains security audit results', () => {
+  const securityReport = fs.readFileSync('SECURITY_REPORT.md', 'utf8');
+  assert(securityReport.includes('Security Audit'), 'SECURITY_REPORT does not contain audit info');
+  assert(securityReport.includes('Triple'), 'SECURITY_REPORT does not mention triple scan');
+});
+
+// Test 8c: Platform alternatives documented
+test('PLATFORM_ALTERNATIVES.md contains platform information', () => {
+  const platformDoc = fs.readFileSync('PLATFORM_ALTERNATIVES.md', 'utf8');
+  assert(platformDoc.includes('YouTube'), 'PLATFORM_ALTERNATIVES does not mention YouTube');
+  assert(platformDoc.includes('Vimeo'), 'PLATFORM_ALTERNATIVES does not mention Vimeo');
+  assert(platformDoc.includes('PeerTube'), 'PLATFORM_ALTERNATIVES does not mention PeerTube');
 });
 
 // Test 9: status script can run
