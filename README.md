@@ -80,16 +80,9 @@ npm run automate-profiles   # Browser automation (dry-run by default)
 📚 **[Complete Documentation](./DOCUMENTATION.md)** - Comprehensive guide covering all features
 
 ### Additional Resources
-- [SECURITY_REPORT.md](./SECURITY_REPORT.md) - Security audit results (Triple scan)
-- [PLATFORM_ALTERNATIVES.md](./PLATFORM_ALTERNATIVES.md) - YouTube, Vimeo, PeerTube, and other platforms
+- [SECURITY_REPORT.md](./SECURITY_REPORT.md) - Security audit results (Triple scan with 0 vulnerabilities)
+- [PLATFORM_ALTERNATIVES.md](./PLATFORM_ALTERNATIVES.md) - YouTube, Vimeo, PeerTube, Dailymotion, and other free platforms
 - [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) - Common issues and solutions
-
-### Legacy Guides (Consolidated into DOCUMENTATION.md)
-The following guides have been consolidated into the main documentation but are kept for reference:
-- [SETUP_GUIDE.md](./SETUP_GUIDE.md) - Detailed configuration
-- [QUICK_START.md](./QUICK_START.md) - 5-minute walkthrough
-- [ONE_COMMAND_SETUP.md](./ONE_COMMAND_SETUP.md) - Quick-config + full-auto flow
-- [TIKTOK_GUIDE.md](./TIKTOK_GUIDE.md) - Strategy and content guidance
 
 ## License
 
