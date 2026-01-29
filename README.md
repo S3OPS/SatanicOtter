@@ -1,15 +1,20 @@
 # SatanicOtter
 
-SatanicOtter is a Node.js toolkit for Amazon affiliate marketing workflows with TikTok content automation. The current build includes:
+SatanicOtter is a Node.js toolkit for Amazon affiliate marketing workflows with multi-platform content automation. The current build includes:
 
 - Amazon affiliate link generator (`index.html`)
 - AI content generation with OpenAI (scripts, hooks, captions)
 - High-ticket product research reports
+- Multi-platform support (YouTube, TikTok, Vimeo, PeerTube, and more)
 - Scheduling queue with manual review output (`review-queue/`)
 - Analytics tracking for daily metrics
 - Profile setup helpers and optional browser automation
 
-## Recent Optimizations
+## Recent Updates
+
+**✅ Triple Security Scan Completed** - 0 vulnerabilities found  
+**✅ Documentation Consolidated** - All docs merged into [DOCUMENTATION.md](./DOCUMENTATION.md)  
+**✅ Platform Alternatives** - YouTube, Vimeo, Dailymotion, PeerTube support documented
 
 **Performance & Security Improvements**:
 - ✅ Modular architecture with reusable utilities
@@ -18,8 +23,9 @@ SatanicOtter is a Node.js toolkit for Amazon affiliate marketing workflows with 
 - ✅ Automatic redaction of sensitive data in logs
 - ✅ Centralized configuration management with caching
 - ✅ Browser automation utilities for safer Puppeteer usage
+- ✅ Zero security vulnerabilities (verified via triple scan)
 
-See [SECURITY_AUDIT.md](./SECURITY_AUDIT.md) for detailed improvements.
+See [SECURITY_REPORT.md](./SECURITY_REPORT.md) for detailed security audit results.
 
 ## Quick start
 
@@ -71,13 +77,19 @@ npm run automate-profiles   # Browser automation (dry-run by default)
 
 ## Documentation
 
-- [SETUP_GUIDE.md](./SETUP_GUIDE.md) - detailed configuration
+📚 **[Complete Documentation](./DOCUMENTATION.md)** - Comprehensive guide covering all features
+
+### Additional Resources
+- [SECURITY_REPORT.md](./SECURITY_REPORT.md) - Security audit results (Triple scan)
+- [PLATFORM_ALTERNATIVES.md](./PLATFORM_ALTERNATIVES.md) - YouTube, Vimeo, PeerTube, and other platforms
+- [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) - Common issues and solutions
+
+### Legacy Guides (Consolidated into DOCUMENTATION.md)
+The following guides have been consolidated into the main documentation but are kept for reference:
+- [SETUP_GUIDE.md](./SETUP_GUIDE.md) - Detailed configuration
 - [QUICK_START.md](./QUICK_START.md) - 5-minute walkthrough
-- [ONE_COMMAND_SETUP.md](./ONE_COMMAND_SETUP.md) - quick-config + full-auto flow
-- [PROFILE_SETUP_GUIDE.md](./PROFILE_SETUP_GUIDE.md) - profile setup guidance
-- [PROFILE_AUTOMATION_GUIDE.md](./PROFILE_AUTOMATION_GUIDE.md) - automation with secrets/browser control
-- [TIKTOK_CREDENTIALS_GUIDE.md](./TIKTOK_CREDENTIALS_GUIDE.md) - session ID instructions
-- [TIKTOK_GUIDE.md](./TIKTOK_GUIDE.md) - strategy and content guidance
+- [ONE_COMMAND_SETUP.md](./ONE_COMMAND_SETUP.md) - Quick-config + full-auto flow
+- [TIKTOK_GUIDE.md](./TIKTOK_GUIDE.md) - Strategy and content guidance
 
 ## License
 
