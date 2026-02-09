@@ -22,15 +22,22 @@ class ContentQueue {
     if (!targetFile) {
       targetFile = await getMostRecentFile(contentDir);
       if (!targetFile) {
-        throw new Error('No content files found. Run content generator first.');
+        throw new Error('No content files found in generated-content directory. Run content generator first (npm run generate-content).');
       }
     }
     
-    const content = await loadJSON(targetFile);
-    this.queue = Array.isArray(content) ? content : [content];
-    this.currentIndex = 0;
-    
-    return this.queue.length;
+    try {
+      const content = await loadJSON(targetFile);
+      if (!content) {
+        throw new Error(`Content file ${targetFile} is empty or invalid`);
+      }
+      this.queue = Array.isArray(content) ? content : [content];
+      this.currentIndex = 0;
+      
+      return this.queue.length;
+    } catch (error) {
+      throw new Error(`Failed to load content from ${targetFile}: ${error.message}`);
+    }
   }
 
   /**

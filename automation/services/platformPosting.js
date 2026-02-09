@@ -28,7 +28,7 @@ async function saveForReview(content, platform) {
 /**
  * Post to TikTok
  */
-async function postToTikTok(content, options = {}) {
+async function postToTikTok(content, _options = {}) {
   const manualReview = getEnvBool('MANUAL_REVIEW', true);
   
   if (manualReview) {

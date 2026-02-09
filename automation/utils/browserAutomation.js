@@ -43,7 +43,7 @@ async function launchBrowser(options = {}) {
     ]
   };
   
-  return await puppeteer.launch({
+  return puppeteer.launch({
     ...defaultOptions,
     ...options
   });
@@ -85,9 +85,9 @@ async function findElement(page, selectors, timeout = 5000) {
  * Find editable element by attributes
  */
 async function findEditableByAttributes(page, searchTerms) {
-  return await page.evaluate((terms) => {
+  return page.evaluate(terms => {
     const candidates = Array.from(document.querySelectorAll('[contenteditable="true"]'));
-    return Boolean(candidates.find((el) => {
+    return Boolean(candidates.find(el => {
       const attrValues = [
         el.getAttribute('aria-label') || '',
         el.getAttribute('data-placeholder') || '',

@@ -52,7 +52,7 @@ async function quickConfig() {
   
   log('='.repeat(70), 'bright');
   log('REQUIRED CONFIGURATION', 'bright');
-  log('='.repeat(70) + '\n', 'bright');
+  log(`${'='.repeat(70)}\n`, 'bright');
   
   // Amazon Affiliate Tag
   const amazonTag = await question('Amazon Affiliate Tag (e.g., yourname-20): ');
@@ -65,9 +65,9 @@ async function quickConfig() {
   if (!enableAutomation.trim() || enableAutomation.toLowerCase().startsWith('y')) {
     envContent = envContent.replace(/PROFILE_AUTOMATION_ENABLED=.*/, 'PROFILE_AUTOMATION_ENABLED=true');
     
-    log('\n' + '='.repeat(70), 'bright');
+    log(`\n${'='.repeat(70)}`, 'bright');
     log('TIKTOK CREDENTIALS', 'bright');
-    log('='.repeat(70) + '\n', 'bright');
+    log(`${'='.repeat(70)}\n`, 'bright');
     
     log('💡 TIP: For TikTok, you can use EITHER session ID OR password', 'cyan');
     log('   Session ID is MORE RELIABLE and recommended!\n', 'cyan');
@@ -111,9 +111,9 @@ async function quickConfig() {
     
   }
   
-  log('\n' + '='.repeat(70), 'bright');
+  log(`\n${'='.repeat(70)}`, 'bright');
   log('OPTIONAL CONFIGURATION', 'bright');
-  log('='.repeat(70) + '\n', 'bright');
+  log(`${'='.repeat(70)}\n`, 'bright');
   
   // OpenAI API Key
   const configOpenAI = await question('Add OpenAI API key for AI content? (yes/no) [no]: ');
@@ -152,9 +152,9 @@ async function quickConfig() {
   // Save .env
   fs.writeFileSync(envPath, envContent);
   
-  log('\n' + '='.repeat(70), 'bright');
+  log(`\n${'='.repeat(70)}`, 'bright');
   log('✅ CONFIGURATION COMPLETE!', 'green');
-  log('='.repeat(70) + '\n', 'bright');
+  log(`${'='.repeat(70)}\n`, 'bright');
   
   log('Your .env file has been configured.\n', 'green');
   log('🚀 Run the full auto setup with:\n', 'cyan');

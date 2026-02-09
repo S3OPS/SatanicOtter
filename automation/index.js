@@ -124,8 +124,11 @@ if (require.main === module) {
     process.exit(1);
   }
   
-  // Run automation
-  runAutomation();
+  // Run automation - wrap in async context
+  runAutomation().catch(error => {
+    console.error('Fatal error:', error.message);
+    process.exit(1);
+  });
 }
 
 module.exports = {

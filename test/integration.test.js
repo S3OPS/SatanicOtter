@@ -355,7 +355,7 @@ test('ESLint configuration exists', () => {
 
 test('package.json contains lint script', () => {
   const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-  assert(packageJson.scripts['lint'], 'lint script not found');
+  assert(packageJson.scripts.lint, 'lint script not found');
   assert(packageJson.scripts['lint:fix'], 'lint:fix script not found');
 });
 
@@ -370,7 +370,7 @@ test('Dependabot configuration exists', () => {
 });
 
 // Summary
-console.log('\n' + '='.repeat(70));
+console.log(`\n${'='.repeat(70)}`);
 console.log(`Tests Passed: ${testsPassed}`);
 console.log(`Tests Failed: ${testsFailed}`);
 console.log('='.repeat(70));

@@ -18,10 +18,10 @@ const cache = new Map();
  * Default TTL values for different cache types (in milliseconds)
  */
 const DEFAULT_TTL = {
-  content: 60 * 60 * 1000,      // 1 hour for content
-  apiResponse: 5 * 60 * 1000,   // 5 minutes for API responses
-  config: 24 * 60 * 60 * 1000,  // 24 hours for config
-  short: 60 * 1000              // 1 minute for short-lived data
+  content: 60 * 60 * 1000, // 1 hour for content
+  apiResponse: 5 * 60 * 1000, // 5 minutes for API responses
+  config: 24 * 60 * 60 * 1000, // 24 hours for config
+  short: 60 * 1000 // 1 minute for short-lived data
 };
 
 /**

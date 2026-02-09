@@ -116,15 +116,7 @@ function isConfigured(value) {
 async function validateConfiguration() {
   logHeader('Step 1: Validating Configuration');
   
-  const required = {
-    'AMAZON_AFFILIATE_TAG': 'Required for affiliate links',
-    'PROFILE_AUTOMATION_ENABLED': 'Must be "true" for full automation'
-  };
-  
-  const profileAutomation = {
-    'TIKTOK_USERNAME': 'TikTok username',
-    'TIKTOK_SESSION_ID': 'TikTok session ID (recommended) OR TIKTOK_PASSWORD (fallback)'
-  };
+  const { isValidAmazonTag } = require('./automation/utils/validators');
   
   const optional = {
     'OPENAI_API_KEY': 'For AI content generation',
@@ -138,9 +130,14 @@ async function validateConfiguration() {
   // Check required
   log('Required Configuration:', 'bright');
   
-  // Check AMAZON_AFFILIATE_TAG - must be configured (not a placeholder)
+  // Check AMAZON_AFFILIATE_TAG - must be configured and valid format
   if (isConfigured(process.env.AMAZON_AFFILIATE_TAG)) {
-    logSuccess('AMAZON_AFFILIATE_TAG: Required for affiliate links');
+    if (isValidAmazonTag(process.env.AMAZON_AFFILIATE_TAG)) {
+      logSuccess('AMAZON_AFFILIATE_TAG: Valid affiliate tag configured');
+    } else {
+      logError('AMAZON_AFFILIATE_TAG: Invalid format (should be alphanumeric with optional dashes, 3-30 characters)');
+      hasErrors = true;
+    }
   } else {
     logError('AMAZON_AFFILIATE_TAG: Required for affiliate links - NOT CONFIGURED');
     hasErrors = true;

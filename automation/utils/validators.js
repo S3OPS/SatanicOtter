@@ -7,10 +7,10 @@
 /**
  * Validate that a value is a non-empty string
  * @param {*} value - The value to check
- * @param {string} [name='value'] - Name for error messages
+ * @param {string} [_name='value'] - Name for error messages (unused but kept for API compatibility)
  * @returns {boolean} - True if valid
  */
-function isNonEmptyString(value, name = 'value') {
+function isNonEmptyString(value, _name = 'value') {
   return typeof value === 'string' && value.trim().length > 0;
 }
 
