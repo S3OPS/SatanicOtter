@@ -218,7 +218,7 @@ async function generateReport() {
  * Display formatted report
  */
 function displayReport(report) {
-  console.log('\n' + '='.repeat(80));
+  console.log(`\n${'='.repeat(80)}`);
   console.log('HIGH-TICKET PRODUCT RESEARCH REPORT');
   console.log('Goal: $1,000/day Revenue');
   console.log('='.repeat(80));
@@ -254,7 +254,7 @@ function displayReport(report) {
     console.log(`  ${step}`);
   });
   
-  console.log('\n' + '='.repeat(80) + '\n');
+  console.log(`\n${'='.repeat(80)}\n`);
 }
 
 // CLI execution

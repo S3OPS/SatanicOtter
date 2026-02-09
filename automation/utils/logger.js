@@ -16,13 +16,6 @@ const LogLevel = {
 };
 
 /**
- * Format timestamp
- */
-function timestamp() {
-  return new Date().toISOString();
-}
-
-/**
  * Log with level (with automatic redaction of sensitive data)
  */
 function log(level, module, message, data = null) {
@@ -75,9 +68,9 @@ function debug(module, message, data) {
  * Log section header
  */
 function section(title, width = 60) {
-  console.log('\n' + '='.repeat(width));
+  console.log(`\n${'='.repeat(width)}`);
   console.log(title);
-  console.log('='.repeat(width) + '\n');
+  console.log(`${'='.repeat(width)}\n`);
 }
 
 module.exports = {

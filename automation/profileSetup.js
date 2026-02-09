@@ -221,7 +221,7 @@ async function saveProfileConfig(config, filename = 'profile-setup.json') {
  * Display profile setup instructions
  */
 function displaySetupInstructions(config) {
-  console.log('\n' + '='.repeat(70));
+  console.log(`\n${'='.repeat(70)}`);
   console.log('🎯 PROFILE SETUP INSTRUCTIONS');
   console.log('='.repeat(70));
   
@@ -235,11 +235,11 @@ function displaySetupInstructions(config) {
     console.log(`   Category: ${settings.setup.category}`);
     
     console.log('\n2️⃣  Bio Text (copy this):');
-    console.log('   ┌' + '─'.repeat(68) + '┐');
+    console.log(`   ┌${'─'.repeat(68)}┐`);
     settings.bio.split('\n').forEach(line => {
       console.log(`   │ ${line.padEnd(67)}│`);
     });
-    console.log('   └' + '─'.repeat(68) + '┘');
+    console.log(`   └${'─'.repeat(68)}┘`);
     
     console.log('\n3️⃣  Link in Bio:');
     console.log(`   ${settings.linkInBio}`);
@@ -252,7 +252,7 @@ function displaySetupInstructions(config) {
     console.log('');
   });
   
-  console.log('\n' + '='.repeat(70));
+  console.log(`\n${'='.repeat(70)}`);
   console.log('🎨 BRANDING RECOMMENDATIONS');
   console.log('='.repeat(70));
   
@@ -266,7 +266,7 @@ function displaySetupInstructions(config) {
     console.log(`   ${idx + 1}. ${scheme.name}: ${scheme.colors.join(', ')}`);
   });
   
-  console.log('\n' + '='.repeat(70));
+  console.log(`\n${'='.repeat(70)}`);
   console.log('🔗 LINK-IN-BIO SETUP');
   console.log('='.repeat(70));
   
@@ -276,7 +276,7 @@ function displaySetupInstructions(config) {
   });
   
   console.log('\n💡 Optimization Tips:');
-  config.linkInBio.structure.tips.forEach((tip, idx) => {
+  config.linkInBio.structure.tips.forEach((tip) => {
     console.log(`   • ${tip}`);
   });
   
@@ -287,7 +287,7 @@ function displaySetupInstructions(config) {
     console.log(`      → ${tool.url}`);
   });
   
-  console.log('\n' + '='.repeat(70));
+  console.log(`\n${'='.repeat(70)}`);
   console.log('✅ NEXT STEPS:');
   console.log('='.repeat(70));
   console.log('\n1. Update your profile bio on each platform (copy from above)');
@@ -296,7 +296,7 @@ function displaySetupInstructions(config) {
   console.log('4. Enable recommended features on each platform');
   console.log('5. Add Amazon affiliate links to link-in-bio tool');
   console.log('6. Start posting content using: npm run generate-content');
-  console.log('\n' + '='.repeat(70));
+  console.log(`\n${'='.repeat(70)}`);
   console.log('');
 }
 
@@ -333,7 +333,7 @@ async function setupProfiles(options = {}) {
  * Interactive setup wizard
  */
 async function runSetupWizard() {
-  console.log('\n' + '='.repeat(70));
+  console.log(`\n${'='.repeat(70)}`);
   console.log('🎯 PROFILE SETUP WIZARD');
   console.log('='.repeat(70));
   console.log('\nThis wizard will help you set up your TikTok profile');
@@ -379,7 +379,7 @@ if (require.main === module) {
     }
     
     setupProfiles(options)
-      .then((result) => {
+      .then(() => {
         console.log('✅ Profile setup completed successfully!');
         process.exit(0);
       })

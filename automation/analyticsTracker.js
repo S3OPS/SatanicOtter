@@ -146,7 +146,7 @@ async function getSummary(days = 7) {
  * Display metrics report
  */
 function displayMetricsReport(entry) {
-  console.log('\n' + '='.repeat(60));
+  console.log(`\n${'='.repeat(60)}`);
   console.log(`DAILY METRICS REPORT - ${entry.date}`);
   console.log('='.repeat(60));
   
@@ -155,8 +155,8 @@ function displayMetricsReport(entry) {
   const metrics = [
     { label: 'Videos Posted', value: entry.videosPosted, goal: KPI_GOALS.videosPosted, unit: '' },
     { label: 'Total Views', value: entry.totalViews, goal: KPI_GOALS.totalViews, unit: '' },
-    { label: 'Profile Visits', value: entry.profileVisits, goal: KPI_GOALS.profileVisits, unit: '', rate: entry.profileVisitRate + '%' },
-    { label: 'Link Clicks', value: entry.linkClicks, goal: KPI_GOALS.linkClicks, unit: '', rate: entry.linkClickRate + '%' },
+    { label: 'Profile Visits', value: entry.profileVisits, goal: KPI_GOALS.profileVisits, unit: '', rate: `${entry.profileVisitRate}%` },
+    { label: 'Link Clicks', value: entry.linkClicks, goal: KPI_GOALS.linkClicks, unit: '', rate: `${entry.linkClickRate}%` },
     { label: 'Amazon Clicks', value: entry.amazonClicks, goal: KPI_GOALS.amazonClicks, unit: '' },
     { label: 'Sales', value: entry.sales, goal: KPI_GOALS.sales, unit: '' },
     { label: 'Revenue', value: entry.revenue, goal: KPI_GOALS.revenue, unit: '$', highlight: true },
@@ -189,8 +189,8 @@ function displayMetricsReport(entry) {
     });
   }
   
-  console.log('\n' + (entry.goalMet ? '🎉 GOAL MET! 🎉' : '⚠️  Goal not met - see recommendations below'));
-  console.log('='.repeat(60) + '\n');
+  console.log(`\n${entry.goalMet ? '🎉 GOAL MET! 🎉' : '⚠️  Goal not met - see recommendations below'}`);
+  console.log(`${'='.repeat(60)}\n`);
 }
 
 /**
@@ -202,7 +202,7 @@ function displaySummaryReport(summary) {
     return;
   }
   
-  console.log('\n' + '='.repeat(60));
+  console.log(`\n${'='.repeat(60)}`);
   console.log(`SUMMARY REPORT - ${summary.period}`);
   console.log('='.repeat(60));
   
@@ -225,7 +225,7 @@ function displaySummaryReport(summary) {
     console.log(`  Views: ${summary.bestDay.totalViews.toLocaleString()}`);
   }
   
-  console.log('\n' + '='.repeat(60) + '\n');
+  console.log(`\n${'='.repeat(60)}\n`);
 }
 
 /**
@@ -285,7 +285,7 @@ async function interactiveEntry() {
     output: process.stdout
   });
   
-  const question = (prompt) => new Promise((resolve) => {
+  const question = prompt => new Promise(resolve => {
     readline.question(prompt, resolve);
   });
   

@@ -48,7 +48,7 @@ function getNextContent() {
  */
 async function postContent(content) {
   info('Scheduler', `Posting to TikTok: ${content.hook || content.category}`);
-  return await postToTikTok(content);
+  return postToTikTok(content);
 }
 
 /**
@@ -72,12 +72,14 @@ async function executeScheduledPost() {
     const logFile = path.join(__dirname, '../logs', `posting-log-${new Date().toISOString().split('T')[0]}.json`);
     await appendToLog(logFile, {
       timestamp: new Date().toISOString(),
-      content: content.hook || content.category,
+      content: content.hook || content.category || 'unknown',
       result
     });
     
   } catch (err) {
     logError('Scheduler', `Error executing post: ${err.message}`);
+    // Continue execution - don't let one failed post break the scheduler
+    console.error('Post will be retried in the next scheduled cycle');
   }
 }
 

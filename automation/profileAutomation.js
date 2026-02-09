@@ -95,8 +95,9 @@ async function updateTikTokProfile(config) {
     return { success: false, error: 'Puppeteer not installed' };
   }
   
+  let browser = null;
   try {
-    const browser = await launchBrowser();
+    browser = await launchBrowser();
     const page = await browser.newPage();
     
     // Set longer timeout for slow networks
@@ -161,8 +162,6 @@ async function updateTikTokProfile(config) {
       warn('ProfileAutomation', 'Could not find save button, changes may not be saved');
     }
     
-    await browser.close();
-    
     info('ProfileAutomation', 'TikTok profile updated successfully');
     return { success: true, platform: 'tiktok' };
     
@@ -174,6 +173,15 @@ async function updateTikTokProfile(config) {
     console.log('   • TikTok may have updated their UI - selectors may need updating');
     console.log('   • Try running in non-headless mode to see what\'s happening\n');
     return { success: false, error: error.message };
+  } finally {
+    // Always close browser to prevent resource leaks
+    if (browser) {
+      try {
+        await browser.close();
+      } catch (closeError) {
+        warn('ProfileAutomation', `Error closing browser: ${closeError.message}`);
+      }
+    }
   }
 }
 
@@ -256,7 +264,7 @@ if (require.main === module) {
   }
   
   runAutomatedSetup(options)
-    .then((result) => {
+    .then(result => {
       if (result.success) {
         info('ProfileAutomation', 'Automated profile setup completed successfully!');
         process.exit(0);

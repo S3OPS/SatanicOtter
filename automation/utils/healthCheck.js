@@ -295,7 +295,7 @@ function formatHealthCheck(results) {
     });
   }
   
-  lines.push('\n' + '='.repeat(60));
+  lines.push(`\n${'='.repeat(60)}`);
   
   return lines.join('\n');
 }

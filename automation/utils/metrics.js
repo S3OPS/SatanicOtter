@@ -228,7 +228,7 @@ function formatMetrics() {
     lines.push(`  P95: ${stat.p95}${stat.unit}  P99: ${stat.p99}${stat.unit}`);
   });
   
-  lines.push('\n' + '='.repeat(60));
+  lines.push(`\n${'='.repeat(60)}`);
   
   return lines.join('\n');
 }

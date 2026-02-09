@@ -140,7 +140,7 @@ async function withRateLimit(serviceName, fn) {
   
   // Record and execute
   recordRequest(serviceName);
-  return await fn();
+  return fn();
 }
 
 /**

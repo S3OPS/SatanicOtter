@@ -383,7 +383,7 @@ async function runSetup() {
     await validateConfiguration();
 
     // Step 5: Run Initial Test
-    const testPassed = await runInitialTest();
+    await runInitialTest();
 
     // Step 6: Display Next Steps
     await displayNextSteps();
