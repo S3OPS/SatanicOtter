@@ -151,7 +151,10 @@ async function start(contentFile = null) {
 // CLI execution
 if (require.main === module) {
   const contentFile = process.argv[2]; // Optional content file path
-  start(contentFile);
+  start(contentFile).catch(error => {
+    logError('Scheduler', `Fatal error: ${error.message}`);
+    process.exit(1);
+  });
 }
 
 module.exports = {
