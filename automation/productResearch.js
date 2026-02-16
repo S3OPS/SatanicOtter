@@ -261,15 +261,16 @@ function displayReport(report) {
 if (require.main === module) {
   console.log('🔍 Generating High-Ticket Product Research...\n');
   
-  generateReport()
-    .then(({ report, reportPath }) => {
+  (async () => {
+    try {
+      const { report, reportPath } = await generateReport();
       displayReport(report);
       console.log(`\n✅ Full report saved to: ${reportPath}`);
-    })
-    .catch(error => {
+    } catch (error) {
       console.error('❌ Error generating report:', error.message);
       process.exit(1);
-    });
+    }
+  })();
 }
 
 module.exports = {

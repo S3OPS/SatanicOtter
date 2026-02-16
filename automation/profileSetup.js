@@ -358,36 +358,31 @@ if (require.main === module) {
   const args = process.argv.slice(2);
   const isWizard = args.includes('--wizard') || args.includes('-w');
   
-  if (isWizard) {
-    runSetupWizard()
-      .then(() => {
+  (async () => {
+    try {
+      if (isWizard) {
+        await runSetupWizard();
         console.log('Setup wizard completed successfully!');
         process.exit(0);
-      })
-      .catch(error => {
-        console.error('Error running setup wizard:', error.message);
-        process.exit(1);
-      });
-  } else {
-    // Extract options from command line
-    const options = {};
-    
-    // Parse niche
-    const nicheIndex = args.indexOf('--niche');
-    if (nicheIndex !== -1 && args[nicheIndex + 1]) {
-      options.niche = args[nicheIndex + 1];
-    }
-    
-    setupProfiles(options)
-      .then(() => {
+      } else {
+        // Extract options from command line
+        const options = {};
+        
+        // Parse niche
+        const nicheIndex = args.indexOf('--niche');
+        if (nicheIndex !== -1 && args[nicheIndex + 1]) {
+          options.niche = args[nicheIndex + 1];
+        }
+        
+        await setupProfiles(options);
         console.log('✅ Profile setup completed successfully!');
         process.exit(0);
-      })
-      .catch(error => {
-        console.error('❌ Error setting up profiles:', error.message);
-        process.exit(1);
-      });
-  }
+      }
+    } catch (error) {
+      console.error('❌ Error:', error.message);
+      process.exit(1);
+    }
+  })();
 }
 
 module.exports = {

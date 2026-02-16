@@ -263,8 +263,9 @@ if (require.main === module) {
     options.niche = args[nicheIndex + 1];
   }
   
-  runAutomatedSetup(options)
-    .then(result => {
+  (async () => {
+    try {
+      const result = await runAutomatedSetup(options);
       if (result.success) {
         info('ProfileAutomation', 'Automated profile setup completed successfully!');
         process.exit(0);
@@ -272,11 +273,11 @@ if (require.main === module) {
         logError('ProfileAutomation', 'Automated profile setup completed with errors');
         process.exit(1);
       }
-    })
-    .catch(error => {
+    } catch (error) {
       logError('ProfileAutomation', `Fatal error: ${error.message}`);
       process.exit(1);
-    });
+    }
+  })();
 }
 
 module.exports = {
