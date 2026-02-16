@@ -35,7 +35,7 @@ if (!fs.existsSync(envPath) && fs.existsSync(envExamplePath)) {
 // Load dotenv only if available
 try {
   require('dotenv').config();
-} catch (e) {
+} catch (_e) {
   // dotenv not available, continue without it
 }
 
@@ -85,7 +85,7 @@ function isPackageInstalled(packageName) {
   try {
     require.resolve(packageName);
     return true;
-  } catch (e) {
+  } catch (_e) {
     return false;
   }
 }
@@ -225,7 +225,7 @@ async function installDependencies() {
         cwd: __dirname
       });
       logSuccess('Puppeteer installed successfully');
-    } catch (error) {
+    } catch (_error) {
       logWarning('Failed to install Puppeteer. Profile automation may not work.');
       logInfo('You can manually install it later: npm install puppeteer');
     }
@@ -256,7 +256,7 @@ async function runProfileSetup() {
         cwd: __dirname
       });
       logSuccess('Manual profile configuration complete');
-    } catch (error) {
+    } catch (_error) {
       logError('Profile configuration failed');
       return false;
     }
@@ -269,7 +269,7 @@ async function runProfileSetup() {
         cwd: __dirname
       });
       logSuccess('Automated profile setup complete');
-    } catch (error) {
+    } catch (_error) {
       logError('Automated profile setup failed');
       logInfo('Check logs above for details');
       return false;
@@ -301,7 +301,7 @@ async function generateContent() {
       cwd: __dirname
     });
     logSuccess('Content generation complete');
-  } catch (error) {
+  } catch (_error) {
     logWarning('Content generation failed or was skipped');
     logInfo('You can generate content later with: npm run generate-content');
   }
@@ -324,7 +324,7 @@ async function runProductResearch() {
       cwd: __dirname
     });
     logSuccess('Product research complete');
-  } catch (error) {
+  } catch (_error) {
     logWarning('Product research failed');
   }
   

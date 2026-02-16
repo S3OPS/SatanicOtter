@@ -10,7 +10,7 @@ function isPuppeteerAvailable() {
   try {
     require.resolve('puppeteer');
     return true;
-  } catch (e) {
+  } catch (_e) {
     return false;
   }
 }
@@ -21,7 +21,7 @@ function isPuppeteerAvailable() {
 function getPuppeteer() {
   try {
     return require('puppeteer');
-  } catch (error) {
+  } catch (_error) {
     throw new Error('Puppeteer not installed. Install with: npm install puppeteer');
   }
 }
@@ -73,7 +73,7 @@ async function findElement(page, selectors, timeout = 5000) {
       if (element) {
         return { element, selector };
       }
-    } catch (e) {
+    } catch (_e) {
       // Try next selector
       continue;
     }

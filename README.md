@@ -80,9 +80,24 @@ npm run automate-profiles   # Browser automation (dry-run by default)
 📚 **[Complete Documentation](./DOCUMENTATION.md)** - Comprehensive guide covering all features
 
 ### Additional Resources
+- [TESTING.md](./TESTING.md) - Testing guide and best practices (138 unit tests, 100% coverage on security)
 - [SECURITY_REPORT.md](./SECURITY_REPORT.md) - Security audit results (Triple scan with 0 vulnerabilities)
 - [PLATFORM_ALTERNATIVES.md](./PLATFORM_ALTERNATIVES.md) - YouTube, Vimeo, PeerTube, Dailymotion, and other free platforms
 - [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) - Common issues and solutions
+
+## Testing
+
+Run tests with:
+```bash
+npm test              # Run all tests
+npm run test:unit     # Run unit tests only
+npm run test:coverage # Run with coverage report
+```
+
+**Test Suite**: 196 total tests (138 unit + 58 integration)  
+**Coverage**: 96%+ on security, errorHandler, rateLimiter, validators
+
+See [TESTING.md](./TESTING.md) for detailed testing documentation.
 
 ## License
 

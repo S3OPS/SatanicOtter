@@ -16,7 +16,7 @@ function loadEnv() {
   try {
     require('dotenv').config();
     dotenvLoaded = true;
-  } catch (e) {
+  } catch (_e) {
     // dotenv not available, continue without it
   }
 }

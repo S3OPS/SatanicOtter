@@ -11,7 +11,7 @@ const path = require('path');
 // Load dotenv only if available
 try {
   require('dotenv').config();
-} catch (e) {
+} catch (_e) {
   // dotenv not available, continue without it
 }
 

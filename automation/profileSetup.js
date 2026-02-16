@@ -15,7 +15,7 @@
 // Load dotenv only if available
 try {
   require('dotenv').config();
-} catch (e) {
+} catch (_e) {
   // dotenv not available, continue without it
 }
 
@@ -276,7 +276,7 @@ function displaySetupInstructions(config) {
   });
   
   console.log('\n💡 Optimization Tips:');
-  config.linkInBio.structure.tips.forEach((tip) => {
+  config.linkInBio.structure.tips.forEach(tip => {
     console.log(`   • ${tip}`);
   });
   

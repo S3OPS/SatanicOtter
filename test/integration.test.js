@@ -110,7 +110,7 @@ docs.forEach(doc => {
 test('setup.js has valid syntax', () => {
   try {
     execSync('node -c setup.js', { stdio: 'pipe' });
-  } catch (error) {
+  } catch (_error) {
     throw new Error('setup.js has syntax errors');
   }
 });
@@ -118,7 +118,7 @@ test('setup.js has valid syntax', () => {
 test('status.js has valid syntax', () => {
   try {
     execSync('node -c status.js', { stdio: 'pipe' });
-  } catch (error) {
+  } catch (_error) {
     throw new Error('status.js has syntax errors');
   }
 });
@@ -128,7 +128,7 @@ modules.forEach(module => {
   test(`${module} has valid syntax`, () => {
     try {
       execSync(`node -c ${module}`, { stdio: 'pipe' });
-    } catch (error) {
+    } catch (_error) {
       throw new Error(`${module} has syntax errors`);
     }
   });
@@ -279,7 +279,7 @@ test('package.json contains full-auto script', () => {
 test('fullAutoSetup.js has valid syntax', () => {
   try {
     execSync('node -c fullAutoSetup.js', { stdio: 'pipe' });
-  } catch (error) {
+  } catch (_error) {
     throw new Error('fullAutoSetup.js has syntax errors');
   }
 });
@@ -287,7 +287,7 @@ test('fullAutoSetup.js has valid syntax', () => {
 test('quickConfig.js has valid syntax', () => {
   try {
     execSync('node -c quickConfig.js', { stdio: 'pipe' });
-  } catch (error) {
+  } catch (_error) {
     throw new Error('quickConfig.js has syntax errors');
   }
 });

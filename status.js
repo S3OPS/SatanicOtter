@@ -11,7 +11,7 @@ const path = require('path');
 // Try to load dotenv, but don't fail if it's not installed yet
 try {
   require('dotenv').config();
-} catch (e) {
+} catch (_e) {
   // dotenv not installed yet, that's ok - we'll report it
 }
 
@@ -87,12 +87,10 @@ function checkSystemStatus() {
     const requiredVars = ['AMAZON_AFFILIATE_TAG'];
     const optionalVars = ['OPENAI_API_KEY', 'TIKTOK_USERNAME'];
     
-    let varsConfigured = 0;
     for (const varName of requiredVars) {
       if (isConfigured(process.env[varName])) {
         logSuccess(`${varName} configured`);
         score += 10;
-        varsConfigured++;
       } else {
         logWarning(`${varName} not configured (required)`);
       }
@@ -101,7 +99,6 @@ function checkSystemStatus() {
     for (const varName of optionalVars) {
       if (isConfigured(process.env[varName])) {
         logSuccess(`${varName} configured`);
-        varsConfigured++;
       }
     }
   } else {
