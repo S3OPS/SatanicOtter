@@ -318,34 +318,29 @@ async function interactiveEntry() {
 if (require.main === module) {
   const command = process.argv[2];
   
-  if (command === 'add') {
-    interactiveEntry()
-      .then(() => {
+  (async () => {
+    try {
+      if (command === 'add') {
+        await interactiveEntry();
         console.log('✅ Metrics saved successfully!');
         process.exit(0);
-      })
-      .catch(error => {
-        console.error('❌ Error:', error.message);
-        process.exit(1);
-      });
-  } else if (command === 'summary') {
-    const days = parseInt(process.argv[3]) || 7;
-    getSummary(days)
-      .then(summary => {
+      } else if (command === 'summary') {
+        const days = parseInt(process.argv[3]) || 7;
+        const summary = await getSummary(days);
         displaySummaryReport(summary);
         process.exit(0);
-      })
-      .catch(error => {
-        console.error('❌ Error:', error.message);
-        process.exit(1);
-      });
-  } else {
-    console.log('\nUsage:');
-    console.log('  node analyticsTracker.js add         - Add daily metrics (interactive)');
-    console.log('  node analyticsTracker.js summary [7] - Show summary (default: last 7 days)');
-    console.log('');
-    process.exit(0);
-  }
+      } else {
+        console.log('\nUsage:');
+        console.log('  node analyticsTracker.js add         - Add daily metrics (interactive)');
+        console.log('  node analyticsTracker.js summary [7] - Show summary (default: last 7 days)');
+        console.log('');
+        process.exit(0);
+      }
+    } catch (error) {
+      console.error('❌ Error:', error.message);
+      process.exit(1);
+    }
+  })();
 }
 
 module.exports = {

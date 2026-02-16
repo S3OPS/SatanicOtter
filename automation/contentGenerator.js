@@ -244,13 +244,13 @@ if (require.main === module) {
     process.exit(1);
   }
 
-  batchGenerateContent()
-    .then(result => {
+  (async () => {
+    try {
+      const result = await batchGenerateContent();
       info('ContentGenerator', 'Content generation complete!');
       info('ContentGenerator', `Saved to: ${result.filepath}`);
       info('ContentGenerator', `Total items: ${result.content.length}`);
-    })
-    .catch(error => {
+    } catch (error) {
       logError('ContentGenerator', error.message);
       
       // Provide specific guidance for quota errors
@@ -263,7 +263,8 @@ if (require.main === module) {
       }
       
       process.exit(1);
-    });
+    }
+  })();
 }
 
 module.exports = {
