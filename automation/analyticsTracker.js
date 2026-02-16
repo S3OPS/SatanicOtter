@@ -50,7 +50,7 @@ async function loadAnalytics() {
   try {
     const data = await fs.readFile(analyticsPath, 'utf8');
     return JSON.parse(data);
-  } catch (error) {
+  } catch (_error) {
     // File doesn't exist yet, return empty array
     return [];
   }

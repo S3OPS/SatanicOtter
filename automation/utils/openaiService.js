@@ -85,7 +85,7 @@ async function generateCompletion(messages, options = {}) {
 function parseAIResponse(content) {
   try {
     return JSON.parse(content);
-  } catch (e) {
+  } catch (_e) {
     return { raw: content };
   }
 }

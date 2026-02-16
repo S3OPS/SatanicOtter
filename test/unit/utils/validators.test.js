@@ -288,7 +288,7 @@ describe('validators utility', () => {
       const env = { CUSTOM: 'bad' };
       const schema = {
         CUSTOM: {
-          validate: (value) => {
+          validate: value => {
             return value === 'bad' ? 'Custom validation failed' : null;
           }
         }

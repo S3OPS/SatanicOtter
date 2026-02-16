@@ -20,7 +20,7 @@ module.exports = [
     },
     rules: {
       // Code Quality
-      'no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+      'no-unused-vars': ['warn', { argsIgnorePattern: '^_', destructuredArrayIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' }],
       'no-console': 'off', // Allow console for CLI tools
       'no-debugger': 'error',
       'no-alert': 'error',
@@ -91,6 +91,11 @@ module.exports = [
   {
     // Test files can have more relaxed rules
     files: ['test/**/*.js', '**/*.test.js', '**/*.spec.js'],
+    languageOptions: {
+      globals: {
+        ...globals.jest
+      }
+    },
     rules: {
       'no-unused-expressions': 'off'
     }

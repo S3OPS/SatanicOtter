@@ -65,7 +65,7 @@ async function getMostRecentFile(dirPath, pattern = /\.json$/) {
       .sort((a, b) => b.name.localeCompare(a.name));
     
     return matchingFiles.length > 0 ? matchingFiles[0].path : null;
-  } catch (error) {
+  } catch (_error) {
     return null;
   }
 }
@@ -82,7 +82,7 @@ async function appendToLog(logPath, entry) {
   let logs = [];
   try {
     logs = await loadJSON(safePath);
-  } catch (error) {
+  } catch (_error) {
     // File doesn't exist yet, start fresh
   }
   
