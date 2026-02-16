@@ -3,7 +3,7 @@
 > **AI-Powered Content Automation Toolkit for Affiliate Marketing**
 
 **Version:** 1.0.0  
-**Last Updated:** 2026-01-29  
+**Last Updated:** 2024-02-16  
 **Repository:** [S3OPS/SatanicOtter](https://github.com/S3OPS/SatanicOtter)
 
 ---
@@ -20,8 +20,9 @@
 8. [Automation Workflows](#automation-workflows)
 9. [Security & Best Practices](#security--best-practices)
 10. [Troubleshooting](#troubleshooting)
-11. [API Reference](#api-reference)
-12. [Contributing](#contributing)
+11. [OpenAI API Quota Management](#openai-api-quota-management)
+12. [API Reference](#api-reference)
+13. [Contributing](#contributing)
 
 ---
 
@@ -577,6 +578,276 @@ DEBUG=* npm run automate
    - Error message
    - Steps to reproduce
    - System info (`node --version`, `npm --version`)
+
+---
+
+## 🔑 OpenAI API Quota Management
+
+### Understanding API Costs
+
+SatanicOtter uses the OpenAI API for content generation. Understanding and managing your quota is essential for smooth operation.
+
+#### Pricing (as of 2024)
+
+- **gpt-4o-mini** (default): $0.15/1M input tokens, $0.60/1M output tokens
+- **gpt-4o**: $2.50/1M input tokens, $10.00/1M output tokens
+- **gpt-3.5-turbo**: $0.50/1M input tokens, $1.50/1M output tokens
+
+**Typical costs per content generation:**
+- Scripts (5 items): ~$0.05-0.15 (gpt-4o-mini)
+- Product research: ~$0.02-0.05
+- Profile bios: ~$0.01-0.02
+- **Total for `npm run full-auto`:** ~$0.10-0.25
+
+### Checking Your Quota
+
+#### Via OpenAI Dashboard
+1. Visit [platform.openai.com/account/usage](https://platform.openai.com/account/usage)
+2. View current month's usage
+3. Check remaining credits
+
+#### Via Status Command
+```bash
+npm run status
+```
+Shows:
+- ✅ API key configured
+- Current model in use
+- Estimated costs
+
+### Setting Up Billing
+
+#### New Accounts (Free Trial)
+- Free $5 credits for 3 months
+- Expires after period or when depleted
+- Sufficient for testing (~20-50 full-auto runs)
+
+#### Paid Accounts
+1. Go to [platform.openai.com/account/billing](https://platform.openai.com/account/billing)
+2. Add payment method
+3. Set usage limits (recommended)
+4. Enable auto-recharge (optional)
+
+### Managing Costs
+
+#### 1. Use Cost-Efficient Models
+
+**For development/testing:**
+```env
+OPENAI_MODEL=gpt-4o-mini  # Cheapest, fast, good quality
+```
+
+**For production:**
+```env
+OPENAI_MODEL=gpt-4o       # Best quality, higher cost
+```
+
+#### 2. Set Budget Limits
+
+In your OpenAI dashboard:
+1. Navigate to Settings → Limits
+2. Set monthly budget (e.g., $10/month)
+3. Set soft limits for alerts
+4. Set hard limits to prevent overage
+
+**Recommended limits:**
+- Soft limit: $5 (alert when reached)
+- Hard limit: $10 (stop API calls)
+
+#### 3. Monitor Usage
+
+```bash
+# Check usage before generating content
+npm run status
+
+# Generate content (check cost)
+npm run generate-content
+
+# Monitor in dashboard
+# Visit: platform.openai.com/account/usage
+```
+
+#### 4. Batch Operations Efficiently
+
+```bash
+# Generate all content at once (more efficient)
+npm run full-auto
+
+# Instead of multiple separate calls:
+# npm run generate-content  # Call 1
+# npm run product-research   # Call 2
+# npm run setup-profiles     # Call 3
+```
+
+### Handling Quota Errors
+
+#### Error: "insufficient_quota"
+
+**Cause:** API key has no remaining credits
+
+**Solutions:**
+
+1. **Check your balance:**
+   ```bash
+   # Visit: platform.openai.com/account/billing
+   ```
+
+2. **Add payment method:**
+   - Go to Billing → Payment methods
+   - Add credit/debit card
+   - Credits are added within minutes
+
+3. **Upgrade your plan:**
+   - Free trial → Pay-as-you-go
+   - No monthly fees, pay only for usage
+
+4. **Wait for limit reset:**
+   - Rate limits reset monthly
+   - Check reset date in dashboard
+
+#### Error: "Rate limit exceeded"
+
+**Cause:** Too many requests in a short time
+
+**Solutions:**
+
+1. **Wait a few seconds** and retry
+2. **Use rate limiting** (automatically handled by SatanicOtter)
+3. **Upgrade tier** for higher rate limits
+
+### Cost Optimization Tips
+
+#### 1. Use Caching (Built-in)
+```javascript
+// SatanicOtter automatically caches:
+// - API responses (5 minutes)
+// - Generated content (1 hour)
+// - Product research (24 hours)
+```
+
+#### 2. Reduce Token Usage
+```env
+# Shorter content = lower cost
+CONTENT_TONE=concise
+
+# Fewer items per batch
+BATCH_SIZE=3  # Default is 5
+```
+
+#### 3. Test with Dry Runs
+```bash
+# Profile automation (no API calls)
+npm run automate-profiles:dry-run
+
+# Test configuration without generation
+npm run status
+```
+
+#### 4. Use Local Development
+```bash
+# Review existing content instead of regenerating
+ls review-queue/
+cat review-queue/script-1.txt
+```
+
+### Quota Monitoring Script
+
+**Check remaining balance programmatically:**
+
+```javascript
+// In your code or a custom script
+const { getEnv } = require('./automation/utils/config');
+const OpenAI = require('openai');
+
+async function checkBalance() {
+  const client = new OpenAI({ apiKey: getEnv('OPENAI_API_KEY') });
+  
+  try {
+    // OpenAI doesn't expose balance via API
+    // Check dashboard: platform.openai.com/account/usage
+    console.log('Visit https://platform.openai.com/account/usage');
+  } catch (error) {
+    console.error('Error checking balance:', error.message);
+  }
+}
+```
+
+### Setting Usage Alerts
+
+#### Email Notifications
+1. Go to [platform.openai.com/account/billing](https://platform.openai.com/account/billing)
+2. Settings → Notifications
+3. Enable "Usage alerts"
+4. Set thresholds: 50%, 75%, 90%, 100%
+
+#### Slack/Discord Integration
+Use OpenAI's webhook notifications to send alerts to your team chat when limits are reached.
+
+### Best Practices
+
+1. **Start Small**
+   - Test with `npm run generate-content` (single operation)
+   - Monitor costs in dashboard
+   - Scale up once comfortable
+
+2. **Set Alerts Early**
+   - Configure soft limits before going live
+   - Receive alerts at 50% usage
+
+3. **Review Generated Content**
+   - Check quality before generating more
+   - Adjust prompts to reduce regeneration
+
+4. **Track ROI**
+   ```bash
+   # Compare API costs vs. affiliate revenue
+   npm run analytics:summary
+   ```
+
+5. **Cache Aggressively**
+   - SatanicOtter caches by default
+   - Don't regenerate content unnecessarily
+
+### Emergency: Out of Credits
+
+**Quick fix:**
+
+1. **Add payment method immediately**
+   - Visit: platform.openai.com/account/billing
+   - Add card → Credits available in ~5 minutes
+
+2. **Use alternative API key**
+   ```bash
+   # Create new key: platform.openai.com/api-keys
+   # Update .env
+   OPENAI_API_KEY=sk-new-key-here
+   ```
+
+3. **Temporarily use GPT-3.5 Turbo**
+   ```env
+   # Cheaper alternative
+   OPENAI_MODEL=gpt-3.5-turbo
+   ```
+
+### API Key Security
+
+⚠️ **Never share or commit your API keys**
+
+```bash
+# Check .gitignore includes .env
+cat .gitignore | grep .env
+
+# Rotate keys if exposed
+# Visit: platform.openai.com/api-keys
+# Revoke old key → Create new key
+```
+
+### Support Resources
+
+- **Billing Issues:** [help.openai.com](https://help.openai.com)
+- **API Status:** [status.openai.com](https://status.openai.com)
+- **Rate Limits:** [platform.openai.com/docs/guides/rate-limits](https://platform.openai.com/docs/guides/rate-limits)
+- **Pricing:** [openai.com/pricing](https://openai.com/pricing)
 
 ---
 
