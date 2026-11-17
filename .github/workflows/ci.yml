@@ -31,7 +31,6 @@ jobs:
         
       - name: Run ESLint
         run: npm run lint --if-present
-        continue-on-error: true
         
       - name: Validate syntax
         run: |
@@ -87,7 +86,6 @@ jobs:
         
       - name: Run npm audit
         run: npm audit --audit-level=high
-        continue-on-error: true
         
       - name: Check for secrets in code
         run: |
@@ -98,7 +96,6 @@ jobs:
           else
             echo "No hardcoded secrets detected."
           fi
-        continue-on-error: true
 
   # Job 4: Build Verification
   build:
