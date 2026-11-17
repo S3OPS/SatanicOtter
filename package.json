@@ -39,7 +39,7 @@
   "dependencies": {
     "dotenv": "^16.6.1",
     "node-cron": "^3.0.3",
-    "openai": "^6.49.0",
+    "openai": "^7.57.0",
     "puppeteer": "^25.18.1"
   },
   "devDependencies": {
