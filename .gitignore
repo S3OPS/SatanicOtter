@@ -34,3 +34,7 @@ build/
 # Test coverage
 coverage/
 .nyc_output/
+
+# Stage 0 runtime data (persistent queue, ledger, run reports)
+automation-data/
+stage0-runs/

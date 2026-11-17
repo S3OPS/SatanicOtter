@@ -16,6 +16,7 @@
     "generate-content": "node automation/contentGenerator.js",
     "schedule-posts": "node automation/scheduler.js",
     "automate": "node automation/index.js",
+    "stage0": "node automation/stage0.js",
     "product-research": "node automation/productResearch.js",
     "analytics": "node automation/analyticsTracker.js",
     "analytics:add": "node automation/analyticsTracker.js add",

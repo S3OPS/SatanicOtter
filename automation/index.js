@@ -9,6 +9,7 @@ const { loadEnv, getEnv, getEnvArray } = require('./utils/config');
 const { info, error: logError, section } = require('./utils/logger');
 const { batchGenerateContent, isQuotaError, handleOpenAIError } = require('./contentGenerator');
 const { start: startScheduler } = require('./scheduler');
+const { isStopRequested } = require('./utils/stopSwitch');
 
 loadEnv();
 
@@ -23,7 +24,15 @@ const AUTOMATION_CONFIG = {
  */
 async function runAutomation() {
   section('SatanicOtter Social Media Automation System');
-  
+
+  // Kill switch: halt cleanly before the cycle if a STOP file exists
+  // in the repo root or AUTOMATION_STOP=true is set.
+  const stop = isStopRequested();
+  if (stop.stopped) {
+    logError('Automation', `Halted by kill switch (${stop.reason}). Remove the STOP file or unset AUTOMATION_STOP to run.`);
+    return;
+  }
+
   try {
     let contentFile = null;
     

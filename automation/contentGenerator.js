@@ -8,8 +8,8 @@
 const { loadEnv, getEnv, getEnvArray } = require('./utils/config');
 const { saveJSON } = require('./utils/fileOps');
 const { info, error: logError, section } = require('./utils/logger');
+const { generateCompletion } = require('./utils/aiProvider');
 const { 
-  generateCompletion, 
   isQuotaError, 
   handleOpenAIError, 
   parseAIResponse 
@@ -238,7 +238,8 @@ async function batchGenerateContent(options = {}) {
 if (require.main === module) {
   section('AI Content Generator Starting');
   
-  if (!getEnv('OPENAI_API_KEY')) {
+  const provider = (getEnv('AI_PROVIDER', 'openai') || 'openai').toLowerCase();
+  if (provider === 'openai' && !getEnv('OPENAI_API_KEY')) {
     logError('ContentGenerator', 'OPENAI_API_KEY not found in environment variables');
     logError('ContentGenerator', 'Please copy .env.example to .env and add your API key');
     process.exit(1);
