@@ -4,6 +4,13 @@ module.exports = {
     '**/test/**/*.test.js',
     '**/test/unit/**/*.test.js'
   ],
+  // test/integration.test.js is a standalone Node script (run via
+  // `npm run test:integration`), not a Jest suite: it executes checks at
+  // load time and calls process.exit(), which kills Jest workers.
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/test/integration\\.test\\.js'
+  ],
   collectCoverageFrom: [
     'automation/**/*.js',
     '!automation/index.js',

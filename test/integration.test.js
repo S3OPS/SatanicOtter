@@ -350,7 +350,8 @@ test('formatters utility module can be loaded', () => {
 
 // Test 15: ESLint and CI/CD configuration
 test('ESLint configuration exists', () => {
-  assert(fs.existsSync('.eslintrc.js'), '.eslintrc.js not found');
+  // ESLint 9 uses the flat config (eslint.config.js); the legacy .eslintrc.js was removed.
+  assert(fs.existsSync('eslint.config.js'), 'eslint.config.js not found');
 });
 
 test('package.json contains lint script', () => {
